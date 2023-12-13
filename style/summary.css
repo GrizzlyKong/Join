@@ -1,5 +1,337 @@
 body {
-    margin: 0;
-    width: 100vw;
-    height: 100vh;
+  margin: 0;
+  background-color: #f6f7f8;
+  font-size: 16px;
+}
+
+/*fix classes*/
+
+.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.absolute {
+  position: absolute;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.column {
+  flex-direction: column;
+}
+
+.d-none {
+  display: none;
+}
+.pointer {
+  cursor: pointer;
+}
+
+/*summary whole div*/
+
+.summary {
+  gap: 50px;
+  width: 100vw;
+  height: 100vh;
+}
+
+/*summary left side*/
+/*Headline*/
+
+.summary-left-side {
+}
+
+.summary-join-360 {
+}
+.summary-join-360 h1 {
+  font-weight: 700;
+  font-size: 61px;
+  padding-right: 30px;
+  border-right: 3px solid #29abe2;
+}
+.summary-join-360 span {
+  font-size: 27px;
+  padding-left: 30px;
+}
+
+/*To-do*/
+
+.summary-todo-and-done-div {
+  gap: 32px;
+}
+.summary-todo {
+  width: 264px;
+  height: 168px;
+  gap: 18px;
+  flex-shrink: 0;
+  background-color: #fff;
+  border-radius: 30px;
+  box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease-in-out;
+}
+
+.todo2 {
+}
+
+.summary-todo:hover {
+  cursor: pointer;
+  transform: scale(1.1);
+  background-color: #2a3647;
+}
+.summary-todo:hover .todo1 {
+  display: none;
+}
+
+.summary-todo:hover .todo2 {
+  display: inline;
+}
+
+.summary-todo-number-and-name {
+}
+
+.summary-todo-span {
+  font-size: 20px;
+}
+
+.summary-todo:hover .summary-todo-number {
+  color: white;
+}
+.summary-todo:hover .summary-todo-span {
+  color: white;
+}
+.summary-todo-number {
+  color: #000;
+  font-family: Inter;
+  font-size: 64px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 120%; /* 76.8px */
+}
+
+/*Done*/
+
+.summary-done {
+  width: 264px;
+  height: 168px;
+  gap: 18px;
+  flex-shrink: 0;
+  background-color: #fff;
+  border-radius: 30px;
+  box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease-in-out;
+}
+
+.done2 {
+}
+
+.summary-done:hover {
+  transform: scale(1.1);
+  background-color: #2a3647;
+}
+.summary-done:hover .done1 {
+  display: none;
+}
+
+.summary-done:hover .done2 {
+  display: inline;
+}
+
+.summary-done-number-and-name {
+}
+
+.summary-done-span {
+  font-size: 20px;
+}
+
+.summary-done:hover .summary-done-number {
+  color: white;
+}
+.summary-done:hover .summary-done-span {
+  color: white;
+}
+.summary-done-number {
+  color: #000;
+
+  text-align: center;
+  font-family: Inter;
+  font-size: 64px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 120%; /* 76.8px */
+}
+
+/*Urgent*/
+
+.summary-urgent-div {
+  width: 560px;
+  height: 168px;
+  flex-shrink: 0;
+  background-color: #fff;
+  border-radius: 30px;
+  box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease-in-out;
+  margin-top: 18px;
+}
+
+.summary-urgent-div:hover {
+  color: white;
+  transform: scale(1.1);
+  background-color: #2a3647;
+}
+.summary-urgent-div:hover .summary-urgent-number {
+  color: white;
+}
+
+.summary-urgent {
+  gap: 18px;
+  border-right: 2px solid #d1d1d1;
+  padding-right: 60px;
+}
+
+.summary-urgent-number {
+  color: #000;
+  font-family: Inter;
+  font-size: 64px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 120%;
+}
+
+.summary-urgent-span {
+  font-size: 20px;
+}
+
+.summary-todo:hover .summary-urgent-span {
+  color: white;
+}
+
+.date-deadline {
+  padding-left: 70px;
+}
+.summmary-date {
+  font-weight: 700;
+  font-size: 21px !important;
+}
+
+/*all Tasks*/
+
+.all-tasks {
+  gap: 32px;
+}
+
+.tasks-in-board {
+  width: 168px;
+  height: 168px;
+  flex-shrink: 0;
+  background-color: #fff;
+  border-radius: 30px;
+  box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease-in-out;
+  margin-top: 18px;
+}
+
+.tasks-in-board-number {
+  color: #000;
+  font-family: Inter;
+  font-size: 64px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 120%;
+}
+
+.tasks-in-board-name {
+  font-size: 20px;
+}
+
+.tasks-in-progress {
+  width: 168px;
+  height: 168px;
+  flex-shrink: 0;
+  background-color: #fff;
+  border-radius: 30px;
+  box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease-in-out;
+  margin-top: 18px;
+}
+.tasks-progress-number {
+  color: #000;
+  font-family: Inter;
+  font-size: 64px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 120%;
+}
+.tasks-progress-name {
+  font-size: 20px;
+}
+.awaiting-feedback {
+  width: 168px;
+  height: 168px;
+  flex-shrink: 0;
+  background-color: #fff;
+  border-radius: 30px;
+  box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease-in-out;
+  margin-top: 18px;
+}
+.tasks-awaiting-feedback-number {
+  color: #000;
+  font-family: Inter;
+  font-size: 64px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 120%;
+}
+
+.tasks-awaiting-feedback-name {
+  font-size: 20px;
+}
+.tasks-in-board:hover {
+  color: white;
+  transform: scale(1.1);
+  background-color: #2a3647;
+}
+
+.tasks-in-board:hover .tasks-in-board-number {
+  color: white;
+}
+
+.tasks-in-progress:hover {
+  color: white;
+  transform: scale(1.1);
+  background-color: #2a3647;
+}
+
+.tasks-in-progress:hover .tasks-progress-number {
+  color: white;
+}
+
+.awaiting-feedback:hover {
+  color: white;
+  transform: scale(1.1);
+  background-color: #2a3647;
+}
+
+.awaiting-feedback:hover .tasks-awaiting-feedback-number {
+  color: white;
+}
+
+/*all Tasks*/
+
+.greeting {
+  right: 0;
+}
+
+.greeting-good-morning {
+  font-weight: 500;
+  font-size: 47px;
+  color: #2a3647;
+}
+.greeting-name {
+  font-weight: 700;
+  font-size: 64px;
 }
