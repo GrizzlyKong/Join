@@ -7,29 +7,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title>Join</title>
-
-    <link rel="stylesheet" href="../style/style.css" />
     <link rel="stylesheet" href="../style/login.css" />
-    <link rel="stylesheet" href="../style/header.css" />
-    <link rel="stylesheet" href="../style/add-task.css" />
-    <link rel="stylesheet" href="../style/board.css" />
-    <link rel="stylesheet" href="../style/contacts.css" />
-    <link rel="stylesheet" href="../style/legal.css" />
-    <link rel="stylesheet" href="../style/fonts.css" />
-    <link rel="stylesheet" href="../style/mobile.css" />
+    <link rel="icon" type="image/x-icon" href="../assets/icons/favicon.png" />
 
-    <script src="../script/script.js"></script>
-    <script src="../script/login.js"></script>
-    <script src="../script/header.js"></script>
-    <script src="../script/add-task.js"></script>
-    <script src="../script/board.js"></script>
-    <script src="../script/contacts.js"></script>
-    <script src="../script/legal.js"></script>
-
-    <link rel="icon" type="image/x-icon" href="icons/image.png" />
   </head>
 
-  <body>
+  <body onload="init()">
+    <div w3-include-html="../assets/templates/header.html"></div>
+    <div w3-include-html="../assets/templates/menu.html"></div>
 
+
+
+    <script src="../script/login.js"></script>
   </body>
 </html>
+
