@@ -1,6 +1,31 @@
 body {
   overflow-y: hidden;
   overflow-x: hidden;
+  font-size: 16px;
+}
+.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.absolute {
+  position: absolute;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.column {
+  flex-direction: column;
+}
+
+.d-none {
+  display: none;
+}
+.pointer {
+  cursor: pointer;
 }
 
 .pointer {
