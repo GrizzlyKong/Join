@@ -108,6 +108,11 @@ header p {
   padding-left: 25%;
 }
 
+.decoration-none {
+  text-decoration: none;
+  color: rgb(205, 205, 205);
+}
+
 .sidebar-link:hover .sidebar-icon {
   filter: brightness(0) invert(1);
 }
