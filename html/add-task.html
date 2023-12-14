@@ -17,72 +17,83 @@
   <div w3-include-html="../assets/templates/menu.html"></div>
 
   <div class="add-tasks-whole-div center column">
-    <div class="headline-div">
-      <h1>Add Task</h1>
-    </div>
+    <div>
+      <div class="headline-div">
+        <h1>Add Task</h1>
+      </div>
 
-    <div class="add-tasks-div center">
-      <div class="add-tasks-left-side-div">
-        <div class="title column">
-          <div><span>Title</span><span class="important">*</span></div>
-          <input required placeholder="Enter a title">
+      <div class="add-tasks-div center">
+        <div class="add-tasks-left-side-div">
+          <div class="title column">
+            <div><span>Title</span><span class="important">*</span></div>
+            <input required placeholder="Enter a title">
+          </div>
+          <div class="description">
+            <div><span>Description</span></div>
+            <textarea placeholder="Enter a Description"></textarea>
+          </div>
+          <div class="assigned-to">
+            <div><span>Assigned to</span></div>
+            <select class="pointer" placeholder="Select contacts to assign">
+              <option value="" class="d-none">Select contacts to assign</option>
+              <option>1</option>
+              <option>2</option>
+              <option>3</option>
+            </select>
+          </div>
         </div>
-        <div class="description">
-          <div><span>Description</span></div>
-          <textarea placeholder="Enter a Description"></textarea>
-        </div>
-        <div class="assigned-to">
-          <div><span>Assigned to</span></div>
-          <select class="pointer" placeholder="Select contacts to assign">
-            <option value="" class="d-none">Select contacts to assign</option>
-            <option>1</option>
-            <option>2</option>
-            <option>3</option>
-          </select>
+        <div class="add-tasks-right-side-div">
+          <div class="duo-date">
+            <div><span>Due date</span><span class="important">*</span></div>
+            <input required placeholder="dd/mm/yyyy"><img class="input-icon1" src="/assets/icons/date.svg" alt="">
+          </div>
+          <div class="all-priorities">
+            <span>Prio</span>
+            <div class="priorities">
+              <div class="prioprity-urgent center">
+                <div>Urgent</div>
+                <div><img src="/assets/icons/urgent2.svg" alt=""></div>
+              </div>
+              <div class="prioprity-medium center">
+                <div>Medium</div>
+                <div><img src="/assets/icons/medium.svg" alt=""></div>
+              </div>
+              <div class="prioprity-low center">
+                <div>Low</div>
+                <div><img src="/assets/icons/low.svg" alt=""></div>
+              </div>
+            </div>
+          </div>
+          <div class="category">
+            <div><span>Category</span><span class="important">*</span></div>
+            <select required class="pointer" placeholder="Select task category">
+              <option value="" class="d-none">Select task category</option>
+              <option>Technical Task</option>
+              <option>User Story</option>
+            </select>
+          </div>
+          <div class="subtasks">
+            <div><span>Subtasks</span><span class="important">*</span></div>
+            <input required placeholder="Add new subtask"><img class="input-icon2" src="/assets/icons/add.svg" alt="">
+          </div>
         </div>
       </div>
-      <div class="add-tasks-right-side-div">
-        <div class="duo-date">
-          <div><span>Due date</span><span class="important">*</span></div>
-          <input required placeholder="dd/mm/yyyy"><img class="input-icon1" src="/assets/icons/date.svg" alt="">
+      <div class="bottom">
+        <div class="left-bottom">
+          <span class="important">*</span><span>This field is required</span>
         </div>
-        <div class="all-priorities">
-          <span>Prio</span>
-          <div class="priorities">
-            <div class="prioprity-urgent center">
-              <div>Urgent</div>
-              <div><img src="/assets/icons/urgent2.svg" alt=""></div>
+        <div class="right-bottom">
+          <div class="clear-and-create-task center">
+            <div class="clear center">
+              <span>Clear</span>
+              <img src="/assets/icons/cancel.svg" alt="">
             </div>
-            <div class="prioprity-medium center">
-              <div>Medium</div>
-              <div><img src="/assets/icons/medium.svg" alt=""></div>
-            </div>
-            <div class="prioprity-low center">
-              <div>Low</div>
-              <div><img src="/assets/icons/low.svg" alt=""></div>
+            <div class="create-task center">
+              <span>Create Task</span>
+              <img src="/assets/icons/check.svg" alt="">
             </div>
           </div>
         </div>
-        <div class="category">
-          <div><span>Category</span><span class="important">*</span></div>
-          <select required class="pointer" placeholder="Select task category">
-            <option value="" class="d-none">Select task category</option>
-            <option>Technical Task</option>
-            <option>User Story</option>
-          </select>
-        </div>
-        <div class="subtasks">
-          <div><span>Subtasks</span><span class="important">*</span></div>
-          <input required placeholder="Add new subtask"><img class="input-icon2" src="/assets/icons/add.svg" alt="">
-        </div>
-      </div>
-    </div>
-    <div>
-      <div class="left-bottom">
-
-      </div>
-      <div class="right-bottom">
-
       </div>
     </div>
   </div>

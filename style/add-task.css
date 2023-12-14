@@ -41,11 +41,12 @@ body {
 /*headline*/
 
 .headline-div {
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
+
 }
 .headline-div h1 {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
   font-size: 61px;
 }
 
@@ -136,7 +137,7 @@ body {
 
 .all-priorities{
     
-    padding-top: 33px;
+    padding-top: 30px;
 }
 
   .all-priorities span{
@@ -230,4 +231,50 @@ body {
   .input-icon2{
     margin-left: -25px;
     margin-bottom: -2px;
+  }
+
+  /*Bottom*/
+
+  .bottom{
+    margin-top: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .left-bottom{
+    font-size: 20px;
+  }
+
+  .right-bottom{
+  }
+  .clear-and-create-task{
+    gap: 16px;
+  }
+
+  .clear{
+    background-color: #F6F7F8;
+     border: 1px solid #2A3647;
+    border-radius: 10px;
+    width: 120px;
+    height: 56px;
+    gap: 4px;
+  }
+.clear span{
+    font-size: 20px;
+}
+
+
+  .create-task{
+    color: white;
+    background-color: #2A3647;
+    border: 1px solid #2A3647;
+   border-radius: 10px;
+   width: 183px;
+   height: 50px;
+   gap: 4px;
+  }
+
+  .create-task span{
+    font-size: 20px;
   }
