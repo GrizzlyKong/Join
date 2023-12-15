@@ -28,10 +28,6 @@ body {
   cursor: pointer;
 }
 
-.pointer {
-  cursor: pointer;
-}
-
 .contacts {
   width: 100vw;
   height: 100vh;
@@ -154,9 +150,9 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  position: fixed;
-  top: 25%;
-  left: 40%;
+  position: absolute;
+  top: 10%;
+  left: 25%;
 }
 
 .contacts-title-head {
@@ -176,9 +172,9 @@ body {
 #contact-info {
   display: flex;
   justify-content: center;
-  position: fixed;
-  top: 40%;
-  left: 40%;
+  position: absolute;
+  top: 30%;
+  left: 25%;
   height: 600px;
 }
 

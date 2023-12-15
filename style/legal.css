@@ -1,0 +1,52 @@
+body {
+  width: 70vw;
+  height: 100vh;
+  position: absolute;
+  top: 96px;
+  left: 242px;
+  background-color: rgb(246, 247, 248);
+}
+
+.legal-title {
+  display: flex;
+  width: 75vw;
+  align-items: center;
+  position: absolute;
+  top: 10%;
+  left: 10%;
+}
+
+.legal-title-head {
+  font-weight: 700;
+  font-size: 61px;
+}
+
+.arrow-left-line {
+  position: fixed;
+  right: 15%;
+  z-index: 5;
+}
+
+.arrow-left-line:hover {
+  cursor: pointer;
+  scale: 1.1;
+  background-color: rgb(238, 238, 238);
+  border-radius: 50%;
+}
+
+h2,
+ul {
+  margin: 0;
+}
+
+.legal-content {
+  position: absolute;
+  top: 30%;
+  left: 10%;
+  padding-bottom: 15%;
+}
+
+.legal-content span {
+  color: rgb(41, 171, 226);
+  margin: 0;
+}

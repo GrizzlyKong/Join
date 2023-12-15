@@ -20,9 +20,9 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  position: fixed;
-  top: 25%;
-  left: 20%;
+  position: absolute;
+  top: 10%;
+  left: 5%;
 }
 
 .board-title-head {
@@ -52,7 +52,7 @@ body {
 
 .find-task {
   display: flex;
-  padding-left: 32vw;
+  padding-left: 30vw;
 }
 
 .input-field {
@@ -91,10 +91,10 @@ body {
 
 .board-column {
   display: flex;
-  position: fixed;
   height: 700px;
-  top: 44%;
-  left: 20%;
+  position: absolute;
+  top: 30%;
+  left: 5%;
 }
 
 .move-right {
