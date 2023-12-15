@@ -76,3 +76,14 @@ ul {
   color: rgb(41, 171, 226);
   margin: 0;
 }
+
+.step {
+  display: flex;
+  margin-bottom: 35px;
+  margin-top: 40px;
+}
+
+.step h1 {
+  margin-right: 10px;
+  margin-top: 0;
+}
