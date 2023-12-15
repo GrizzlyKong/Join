@@ -7,6 +7,32 @@ body {
   background-color: rgb(246, 247, 248);
 }
 
+.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.absolute {
+  position: absolute;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.column {
+  flex-direction: column;
+}
+
+.d-none {
+  display: none;
+}
+.pointer {
+  cursor: pointer;
+}
+
+
 .legal-title {
   display: flex;
   width: 75vw;

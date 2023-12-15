@@ -3,6 +3,27 @@ body {
   overflow-x: hidden;
 }
 
+.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.absolute {
+  position: absolute;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.column {
+  flex-direction: column;
+}
+
+.d-none {
+  display: none;
+}
 .pointer {
   cursor: pointer;
 }
@@ -124,6 +145,7 @@ body {
   padding-right: 12px;
   cursor: pointer;
   display: none;
+
 }
 
 .board-column-title:hover .board-column-title-img {
