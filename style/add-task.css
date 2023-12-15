@@ -260,6 +260,12 @@ body {
     height: 56px;
     gap: 4px;
   }
+
+  .clear:hover{
+    border: 2px solid #29abe2;
+    color: #29abe2;
+  }
+
 .clear span{
     font-size: 20px;
 }
