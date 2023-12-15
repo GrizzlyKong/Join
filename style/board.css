@@ -148,11 +148,11 @@ body {
 
 }
 
-.board-column-title:hover .board-column-title-img {
+.images:hover .board-column-title-img {
   display: none;
 }
 
-.board-column-title:hover .board-column-title-img2{
+.images:hover .board-column-title-img2 {
   display: inline;
 }
 
