@@ -16,6 +16,50 @@
     <div w3-include-html="../assets/templates/header.html"></div>
     <div w3-include-html="../assets/templates/menu.html"></div>
 
+<div class="board">
+
+
+<div class="board-title">
+
+<div class="board-title-head">Board</div>
+<form class="find-task" onsubmit="findTask()">
+<input class="input-field" required type="text" placeholder="Find Task" id="findTask"><img class="find-task-img" src="../assets/icons/find.png">
+</form>
+<div class="add-task-button pointer">
+  Add Task <img src="/assets/icons/add.png" />
+</div>
+
+</div>
+<div class="board-column">
+
+<div class="move-right"><div class="board-column-title">To do<img class="board-column-title-img" src="../assets/icons/plusButton.svg">
+<img class="board-column-title-img2" src="../assets/icons/plusButton2.svg"></div>
+<div class="board-column-empty">No tasks To Do</div>
+
+<!-- Task-Card -->
+<div class="board-task-card pointer">
+<div class="board-task-card-title">User story</div>
+<div class="board-task-card-description">Kochwelt Page & Recipe Recommender</div>
+<div class="board-task-card-task">tekst blablablablablabla</div>
+<div class="board-task-card-subtasks"><div class="board-task-card-subtasks-bar"><div class="bar-fill" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
+</div><div  class="board-task-card-subtasks-amount"></div>1/2 Subtasks</div>
+<div class="board-task-card-users"><div class="board-task-card-users-amount">M</div><div class="board-task-card-priority"><img src="../assets/icons/medium-prio.png"></div></div>
+
+</div></div>
+
+<div class="move-right"><div class="board-column-title">In progress<img class="board-column-title-img"  src="../assets/icons/plusButton.svg">
+<img class="board-column-title-img2" src="../assets/icons/plusButton2.svg"></div>
+<div class="board-column-empty">No tasks in Progress</div></div>
+
+<div class="move-right"><div class="board-column-title">Awaiting feedback<img class="board-column-title-img"  src="../assets/icons/plusButton.svg">
+<img class="board-column-title-img2" src="../assets/icons/plusButton2.svg"></div>
+<div class="board-column-empty">No Feedback awaited</div></div>
+
+<div class="move-right"><div class="board-column-title">Done</div><div class="board-column-empty">No tasks Done</div></div>
+  
+</div>
+
+</div>
 
     <script src="../script/board.js"></script>
   </body>
