@@ -1,2 +1,425 @@
+<<<<<<< HEAD
 
   
+=======
+body {
+  overflow-y: hidden;
+  overflow-x: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.absolute {
+  position: absolute;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.column {
+  flex-direction: column;
+}
+
+.d-none {
+  display: none;
+}
+.pointer {
+  cursor: pointer;
+}
+
+.log-in-head-img {
+  position: absolute;
+  top: 80px;
+  left: 80px;
+}
+
+.log-in-sign-up {
+  position: absolute;
+  top: 7vh;
+  right: 10vw;
+  gap: 32px;
+}
+
+.log-in-sign-up p {
+  font-size: 24px;
+}
+
+.log-in-sign-up-button {
+  background-color: rgb(42, 54, 71);
+  color: white;
+  border: 1px;
+  border-radius: 10px;
+  display: flex;
+  width: 160px;
+  height: 50px;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.log-in-sign-up-button:hover {
+  background-color: rgb(41, 171, 226);
+  box-shadow: 0 10px 10px rgba(0, 0, 0, 0.2);
+}
+
+.log-in-links {
+  color: rgb(168, 168, 168);
+  gap: 24px;
+  position: relative;
+  top: 90vh;
+  font-size: 20px;
+}
+
+.log-in-privacy,
+.log-in-legal {
+  text-decoration: none;
+  color: rgb(168, 168, 168);
+}
+
+.log-in-privacy:hover,
+.log-in-legal:hover {
+  font-weight: bold;
+  color: rgb(41, 171, 226);
+}
+
+.log-in-content {
+  position: absolute;
+  top: 25vh;
+  width: 550px;
+  height: 400px;
+  display: flex;
+  flex-direction: column;
+  border-radius: 30px;
+  border-width: 0;
+  border-style: solid;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.log-in-title {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  bottom: 3vh;
+  font-weight: 700;
+  font-size: 61px;
+  padding-bottom: 15px;
+  border-bottom: 3px solid #29abe2;
+}
+
+.log-in-inputs {
+  position: relative;
+  bottom: 3vh;
+  gap: 16px;
+  display: flex;
+  flex-direction: column;
+  left: 1vw;
+  top: 1vh;
+}
+
+.log-in-inputs::placeholder {
+  color: rgb(209, 209, 209);
+}
+
+.log-in-field {
+  width: 22rem;
+  height: 3vh;
+  padding: 10px;
+  border: 1px solid rgb(209, 209, 209);
+  border-radius: 10px;
+  outline: none;
+}
+
+.log-in-field::placeholder {
+  color: rgb(209, 209, 209);
+  font-size: 18px;
+}
+
+.log-in-mail-lock-icon {
+  position: relative;
+  top: 8px;
+  right: 2rem;
+}
+
+.log-in-remember-me {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin-right: 12rem;
+  position: relative;
+  top: 2vh;
+}
+
+.log-in-checkbox {
+  height: 16px;
+  width: 16px;
+  border-radius: 3px;
+  border-style: solid;
+}
+
+.log-in-checkbox:hover {
+  scale: 1.1;
+  background-color: rgb(238, 238, 238);
+}
+
+.log-in-login-buttons {
+  display: flex;
+  gap: 24px;
+  padding-top: 2vh;
+  position: relative;
+  top: 2vh;
+}
+
+.log-in-login-button {
+  background-color: rgb(42, 54, 71);
+  color: white;
+  border: 1px;
+  border-radius: 8px;
+  display: flex;
+  width: 100px;
+  height: 40px;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.log-in-login-button:hover {
+  background-color: rgb(41, 171, 226);
+  box-shadow: 0 10px 10px rgba(0, 0, 0, 0.2);
+}
+
+.log-in-guestlogin-button {
+  background-color: white;
+  color: rgb(42, 54, 71);
+  border: 1px;
+  border-radius: 10px;
+  border-style: solid;
+  border-color: rgb(42, 54, 71);
+  display: flex;
+  width: 140px;
+  height: 40px;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.log-in-guestlogin-button:hover {
+  color: rgb(41, 171, 226);
+  border-color: rgb(41, 171, 226);
+  box-shadow: 0 10px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* SIGN UP */
+
+.sign-up-sign-up {
+  position: absolute;
+  top: 7vh;
+  right: 10vw;
+  gap: 32px;
+}
+
+.sign-up-sign-up-button {
+  background-color: rgb(42, 54, 71);
+  color: white;
+  border: 1px;
+  border-radius: 10px;
+  display: flex;
+  width: 100px;
+  height: 40px;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.sign-up-sign-up-button2 {
+  background-color: rgb(42, 54, 71);
+  color: white;
+  border: 1px;
+  border-radius: 10px;
+  display: flex;
+  width: 220px;
+  height: 50px;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  font-weight: bold;
+}
+
+.sign-up-content {
+  position: absolute;
+  top: 13vh;
+  width: 550px;
+  height: 600px;
+  display: flex;
+  flex-direction: column;
+  border-radius: 30px;
+  border-width: 0;
+  border-style: solid;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.sign-up-title {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  bottom: 6vh;
+  font-weight: 700;
+  font-size: 61px;
+  padding-bottom: 15px;
+  border-bottom: 3px solid #29abe2;
+}
+
+.sign-up-inputs {
+  position: relative;
+  bottom: 3vh;
+  gap: 16px;
+  display: flex;
+  flex-direction: column;
+  left: 1vw;
+  top: 1vh;
+}
+
+.sign-up-inputs::placeholder {
+  color: rgb(209, 209, 209);
+}
+
+.sign-up-field {
+  width: 22rem;
+  height: 3vh;
+  padding: 10px;
+  border: 1px solid rgb(209, 209, 209);
+  border-radius: 10px;
+  outline: none;
+}
+
+.sign-up-field::placeholder {
+  color: rgb(209, 209, 209);
+  font-size: 18px;
+}
+
+.sign-up-mail-lock-icon {
+  position: relative;
+  top: 8px;
+  right: 2rem;
+}
+
+.sign-up-privacy-policy {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+  top: 6vh;
+}
+
+.sign-up-checkbox {
+  height: 16px;
+  width: 16px;
+  border-radius: 3px;
+  border-style: solid;
+}
+
+.sign-up-checkbox:hover {
+  scale: 1.1;
+  background-color: rgb(238, 238, 238);
+}
+
+.sign-up-login-buttons {
+  display: flex;
+  gap: 24px;
+  padding-top: 2vh;
+  position: relative;
+  top: 6vh;
+}
+
+.sign-up-login-button {
+  background-color: rgb(42, 54, 71);
+  color: white;
+  border: 1px;
+  border-radius: 8px;
+  display: flex;
+  width: 100px;
+  height: 40px;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.sign-up-sign-up-button:hover {
+  background-color: rgb(41, 171, 226);
+  box-shadow: 0 10px 10px rgba(0, 0, 0, 0.2);
+}
+
+.sign-up-guestlogin-button {
+  background-color: white;
+  color: rgb(42, 54, 71);
+  border: 1px;
+  border-radius: 10px;
+  border-style: solid;
+  border-color: rgb(42, 54, 71);
+  display: flex;
+  width: 140px;
+  height: 40px;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.sign-up-guestlogin-button:hover {
+  color: rgb(41, 171, 226);
+  border-color: rgb(41, 171, 226);
+  box-shadow: 0 10px 10px rgba(0, 0, 0, 0.2);
+}
+
+.sign-up-privacy-policy p {
+  color: rgb(209, 209, 209);
+}
+
+.sign-up-privacy-policy span {
+  color: rgb(41, 171, 226);
+}
+
+.sign-up-privacy-policy-span:hover {
+  font-weight: bold;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.sign-up-privacy-policy:hover .sign-up-checkbox {
+  background-color: rgb(238, 238, 238);
+}
+
+.arrow-left-line {
+  position: absolute;
+  right: 150%;
+}
+
+.arrow-left-line:hover {
+  cursor: pointer;
+  scale: 1.1;
+  background-color: rgb(238, 238, 238);
+  border-radius: 50%;
+}
+>>>>>>> b0585072e6e8151b5a51d169c7868aeb04411687
