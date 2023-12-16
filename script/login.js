@@ -1,18 +1,22 @@
 async function init() {
-    await includeHTML();
-    
-  }
-  
-  async function includeHTML() {
-      let includeElements = document.querySelectorAll("[w3-include-html]");
-      for (let i = 0; i < includeElements.length; i++) {
-        const element = includeElements[i];
-        file = element.getAttribute("w3-include-html"); // "includes/header.html"
-        let resp = await fetch(file);
-        if (resp.ok) {
-          element.innerHTML = await resp.text();
-        } else {
-          element.innerHTML = "Page not found";
-        }
-      }
-    }
+  displayHidden();
+  logoAnimation();
+ 
+}
+
+function logoAnimation() {
+  const logo = document.getElementById("logo-animated");
+  setTimeout(() => {
+    logo.style.transform = "translate(-42.25vw, -28.25vh) scale(0.35)";
+  }, 500);
+}
+
+
+function displayHidden() {
+  let logo = document.getElementById("logo-animated");
+  logo.style.visibility = "visible";
+
+  setTimeout(function () {
+    document.body.style.visibility = "visible";
+  }, 1500);
+}
