@@ -1,18 +1,25 @@
 async function init() {
-    await includeHTML();
-    
-  }
-  
-  async function includeHTML() {
-      let includeElements = document.querySelectorAll("[w3-include-html]");
-      for (let i = 0; i < includeElements.length; i++) {
-        const element = includeElements[i];
-        file = element.getAttribute("w3-include-html"); // "includes/header.html"
-        let resp = await fetch(file);
-        if (resp.ok) {
-          element.innerHTML = await resp.text();
-        } else {
-          element.innerHTML = "Page not found";
-        }
-      }
-    }
+  displayHidden();
+  logoAnimation();
+}
+
+
+function logoAnimation() {
+  const logo = document.getElementById("logo-animated");
+  setTimeout(() => {
+    logo.style.transform = "translate(-42.25vw, -28.25vh) scale(0.35)";
+  }, 500);
+}
+
+
+function displayHidden() {
+  let hidden1 = document.querySelector(".log-in-content");
+  let hidden2 = document.querySelector(".log-in-sign-up");
+  let hidden3 = document.querySelector(".log-in-links");
+
+  setTimeout(function () {
+    hidden1.style.opacity = 1;
+    hidden2.style.opacity = 1;
+    hidden3.style.opacity = 1;
+  }, 1500);
+}

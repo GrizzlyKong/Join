@@ -1,10 +1,10 @@
-
 body {
   overflow-y: hidden;
   overflow-x: hidden;
   display: flex;
   justify-content: center;
   align-items: center;
+  background-color: rgb(246, 247, 248);
 }
 
 .center {
@@ -32,17 +32,36 @@ body {
   cursor: pointer;
 }
 
+.logo-animation {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  top: 25%;
+  z-index: 10;
+}
+
+#logo-animated {
+  transition: transform 1s, scale 1s;
+}
+
+/* LOGIN */
+
+/*
 .log-in-head-img {
   position: absolute;
   top: 80px;
   left: 80px;
 }
+*/
 
 .log-in-sign-up {
   position: absolute;
   top: 7vh;
   right: 10vw;
   gap: 32px;
+  opacity: 0;
+  opacity: 1.5s ease;
 }
 
 .log-in-sign-up p {
@@ -55,7 +74,7 @@ body {
   border: 1px;
   border-radius: 10px;
   display: flex;
-  width: 160px;
+  width: 120px;
   height: 50px;
   justify-content: center;
   align-items: center;
@@ -75,6 +94,8 @@ body {
   position: relative;
   top: 90vh;
   font-size: 20px;
+  opacity: 0;
+  opacity: 1.5s ease;
 }
 
 .log-in-privacy,
@@ -99,6 +120,9 @@ body {
   border-radius: 30px;
   border-width: 0;
   border-style: solid;
+  background-color: white;
+  opacity: 0;
+  opacity: 1.5s ease;
   box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
 }
 
@@ -196,6 +220,11 @@ body {
 .log-in-login-button:hover {
   background-color: rgb(41, 171, 226);
   box-shadow: 0 10px 10px rgba(0, 0, 0, 0.2);
+}
+
+.log-in-guestlogin-link,
+.log-in-sign-up-link {
+  text-decoration: none;
 }
 
 .log-in-guestlogin-button {
@@ -315,7 +344,7 @@ body {
 .sign-up-mail-lock-icon {
   position: relative;
   top: 8px;
-  right: 2rem;
+  right: 3rem;
 }
 
 .sign-up-privacy-policy {

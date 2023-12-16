@@ -12,10 +12,12 @@
   </head>
 
   <body onload="init()">
-    <img class="log-in-head-img" src="../assets/icons/log-in-join.svg" />
+
+<div class="logo-animation"><img id="logo-animated" src="../assets/icons/join-logo.svg"></div>
+
     <div class="log-in-sign-up center">
       <p>Not a Join user?</p>
-      <button class="log-in-sign-up-button pointer">Sign up</button>
+      <a class="log-in-sign-up-link" href="../html/sign-up.html"><button class="log-in-sign-up-button pointer">Sign up</button></a>
     </div>
 
     <div class="log-in-content center">
@@ -23,16 +25,15 @@
 <div class="log-in-title">Log in</div>
 
     <div class="log-in-inputs">
-      <form><input class="log-in-field pointer" required type="text" placeholder="Email"><img class="log-in-mail-lock-icon" src="../assets/icons/mail.svg"></form>
-      <form><input class="log-in-field pointer" required type="text" placeholder="Password"><img class="log-in-mail-lock-icon" src="../assets/icons/lock.svg"></form>
-
+      <form><input class="log-in-field pointer" required type="text" placeholder="Email"><img class="log-in-mail-lock-icon" src="../assets/icons/mail.png"></form>
+      <form><input class="log-in-field pointer" required type="text" placeholder="Password"><img class="log-in-mail-lock-icon" src="../assets/icons/lock.png"></form>
     </div>
 
     <div class="log-in-remember-me"><div class="log-in-checkbox pointer"></div><p>Remember me</p></div>
 
     <div class="log-in-login-buttons">
     <div class="log-in-login-button pointer">Log in</div>
-    <div class="log-in-guestlogin-button pointer">Guest Log in</div>
+    <a class="log-in-guestlogin-link" href="../html/summary.html"><div class="log-in-guestlogin-button pointer">Guest Log in</div></a>
     </div>
 
     </div>
@@ -41,7 +42,7 @@
       <a class="log-in-privacy" href="../html/privacy.html">Privacy Policy</a>
       <a class="log-in-legal" href="../html/legal.html">Legal notice</a>
     </div>
-
+  
     <script src="../script/login.js"></script>
   </body>
 </html>
