@@ -1,8 +1,8 @@
 async function init() {
   displayHidden();
   logoAnimation();
- 
 }
+
 
 function logoAnimation() {
   const logo = document.getElementById("logo-animated");
@@ -13,10 +13,13 @@ function logoAnimation() {
 
 
 function displayHidden() {
-  let logo = document.getElementById("logo-animated");
-  logo.style.visibility = "visible";
+  let hidden1 = document.querySelector(".log-in-content");
+  let hidden2 = document.querySelector(".log-in-sign-up");
+  let hidden3 = document.querySelector(".log-in-links");
 
   setTimeout(function () {
-    document.body.style.visibility = "visible";
+    hidden1.style.opacity = 1;
+    hidden2.style.opacity = 1;
+    hidden3.style.opacity = 1;
   }, 1500);
 }

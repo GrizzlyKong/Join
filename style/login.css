@@ -5,7 +5,6 @@ body {
   justify-content: center;
   align-items: center;
   background-color: rgb(246, 247, 248);
-visibility: hidden;
 }
 
 .center {
@@ -61,6 +60,8 @@ visibility: hidden;
   top: 7vh;
   right: 10vw;
   gap: 32px;
+  opacity: 0;
+  opacity: 1.5s ease;
 }
 
 .log-in-sign-up p {
@@ -93,6 +94,8 @@ visibility: hidden;
   position: relative;
   top: 90vh;
   font-size: 20px;
+  opacity: 0;
+  opacity: 1.5s ease;
 }
 
 .log-in-privacy,
@@ -118,6 +121,8 @@ visibility: hidden;
   border-width: 0;
   border-style: solid;
   background-color: white;
+  opacity: 0;
+  opacity: 1.5s ease;
   box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
 }
 
@@ -215,6 +220,11 @@ visibility: hidden;
 .log-in-login-button:hover {
   background-color: rgb(41, 171, 226);
   box-shadow: 0 10px 10px rgba(0, 0, 0, 0.2);
+}
+
+.log-in-guestlogin-link,
+.log-in-sign-up-link {
+  text-decoration: none;
 }
 
 .log-in-guestlogin-button {
