@@ -1,4 +1,4 @@
-const STORAGE_TOKEN = 'NBZULW333XMNBK2G8I6XU4NQSQSP4I72EP4JOU73';
+const STORAGE_TOKEN = 'ITQSL49VK4O8L2ONKD294JTET8G6Z1UYQS8R3YLV';
 const STORAGE_URL = 'https://remote-storage.developerakademie.org/item';
 
 async function init() {
@@ -6,7 +6,6 @@ async function init() {
   logoAnimation();
 }
 
-<<<<<<< HEAD
 async function setItem(key, value) {
     const payload = { key:key, value:value, token: STORAGE_TOKEN }
     return fetch(STORAGE_URL, { method: 'POST', body: JSON.stringify(payload) })
@@ -18,12 +17,6 @@ async function getItem(key) {
     return fetch(url).then(res => res.json()).then(res => res.data.value);
 }
 
-=======
-/**
- * 
- * 
- */
->>>>>>> 107770c7743b2fc56bb2982c4f4250830819433f
 function logoAnimation() {
   const logo = document.getElementById("logo-animated");
   setTimeout(() => {
