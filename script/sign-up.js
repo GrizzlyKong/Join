@@ -1,4 +1,4 @@
-const STORAGE_TOKEN = 'ITQSL49VK4O8L2ONKD294JTET8G6Z1UYQS8R3YLV';
+const STORAGE_TOKEN = 'IERAZ45ALP69LJDHZRE92P08UNZWREH3PNPEJ1LG';
 const STORAGE_URL = 'https://remote-storage.developerakademie.org/item';
 let users = [];
 
@@ -7,7 +7,7 @@ async function init() {
 }
 
 async function loadUsers() {
-    users = await getItem('users');
+    users = await getItem('users')
 }
 
 async function register() {
