@@ -6,6 +6,7 @@ async function init() {
   logoAnimation();
 }
 
+<<<<<<< HEAD
 async function setItem(key, value) {
     const payload = { key:key, value:value, token: STORAGE_TOKEN }
     return fetch(STORAGE_URL, { method: 'POST', body: JSON.stringify(payload) })
@@ -17,6 +18,12 @@ async function getItem(key) {
     return fetch(url).then(res => res.json()).then(res => res.data.value);
 }
 
+=======
+/**
+ * 
+ * 
+ */
+>>>>>>> 107770c7743b2fc56bb2982c4f4250830819433f
 function logoAnimation() {
   const logo = document.getElementById("logo-animated");
   setTimeout(() => {
