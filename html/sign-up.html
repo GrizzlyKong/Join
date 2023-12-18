@@ -1,62 +1,71 @@
 <!DOCTYPE html>
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 
-    <title>Join</title>
-    <link rel="stylesheet" href="../style/sign-up.css"/>
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 
-    <title>Sign up</title>
-    <link rel="stylesheet" href="../style/login.css"/>
+  <title>Join</title>
+  <link rel="stylesheet" href="../style/sign-up.css" />
+
+  <title>Sign up</title>
+  <link rel="stylesheet" href="../style/login.css" />
 
 
-    <link rel="icon" type="image/x-icon" href="../assets/icons/favicon.png"/>
-  </head>
+  <link rel="icon" type="image/x-icon" href="../assets/icons/favicon.png" />
+</head>
 
-  <body onload="init()">
+<body onload="init()">
 
-    <div class="sign-up-sign-up center">
+  <div class="sign-up-sign-up center">
     <button class="sign-up-sign-up-button2 pointer">You Signed Up successfully</button>
   </div>
 
-    <div class="sign-up-content center">
+  <div class="sign-up-content center">
 
-      <a href="../html/login.html"><div class="sign-up-title"><img class="arrow-left-line" src="../assets/icons/arrow-left-line.svg"></a>Sign up</div>
-      
-      <form class="sign-up-inputs">
-        <div>
-          <input class="sign-up-field pointer" required type="text" placeholder="Name">
-          <img class="sign-up-mail-lock-icon" src="../assets/icons/person.png">
-        </div>
-      
-        <form>
-          <input class="sign-up-field pointer" required type="text" placeholder="Email">
-          <img class="sign-up-mail-lock-icon" src="../assets/icons/mail.png">
-        </div>
-      
-        <form>
-          <input class="sign-up-field pointer" required type="text" placeholder="Password">
-          <img class="sign-up-mail-lock-icon" src="../assets/icons/lock.png">
-        </div>
-      
-        <form>
-          <input class="sign-up-field pointer" required type="text" placeholder="Confirm Password">
-          <img class="sign-up-mail-lock-icon" src="../assets/icons/lock.png">
-        </div>
-      </form>
-      
-          <div class="sign-up-privacy-policy"><div class="sign-up-checkbox pointer"></div><p>I accept the <span class="sign-up-privacy-policy-span">Privacy policy</span></p></div>
-    
-          <div class="sign-up-login-buttons">
-          <button id="registerBtn" class="sign-up-sign-up-button pointer">Sign up</button>
-          </div>
-      
-          </div>
+    <a href="../html/login.html">
+      <div class="sign-up-title"><img class="arrow-left-line" src="../assets/icons/arrow-left-line.svg">
+    </a>Sign up
+  </div>
 
-    <script src="../script/sign-up.js"></script>
-  </body>
+  <form class="sign-up-inputs center">
+    <div>
+      <input class="sign-up-field pointer" required type="text" placeholder="Name">
+      <img class="sign-up-mail-lock-icon" src="../assets/icons/person.png">
+    </div>
+
+    <div>
+      <input class="sign-up-field pointer" required type="email" placeholder="Email">
+      <img class="sign-up-mail-lock-icon" src="../assets/icons/mail.png">
+    </div>
+
+    <div>
+      <input class="sign-up-field pointer" required type="password" placeholder="Password">
+      <img class="sign-up-mail-lock-icon" src="../assets/icons/lock.png">
+    </div>
+
+    <div>
+      <input class="sign-up-field pointer" required type="password" placeholder="Confirm Password">
+      <img class="sign-up-mail-lock-icon" src="../assets/icons/lock.png">
+    </div>
+
+    <div class="sign-up-privacy-policy">
+      <div class="sign-up-checkbox pointer"></div>
+      <p>I accept the <span class="sign-up-privacy-policy-span">Privacy policy</span></p>
+    </div>
+
+    <div class="sign-up-login-buttons">
+      <button id="registerBtn" class="sign-up-sign-up-button pointer">Sign up</button>
+    </div>
+
+  </form>
+
+  </div>
+
+  <script src="../script/sign-up.js"></script>
+</body>
+
 </html>

@@ -293,6 +293,8 @@ body {
 }
 
 .sign-up-content {
+  padding-top: 16px;
+  padding-bottom: 16px;
   position: absolute;
   top: 13vh;
   width: 550px;
@@ -375,7 +377,6 @@ body {
 .sign-up-login-buttons {
   display: flex;
   gap: 24px;
-  padding-top: 2vh;
   position: relative;
   top: 6vh;
 }
@@ -424,6 +425,7 @@ body {
 }
 
 .sign-up-privacy-policy p {
+  margin: 0 !important;
   color: rgb(209, 209, 209);
 }
 
@@ -444,6 +446,7 @@ body {
 .arrow-left-line {
   position: absolute;
   right: 150%;
+  top: 25%;
 }
 
 .arrow-left-line:hover {

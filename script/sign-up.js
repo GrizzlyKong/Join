@@ -3,22 +3,24 @@ const STORAGE_URL = 'https://remote-storage.developerakademie.org/item';
 let users = [];
 
 async function init() {
+    loadUsers();
+}
 
+async function loadUsers() {
+    users
 }
 
 async function register() {
-    let registerBtn = document.getElementById('registerBtn');
     registerBtn.disabled = true;
     users.push({
         email: email.value,
         password: password.value
-    })
+    });
 
-
-    
-    resetForm();
+    setItem('users', JSON.stringify(users));
+    resetForm(registerBtn);
 }
-function resetForm() {
+function resetForm(registerBtn) {
     email.value = '';
     password.value = '';
     registerBtn.disabled = false;
