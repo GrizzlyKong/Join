@@ -3,7 +3,10 @@ async function init() {
   logoAnimation();
 }
 
-
+/**
+ * 
+ * 
+ */
 function logoAnimation() {
   const logo = document.getElementById("logo-animated");
   setTimeout(() => {
