@@ -51,7 +51,7 @@ async function register() {
   pushUsers();
   await setItem("users", JSON.stringify(users));
   resetForm();
-/*   location.replace("../html/summary.html"); */
+  location.replace("../html/summary.html"); 
 }
 
 function pushUsers() {

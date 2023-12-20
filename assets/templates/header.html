@@ -19,13 +19,20 @@
   <header>
     <p>Kanban Project Management Tool</p>
     <div class="nav-bar">
-      <a class="decoration-none" href="/html/help.html"><img class="help-button pointer" src="../assets/icons/help.png"></a>
-      <span class="user-profiles pointer">G</span>
+      <a class="decoration-none" href="/html/help.html"><img class="help-button pointer" src="../icons/help.png"></a>
+      <div class="dropdown">
+        <button onclick="ProfileDropdown()" class="dropbtn">G</button>
+        <div id="myDropdown" class="dropdown-content">
+          <a href="#home">Legal Notice</a>
+          <a href="#about">Privacy Policy</a>
+          <a href="#contact">Log out</a>
+        </div>
+      </div>
     </div>
   </header>
 
 
-  <script src="../script/header.js"></script>
+  <script src="/script/header.js"></script>
 </body>
 
 </html>
