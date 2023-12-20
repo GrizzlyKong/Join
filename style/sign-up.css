@@ -1,0 +1,19 @@
+.body{
+    background-color: rgb(0, 0, 0,0.2);
+}
+.blur{
+    filter: blur(3px);
+}
+.sign-up-animation { 
+    animation: move-from-bottom 2s forwards;
+    z-index: 1 !important;
+  }
+
+@keyframes move-from-bottom {
+    0% {
+      transform: translateY(600px);
+    }
+    100% {
+      transform: translateY(500px);
+    }
+  }

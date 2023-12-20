@@ -13,37 +13,30 @@
 
   <body onload="init()">
 
-<div class="logo-animation"><img id="logo-animated" src="../assets/icons/join-logo.svg"></div>
+<div id="logo-anime" class="logo-animation"><img id="logo-animated" src="../assets/icons/join-logo.svg"></div>
 
     <div class="log-in-sign-up center">
       <p>Not a Join user?</p>
       <a class="log-in-sign-up-link" href="../html/sign-up.html"><button class="log-in-sign-up-button pointer">Sign up</button></a>
     </div>
 
-    <div class="log-in-content center">
+    <div id="log-in-content-id" class="log-in-content center">
 
 <div class="log-in-title">Log in</div>
 
-<<<<<<< HEAD
     <div class="log-in-inputs">
-      <form><input class="log-in-field pointer" required type="email" placeholder="Email"><img class="log-in-mail-lock-icon" src="../assets/icons/mail.png"></form>
-      <form><input class="log-in-field pointer" required type="password" placeholder="Password"><img class="log-in-mail-lock-icon" src="../assets/icons/lock.png"></form>
-    </div>
-=======
-    <form class="log-in-inputs">
-      <div><input class="log-in-field pointer" required type="text" placeholder="Email"><img class="log-in-mail-lock-icon" src="../assets/icons/mail.png"></div>
-      <div><input class="log-in-field pointer" required type="text" placeholder="Password"><img class="log-in-mail-lock-icon" src="../assets/icons/lock.png"></div>
+      <form onsubmit="register(); return false;"><input id="email" class="log-in-field pointer" required type="email" placeholder="Email"><img class="log-in-mail-lock-icon" src="../assets/icons/mail.png">
+      <input id="password" class="log-in-field pointer" required type="password" placeholder="Password"><img class="log-in-mail-lock-icon" src="../assets/icons/lock.png">
+      <div class="log-in-remember-me"><div class="log-in-checkbox pointer"></div><p>Remember me</p></div>
+
+      <div class="log-in-login-buttons">
+      <button id="registerBtn2" class="log-in-login-button pointer">Log in</button>
+      <a class="log-in-guestlogin-link" href="../html/summary.html"><div class="log-in-guestlogin-button pointer">Guest Log in</div></a>
+      </div>
     </form>
->>>>>>> 107770c7743b2fc56bb2982c4f4250830819433f
-
-    <div class="log-in-remember-me"><div class="log-in-checkbox pointer"></div><p>Remember me</p></div>
-
-    <div class="log-in-login-buttons">
-    <div class="log-in-login-button pointer">Log in</div>
-    <a class="log-in-guestlogin-link" href="../html/summary.html"><div class="log-in-guestlogin-button pointer">Guest Log in</div></a>
     </div>
 
-    </div>
+
 
     <div class="log-in-links center">
       <a class="log-in-privacy" href="../html/privacy.html">Privacy Policy</a>

@@ -5,6 +5,7 @@ body {
   justify-content: center;
   align-items: center;
   background-color: rgb(246, 247, 248);
+  margin: 0 !important;
 }
 
 .center {
@@ -30,6 +31,10 @@ body {
 }
 .pointer {
   cursor: pointer;
+}
+
+.zIndex{
+  z-index: 0 !important;
 }
 
 .logo-animation {
@@ -112,6 +117,10 @@ body {
 .log-in-legal:hover {
   font-weight: bold;
   color: rgb(41, 171, 226);
+}
+
+.zIndex2{
+  z-index: 12;
 }
 
 .log-in-content {
@@ -258,8 +267,6 @@ body {
 
 .sign-up-sign-up {
   position: absolute;
-  top: 7vh;
-  right: 10vw;
   gap: 32px;
 }
 
@@ -284,8 +291,9 @@ body {
   border: 1px;
   border-radius: 10px;
   display: flex;
-  width: 220px;
-  height: 50px;
+  width: 312px;
+  height: 74px;
+  font-size: 21px;
   justify-content: center;
   align-items: center;
   gap: 16px;
