@@ -172,9 +172,12 @@ body {
 }
 
 /* Task-Card */
-
+.position-relative{
+  position: relative;
+}
 .board-task-card {
   position: absolute;
+  margin-top: 16px;
   top: 0;
   background-color: white;
   display: flex;
