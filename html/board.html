@@ -14,11 +14,12 @@
 
 </head>
 
-<body onload="init()">
+<body class="" id="body" onload="init()">
+  <div id="board-div">
   <div w3-include-html="../assets/templates/header.html"></div>
   <div w3-include-html="../assets/templates/menu.html"></div>
 
-  <div class="board">
+  <div class="board" id="board-id">
 
 
     <div class="board-title">
@@ -40,7 +41,7 @@
           <span>To do</span>
           <div class="images">
             <img class="board-column-title-img" src="../assets/icons/plusButton.svg">
-            <img class="board-column-title-img2 d-none" src="../assets/icons/plusButton2.svg">
+            <img onclick="addTask()" class="board-column-title-img2 d-none" src="../assets/icons/plusButton2.svg">
           </div>
         </div>
         <div class="board-column-empty">No tasks To Do</div>
@@ -65,6 +66,7 @@
 
       <!-- Task-Card -->
       
+
 
       <!---->
 
@@ -99,8 +101,16 @@
 
   </div>
 
+
+</div>
+  <div id="add-task" class="add-tasks-whole-div d-none center column">
+          
+  </div>
+
+
+
   <script src="../script/header.js"></script>
-  <script src="../script/board.js"></script>
+  <script src="/script/board.js"></script>
 </body>
 
 </html>
