@@ -1,73 +1,86 @@
 <!DOCTYPE html>
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <title>Contacts</title>
-    <link rel="stylesheet" href="/style/contacts.css" />
-    <link rel="icon" type="image/x-icon" href="../assets/icons/favicon.png" />
-  </head>
-  <body onload="init()">
-    <div w3-include-html="../assets/templates/header.html"></div>
-    <div w3-include-html="../assets/templates/menu.html"></div>
 
-    <div class="contacts">
-      <div id="contactsMenu">
-        <div class="primary-contact pointer">
-          Add new contact <img src="/assets/icons/person_add.png" />
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <title>Contacts</title>
+  <link rel="stylesheet" href="/style/contacts.css" />
+  <link rel="icon" type="image/x-icon" href="../assets/icons/favicon.png" />
+</head>
+
+<body onload="init()">
+  <div id="contacts-div">
+  <div w3-include-html="../assets/templates/header.html"></div>
+  <div w3-include-html="../assets/templates/menu.html"></div>
+
+  <div class="contacts">
+    <div id="contactsMenu">
+      <div onclick="addNewContact()" class="primary-contact pointer">
+        Add new contact <img src="/assets/icons/person_add.png" />
+      </div>
+      <div class="letter-contacts">
+        <p>M</p>
+      </div>
+      <div class="added-contact pointer">
+        <div class="primary-contact-icon-container">
+          <div class="added-contact-icon">M</div>
         </div>
-        <div class="letter-contacts"><p>M</p></div>
-        <div class="added-contact pointer">
-          <div class="primary-contact-icon-container">
-            <div class="added-contact-icon">M</div>
-          </div>
-          <div class="moveRight">
-            <p>Max Mustermann</p>
-            <a class="contact-link">max.mustermann@muster.com</a>
-          </div>
+        <div class="moveRight">
+          <p>Max Mustermann</p>
+          <a class="contact-link">max.mustermann@muster.com</a>
         </div>
       </div>
-      <div id="contactsLayout">
-        <div class="contacts-title">
-          <div class="contacts-title-head">Contacts</div>
-          <div class="contacts-title-text">Better with a team</div>
+    </div>
+    <div id="contactsLayout">
+      <div class="contacts-title">
+        <div class="contacts-title-head">Contacts</div>
+        <div class="contacts-title-text">Better with a team</div>
+      </div>
+    </div>
+
+    <div id="contact-info">
+      <div class="contact-info-column">
+        <div class="contact-info-head">
+          <div class="contact-info-icon">M</div>
+
+          <div class="moveRightadnDown">
+            <p class="contact-info-name">Max Mustermann</p>
+            <span>
+              <p class="edit pointer"><img src="/assets/icons/edit.png">Edit</p>
+              <p class="delete pointer"><img src="/assets/icons/delete.png">Delete</p>
+            </span>
+          </div>
         </div>
+        <div class="contact-information">Contact Information</div>
+
+        <div class="contact-information-details">
+          <p>Email</p>
+          <a class="contact-link">max.mustermann@muster.com</a>
+          <p>Phone</p>
+          <span>+49 1111 11 111 1</span>
+        </div>
+
       </div>
 
-<div id="contact-info">
-  <div class="contact-info-column">
-    <div class="contact-info-head">
-      <div class="contact-info-icon">M</div>
-    
-    <div class="moveRightadnDown">
-      <p class="contact-info-name">Max Mustermann</p>
-      <span>
-        <p class="edit pointer"><img src="/assets/icons/edit.png">Edit</p>
-        <p class="delete pointer"><img src="/assets/icons/delete.png">Delete</p>
-      </span>
-    </div>
-  </div>
-<div class="contact-information">Contact Information</div>
-
-<div class="contact-information-details">
-  <p>Email</p>
-  <a class="contact-link">max.mustermann@muster.com</a>
-  <p>Phone</p>
-  <span>+49 1111 11 111 1</span>
-</div>
-
-  </div>
-
-
-</div>
 
     </div>
 
-    <script src="../script/contacts.js"></script>
+  </div>
+</div>
+
+  <div id="add-new-contact" class="addnew d-none center absolute">
+
+  </div>
+  <script src="../script/contacts.js"></script>
   <script src="../script/header.js"></script>
-    
-  </body>
+
+
+
+
+</body>
+
 </html>
