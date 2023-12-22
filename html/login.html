@@ -24,13 +24,14 @@
 
 <div class="log-in-title">Log in</div>
 
-    <div class="log-in-inputs">
-      <form onsubmit="register(); return false;"><input id="email" class="log-in-field pointer" required type="email" placeholder="Email"><img class="log-in-mail-lock-icon" src="../assets/icons/mail.png">
-      <input id="password" class="log-in-field pointer" required type="password" placeholder="Password"><img class="log-in-mail-lock-icon" src="../assets/icons/lock.png">
+    <form onsubmit="login(); return false;" class="log-in-inputs">
+      <div><input id="loginEmail" class="log-in-field pointer" required type="email" placeholder="Email"><img class="log-in-mail-lock-icon" src="../assets/icons/mail.png"></div>
+      <div><input id="loginPassword" class="log-in-field pointer" required type="password" placeholder="Password"><img class="log-in-mail-lock-icon" src="../assets/icons/lock.png"></div>
+    
       <div class="log-in-remember-me"><div class="log-in-checkbox pointer"></div><p>Remember me</p></div>
 
       <div class="log-in-login-buttons">
-      <button id="registerBtn2" class="log-in-login-button pointer">Log in</button>
+      <button type="submit" id="registerBtn2" class="log-in-login-button pointer">Log in</button>
       <a class="log-in-guestlogin-link" href="../html/summary.html"><div class="log-in-guestlogin-button pointer">Guest Log in</div></a>
       </div>
     </form>
@@ -43,6 +44,7 @@
       <a class="log-in-legal" href="../html/legal.html">Legal notice</a>
     </div>
   
+    <script src="../script/storage.js"></script>
     <script src="../script/login.js"></script>
     
   </body>

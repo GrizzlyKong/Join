@@ -1,5 +1,3 @@
-let users = [];
-
 async function init() {
   loadUsers();
 }
@@ -13,11 +11,6 @@ async function loadUsers() {
 }
 
 async function register() {
-  let name1 = document.getElementById("name1");
-  let email1 = document.getElementById("email1");
-  let password1 = document.getElementById("password1");
-  let passwordConfirm = document.getElementById("passwordConfirm");
-  registerBtn.disabled = true;
   pushUsers();
   await setItem("users", JSON.stringify(users));
   resetForm();
@@ -39,17 +32,16 @@ function SignedUpSuccessfully() {
 
 function pushUsers() {
   users.push({
-    name: name1.value,
-    email: email1.value,
-    password: password1.value,
+    name: username.value,
+    email: email.value,
+    password: password.value,
     passwordConfirm: passwordConfirm.value,
   });
 }
 
 function resetForm() {
-  name1.value = "";
-  email1.value = "";
-  password1.value = "";
+  username.value = "";
+  email.value = "";
+  password.value = "";
   passwordConfirm.value = "";
-  registerBtn.disabled = false;
 }
