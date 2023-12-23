@@ -28,8 +28,11 @@
       <div><input id="loginEmail" class="log-in-field pointer" required type="email" placeholder="Email"><img class="log-in-mail-lock-icon" src="../assets/icons/mail.png"></div>
       <div><input id="loginPassword" class="log-in-field pointer" required type="password" placeholder="Password"><img class="log-in-mail-lock-icon" src="../assets/icons/lock.png"></div>
     
-      <div class="log-in-remember-me"><div class="log-in-checkbox pointer"></div><p>Remember me</p></div>
-
+      <div class="log-in-remember-me">
+        <input type="checkbox" id="remember-me-checkbox" class="log-in-checkbox pointer">
+        <label for="remember-me-checkbox">Remember me</label>
+    </div>
+    
       <div class="log-in-login-buttons">
       <button type="submit" id="registerBtn2" class="log-in-login-button pointer">Log in</button>
       <a class="log-in-guestlogin-link" href="../html/summary.html"><div class="log-in-guestlogin-button pointer">Guest Log in</div></a>
@@ -37,6 +40,7 @@
     </form>
     </div>
 
+    <div id="ifInvalid"></div>
 
     <div class="log-in-links center">
       <a class="log-in-privacy" href="../html/privacy.html">Privacy Policy</a>

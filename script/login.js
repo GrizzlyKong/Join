@@ -2,6 +2,7 @@ async function init() {
   await loadUsers();
   displayHidden();
   logoAnimation();
+  loginForm(users);
 }
 
 
@@ -34,17 +35,63 @@ async function loadUsers() {
   }
 }
 
+
 async function login() {
   await loadUsers();
-  const email = document.getElementById('loginEmail').value;
-  const password = document.getElementById('loginPassword').value;
+  const emailInput = document.getElementById('loginEmail');
+  const passwordInput = document.getElementById('loginPassword');
+  const invalidUserData = document.getElementById('ifInvalid');
+  const email = emailInput.value;
+  const password = passwordInput.value;
+  const checkbox = document.getElementById('remember-me-checkbox');
 
   const user = users.find(u => u.email === email && u.password === password);
-
+  invalidUserData.innerHTML = '';
+  emailInput.style.borderColor = '';
+  passwordInput.style.borderColor = '';
+  
   if (user) {
+    if (checkbox.checked) {
+      localStorage.setItem('rememberedEmail', email);
+      localStorage.setItem('rememberedPassword', password);
+    } else {
+
+      localStorage.removeItem('rememberedEmail');
+      localStorage.removeItem('rememberedPassword');
+    }
+
     location.replace("../html/summary.html");
   } else {
-    console.log('Invalid email or password');
+    showInvalidUserData(invalidUserData, emailInput, passwordInput);
   }
 }
 
+
+function showInvalidUserData(invalidUserData, emailInput, passwordInput) {
+  invalidUserData.innerHTML += /* HTML */ `
+    <div class="invalid-data">Invalid email or password</div>
+  `;
+  emailInput.style.borderColor = "red";
+  passwordInput.style.borderColor = "red";
+}
+
+
+function loginForm(users) {
+  const emailInput = document.getElementById('loginEmail');
+  const passwordInput = document.getElementById('loginPassword');
+  const rememberCheckbox = document.getElementById('remember-me-checkbox');
+
+  const rememberedEmail = localStorage.getItem('rememberedEmail');
+  const rememberedPassword = localStorage.getItem('rememberedPassword');
+  rememberCheckbox.checked = true;
+
+  emailInput.addEventListener('change', () => {
+    const selectedEmail = emailInput.value;
+    const user = users.find(u => u.email === selectedEmail);
+    if (user) {
+      passwordInput.value = user.password;
+    } else {
+      passwordInput.value = '';
+    }
+  });
+}

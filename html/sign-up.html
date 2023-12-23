@@ -41,22 +41,25 @@
     </div>
 
     <div>
-      <input id="password" class="sign-up-field pointer" required type="password" placeholder="Password">
+      <input id="password" class="sign-up-field pointer" required type="password" minlength="6" placeholder="Password">
       <img class="sign-up-mail-lock-icon" src="../assets/icons/lock.png">
+      <div id="passwordLengthError" class="error-min-characters"></div>
     </div>
 
     <div>
-      <input id="passwordConfirm" class="sign-up-field pointer" required type="password" placeholder="Confirm Password">
+      <input id="passwordConfirm" class="sign-up-field pointer" required type="password" minlength="6" placeholder="Confirm Password">
       <img class="sign-up-mail-lock-icon" src="../assets/icons/lock.png">
     </div>
 
-    <div class="sign-up-privacy-policy">
-      <div class="sign-up-checkbox pointer"></div>
-      <p>I accept the <span class="sign-up-privacy-policy-span">Privacy policy</span></p>
-    </div>
+    <div class="sign-up-checkbox-and-button column center">
+      <div class="sign-up-privacy-policy">
+        <input id="privacyCheckbox" type="checkbox" class="sign-up-checkbox pointer">
+        <p>I accept the <span class="sign-up-privacy-policy-span">Privacy policy</span></p>
+      </div>
 
     <div class="sign-up-login-buttons">
       <button id="registerBtn" class="sign-up-sign-up-button pointer">Sign up</button>
+    </div>
     </div>
 
   </form>
