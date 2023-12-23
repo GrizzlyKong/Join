@@ -1,5 +1,5 @@
 body {
-  overflow-y: hidden;
+/*   overflow-y: hidden; */
   overflow-x: hidden;
 }
 
@@ -192,10 +192,14 @@ body {
 .position-relative{
   position: relative;
 }
+.dragging{
+  background-color: #29abe2;
+  min-height: 1000px;
+  width: auto;
+  height: auto;
+}
 .board-task-card {
-  position: absolute;
   margin-top: 16px;
-  top: 0;
   background-color: white;
   display: flex;
   flex-direction: column;
@@ -288,7 +292,7 @@ body {
   margin-top: 50px;
   padding: 64px;
   border-radius: 30px;
-  position: absolute;
+  position: fixed;
   top: 100px;
   left:200px;
   background-color: white;
