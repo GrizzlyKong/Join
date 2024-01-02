@@ -104,7 +104,7 @@ function addTask() {
           <img class="cancel1" src="/assets/icons/cancel.svg" alt="">
           <img class="cancel2 d-none" src="/assets/icons/cancel2.svg" alt="">
         </div>
-        <div class="create-task pointer center">
+        <div onclick ="addTodo()" class="create-task pointer center">
           <span>Create Task</span>
           <img src="/assets/icons/check.svg" alt="">
         </div>
@@ -117,4 +117,45 @@ function addTask() {
     
 function closeAddTodo() {
   document.getElementById("add-task").classList.add("d-none");
+}
+
+let todos = [{
+  "id": 0,
+  "title": "Einkaufen",
+  "description": "Mehl, Salz, Zucker, Milch",
+  "assignedto": "Nick Pavlov",
+  "duodate": "22.12.2023",
+  "prio": "urgent",
+  "category": "User Story",
+  "Subtasks": "tanken",
+}, {
+  "id": 1,
+  "title": "Kochen",
+  "description": "Pasta",
+  "assignedto": "Nick Pavlov",
+  "duodate": "22.12.2023",
+  "prio": "urgent",
+  "category": "User Story",
+  "Subtasks": "salat machen",
+}];
+
+function addTodo() {
+  document.getElementById("add-task").classList.add("d-none");
+  document.getElementById('dragging').innerHTML += `
+  <div class="board-task-card pointer">
+            <div class="board-task-card-title">User story</div>
+            <div class="board-task-card-description">Kochwelt Page & Recipe Recommender</div>
+            <div class="board-task-card-task">tekst blablablablablabla</div>
+            <div class="board-task-card-subtasks">
+              <div class="board-task-card-subtasks-bar">
+                <div class="bar-fill" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
+              </div>
+              <div class="board-task-card-subtasks-amount"></div>1/2 Subtasks
+            </div>
+            <div class="board-task-card-users">
+              <div class="board-task-card-users-amount">M</div>
+              <div class="board-task-card-priority"><img src="../assets/icons/medium-prio.png"></div>
+            </div>
+          </div>
+  `;
 }
