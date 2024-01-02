@@ -1,6 +1,7 @@
 async function init() {
-  await includeHTML();
+await includeHTML();
 }
+
 
 async function includeHTML() {
   let includeElements = document.querySelectorAll("[w3-include-html]");
@@ -16,12 +17,13 @@ async function includeHTML() {
   }
 }
 
+
 function addNewContact() {
   let newContact = document.getElementById("add-new-contact");
   document.getElementById("contacts-div").classList.add("background");
   document.getElementById("add-new-contact").classList.add("sign-up-animation");
   document.getElementById("add-new-contact").classList.remove("d-none");
-  newContact.innerHTML = `
+  newContact.innerHTML = /*HTML*/ ` 
   <div id="add-new-contact-id" class="addNewContactDiv">
     <div class ="left-side-add-contact column">
       <div><img src="/assets/icons/logo.svg"></div>
@@ -30,43 +32,118 @@ function addNewContact() {
       <div class="line"></div>
     </div>
     <div class = "right-side-add-contact">
-    <img onclick="closeAddContact()" class="close absolute pointer" src="/assets/icons/close.svg">
+      <img onclick="closeAddContact()" class="close absolute pointer" src="/assets/icons/close.svg">
       <div class = "account center">
-        <div>NP</div>
+        <div class="adding-contact-icon"><img src="/assets/icons/person.png"></div>
       </div>
       <div>
-        <form onsubmit="" ; return false;" >
-        <div class="form-contacs">
-          <div class="center"><input id="email" class="log-in-field column center pointer" required type="email" placeholder="Email"><img
-            class="log-in-mail-lock-icon" src="../assets/icons/mail.png"></div>
-          <div class="center"><input id="password" class="log-in-field column center pointer" required type="password" placeholder="Password"><img
-            class="log-in-mail-lock-icon" src="../assets/icons/lock.png"></div>
-          <div class="center"><input id="password" class="log-in-field column center pointer" required type="password" placeholder="Password"><img
-            class="log-in-mail-lock-icon" src="../assets/icons/lock.png"></div>
+        <form onsubmit="return false;">
+          <div class="form-contacs">
+            <div class="center"><input id="contactNameInput" class="log-in-field column center pointer" required type="text" placeholder="Name"><img
+              class="log-in-mail-lock-icon" src="../assets/icons/person-small.png"></div>
+            <div class="center"><input id="contactEmailInput" class="log-in-field column center pointer" required type="email" placeholder="Email"><img
+              class="log-in-mail-lock-icon" src="../assets/icons/mail.png"></div>
+            <div class="center"><input id="contactPhoneInput" class="log-in-field column center pointer" required type="number" placeholder="Phone"><img
+              class="log-in-mail-lock-icon" src="../assets/icons/call.png"></div>
           </div>
           <div class="right-bottom">
-          <div class="clear-and-create-task">
-            <div class="clear pointer center">
-              <span>Clear</span>
-              <img class="cancel1" src="/assets/icons/cancel.svg" alt="">
-              <img class="cancel2 d-none" src="/assets/icons/cancel2.svg" alt="">
-            </div>
-            <div class="create-task pointer center">
-              <span>Create Task</span>
-              <img src="/assets/icons/check.svg" alt="">
+            <div class="clear-and-create-task">
+              <div class="clear pointer center" onclick="clearInputAddingContact()">
+                <span>Clear</span>
+                <img class="cancel1" src="/assets/icons/cancel.svg" alt="">
+                <img class="cancel2 d-none" src="/assets/icons/cancel2.svg" alt="">
+              </div>
+              <div class="create-task pointer center" onclick="addingContact()">
+                <span>Create contact</span>
+                <img src="/assets/icons/check.svg" alt="">
+              </div>
             </div>
           </div>
-        </div>
         </form>
       </div>
     </div>
   </div>
   `;
+
+
+  const newContactElement = document.createElement("div");
+  newContactElement.className = "added-contact pointer";
+  newContactElement.onclick = showContact;
+  newContactElement.innerHTML = `
+    <div class="primary-contact-icon-container">
+      <div class="added-contact-icon"></div>
+    </div>
+    <div class="moveRight">
+      <p></p>
+      <a class="contact-link"></a>
+    </div>
+  `;
 }
+
+
+function clearInputAddingContact() {
+  document.getElementById("contactNameInput").value = "";
+  document.getElementById("contactEmailInput").value = "";
+  document.getElementById("contactPhoneInput").value = "";
+}
+
+
+function addingContact() {
+  const name = document.getElementById("contactNameInput").value;
+  const email = document.getElementById("contactEmailInput").value;
+  const phone = document.getElementById("contactPhoneInput").value;
+
+  if (!name || !email || !phone) {
+    alert("Please fill in all fields before creating a contact.");
+    return;
+  }
+
+  const newContactElement = document.createElement("div");
+  newContactElement.className = "added-contact pointer";
+  newContactElement.onclick = showContact;
+
+  newContactElement.innerHTML = `
+    <div class="primary-contact-icon-container">
+      <div class="added-contact-icon">${name.charAt(0)}</div>
+    </div>
+    <div class="moveRight">
+      <p>${name}</p>
+      <a class="contact-link">${email}</a>
+    </div>
+  `;
+
+  const contactsMenu = document.getElementById("contactsMenu");
+  contactsMenu.insertBefore(newContactElement, contactsMenu.childNodes[2]); // Insert at the third position
+
+  updateLetterContacts(name.charAt(0));
+  clearInputAddingContact();
+  closeAddContact();
+}
+
+
+function updateLetterContacts(firstLetter) {
+  const contactsMenu = document.getElementById("contactsMenu");
+  const existingLetterContacts = document.querySelector(`.letter-contacts[data-letter="${firstLetter}"]`);
+
+  if (!existingLetterContacts) {
+    const newLetterContacts = document.createElement("div");
+    newLetterContacts.className = "letter-contacts";
+    newLetterContacts.setAttribute("data-letter", firstLetter);
+    newLetterContacts.innerHTML = `<p>${firstLetter}</p>`;
+
+    const primaryContact = contactsMenu.querySelector(".primary-contact");
+    if (primaryContact) {
+      primaryContact.insertAdjacentElement('afterend', newLetterContacts);
+    } else {
+      contactsMenu.insertBefore(newLetterContacts, contactsMenu.firstChild);
+    }
+  }
+}
+
+
 function closeAddContact() {
   document.getElementById("add-new-contact").classList.add("d-none");
   document.getElementById("add-new-contact").classList.add("sign-up-animation-close");
-
 }
 
 
