@@ -68,3 +68,9 @@ function closeAddContact() {
   document.getElementById("add-new-contact").classList.add("sign-up-animation-close");
 
 }
+
+
+function showContact() {
+  document.getElementById("contact-info").style.display = "flex";
+  document.getElementById("contact-info").classList.add("show-contact-animation");
+}

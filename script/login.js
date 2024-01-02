@@ -102,15 +102,6 @@ function showInvalidUserData(invalidUserData, emailInput, passwordInput) {
 }
 
 
-function showInvalidUserData(invalidUserData, emailInput, passwordInput) {
-  invalidUserData.innerHTML += /* HTML */ `
-    <div class="invalid-data">Invalid email or password</div>
-  `;
-  emailInput.style.borderColor = "red";
-  passwordInput.style.borderColor = "red";
-}
-
-
 function loginForm(users) {
   const emailInput = document.getElementById('loginEmail');
   const passwordInput = document.getElementById('loginPassword');

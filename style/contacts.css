@@ -3,6 +3,7 @@ body {
   overflow-x: hidden;
   font-size: 16px;
 }
+
 .center {
   display: flex;
   justify-content: center;
@@ -24,6 +25,7 @@ body {
 .d-none {
   display: none;
 }
+
 .pointer {
   cursor: pointer;
 }
@@ -38,6 +40,19 @@ body {
   }
   100% {
     transform: translateY(100px);
+  }
+}
+
+.show-contact-animation { 
+  animation: move-from-right 0.2s forwards;
+}
+
+@keyframes move-from-right {
+  0% {
+    transform: translatex(2000px);
+  }
+  100% {
+    transform: translatex(0px);
   }
 }
 
@@ -58,6 +73,7 @@ body {
   left: 200px;
   z-index: 6 !important;
 }
+
 .account{
   width: 120px;
   height: 120px;
@@ -75,11 +91,13 @@ body {
   width: 1212px;
   height: auto;
 }
+
 .background{
   background: rgba(0, 0, 0, 0.2) !important;
   position: absolute;
   z-index: 5;
 }
+
 .contacts {
   width: 100vw;
   height: 100vh;
@@ -222,7 +240,7 @@ body {
 /* contact-info popup */
 
 #contact-info {
-  display: flex;
+  display: none;
   justify-content: center;
   position: absolute;
   top: 30%;
@@ -326,6 +344,7 @@ body {
   border-top-left-radius: 30px;
   border-bottom-left-radius: 30px;
 }
+
 .left-side-add-contact h1{
   margin: 0;
   padding-top: 16px;
@@ -333,6 +352,7 @@ body {
   font-weight: 700;
   font-size: 61px;
 }
+
 .left-side-add-contact span{
   padding-top: 16px;
   color: white;
@@ -340,10 +360,12 @@ body {
   font-size: 27px;
   margin-bottom: 16px;
 }
+
 .line{
   width: 76px;
   border-top: 3px solid #29ABE2;
 }
+
 .right-side-add-contact{
   display: flex;
   justify-content: space-around;
@@ -354,9 +376,6 @@ body {
   border-top-right-radius: 30px;
   border-bottom-right-radius: 30px;
 }
-.log-in-field{
-
-}
 
 .form-contacs input{
   padding-left: 16px;
@@ -366,9 +385,11 @@ body {
   width: 422px;
   height: 50px;
 }
+
 .log-in-field::placeholder{
   color: #d1d1d1;
 }
+
 .form-contacs img{
   margin-left: -30px;
   margin-bottom: -30px;
@@ -380,12 +401,11 @@ body {
   border-radius: 50%;
   padding: 2px;
 }
+
 .close:hover{
   background-color: rgb(128, 128, 128,0.2);
 }
 
-.right-bottom {
-}
 .clear-and-create-task {
   margin-top: 64px;
   display: flex;

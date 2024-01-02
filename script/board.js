@@ -1,6 +1,5 @@
 async function init() {
-    await includeHTML();
-    
+    await includeHTML(); 
   }
   
   async function includeHTML() {
@@ -16,6 +15,26 @@ async function init() {
         }
       }
 }
+
+
+function findTask() {
+  const inputValue = document.getElementById("findTask").value.toLowerCase();
+  const allTasks = document.querySelectorAll(".board-task-card");
+
+  allTasks.forEach((container) => {
+    const taskName = container
+      .querySelector(".board-task-card-title")
+      .innerText.toLowerCase();
+
+    if (taskName.includes(inputValue)) {
+      container.style.display = "flex";
+    } else {
+      container.style.display = "none";
+    }
+  });
+}
+
+
 function addTask() {
   let addToTask = document.getElementById('add-task');
   document.getElementById("board-div").classList.add("background");
