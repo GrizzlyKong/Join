@@ -151,7 +151,7 @@ function findUserByEmail(users, email) {
 
 
 function guestLogin() {
-  localStorage.removeItem('loggedInUser');
+  localStorage.removeItem('loggedInUserName');
   localStorage.removeItem('rememberedEmail');
   localStorage.removeItem('rememberedPassword');
 
