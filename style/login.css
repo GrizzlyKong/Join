@@ -252,7 +252,7 @@ body {
 .invalid-data {
   color: red;
   position: relative;
-  top: 56.5vh;
+  top: 53.5vh;
   left: 1vw;
   z-index: 12;
 }
