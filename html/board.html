@@ -36,7 +36,7 @@
     </div>
     <div class="board-column">
 
-      <div id="open" class="move-right">
+      <div class="move-right">
         <div class="board-column-title">
           <span>To do</span>
           <div class="images">
@@ -45,9 +45,7 @@
           </div>
         </div>
         <div class="board-column-empty">No tasks To Do</div>
-        <div id="dragging" class="dragging column position-relative">
-          
-        </div>
+        <div id="todo" class="drag-area column" ondragleave="removeHighlight('todo')" ondrop="drop(event, 'todo')" ondragover="allowDrop(event); highlight('todo')"></div>
       </div>
 
       <!-- Task-Card -->
@@ -56,7 +54,7 @@
 
       <!---->
 
-      <div id="open" class="move-right">
+      <div class="move-right">
         <div class="board-column-title">
           <span>In progress</span>
           <div class="images">
@@ -65,12 +63,10 @@
           </div>
         </div>
         <div class="board-column-empty">No tasks in Progress</div>
-        <div id="dragging" class="dragging column position-relative">
-          
-        </div>
+        <div id="inprogress" class="drag-area column" ondragleave="removeHighlight('inprogress')" ondrop="drop(event, 'inprogress')" ondragover="allowDrop(event); highlight('inprogress')"></div>
       </div>
 
-      <div id="open" class="move-right">
+      <div class="move-right">
         <div class="board-column-title">
           <span>Awaiting feedback</span>
           <div class="images">
@@ -79,17 +75,13 @@
           </div>
         </div>
         <div class="board-column-empty">No Feedback awaited</div>
-        <div id="dragging" class="dragging column position-relative">
-          
-        </div>
+        <div id="awaitingfeedback" class="drag-area column" ondragleave="removeHighlight('awaitingfeedback')" ondrop="drop(event, 'awaitingfeedback')" ondragover="allowDrop(event); highlight('awaitingfeedback')"></div>
       </div>
 
-      <div id="closed" class="move-right">
+      <div class="move-right">
         <div class="board-column-title">Done</div>
         <div class="board-column-empty">No tasks Done</div>
-        <div id="dragging" class="dragging column position-relative">
-          
-        </div>
+        <div id="done" class="drag-area column" ondragleave="removeHighlight('done')" ondrop="drop(event, 'done')" ondragover="allowDrop(event); highlight('done')"></div>
       </div>
 
     </div>

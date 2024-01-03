@@ -1,7 +1,10 @@
+let currentDraggedElement;
+let taskIdCounter = 0; // Ein Zähler, um eine einzigartige ID für jedes Task zu erstellen
+
 async function init() {
     await includeHTML();
-    
-  }
+    updateHTML();
+}
   
   async function includeHTML() {
       let includeElements = document.querySelectorAll("[w3-include-html]");
@@ -119,30 +122,13 @@ function closeAddTodo() {
   document.getElementById("add-task").classList.add("d-none");
 }
 
-let todos = [{
-  "id": 0,
-  "title": "Einkaufen",
-  "description": "Mehl, Salz, Zucker, Milch",
-  "assignedto": "Nick Pavlov",
-  "duodate": "22.12.2023",
-  "prio": "urgent",
-  "category": "User Story",
-  "Subtasks": "tanken",
-}, {
-  "id": 1,
-  "title": "Kochen",
-  "description": "Pasta",
-  "assignedto": "Nick Pavlov",
-  "duodate": "22.12.2023",
-  "prio": "urgent",
-  "category": "User Story",
-  "Subtasks": "salat machen",
-}];
+
 
 function addTodo() {
   document.getElementById("add-task").classList.add("d-none");
-  document.getElementById('dragging').innerHTML += `
-  <div class="board-task-card pointer">
+  const taskId = `task-${taskIdCounter++}`; // Generiert eine einzigartige ID
+  let taskHTML = `
+    <div id="${taskId}" class="board-task-card pointer" draggable="true">
             <div class="board-task-card-title">User story</div>
             <div class="board-task-card-description">Kochwelt Page & Recipe Recommender</div>
             <div class="board-task-card-task">tekst blablablablablabla</div>
@@ -158,4 +144,48 @@ function addTodo() {
             </div>
           </div>
   `;
+  document.getElementById('todo').innerHTML += taskHTML;
+  bindDragEvents(document.getElementById(taskId));
+
 }
+
+function bindDragEvents(element) {
+  element.addEventListener('dragstart', (e) => startDragging(e, element));
+}
+
+function startDragging(event, element) {
+  currentDraggedElement = element;
+  event.dataTransfer.setData('text/plain', ''); // Für Firefox notwendig
+}
+
+function allowDrop(event) {
+  event.preventDefault();
+}
+
+function drop(event, targetId) {
+  event.preventDefault();
+  let target = document.getElementById(targetId);
+  if (target && currentDraggedElement) {
+    target.appendChild(currentDraggedElement);
+  }
+}
+
+function updateHTML() {
+  let taskCards = document.querySelectorAll('.board-task-card');
+  taskCards.forEach(card => {
+    if (!card.getAttribute('draggable')) {
+      card.setAttribute('draggable', true);
+      card.addEventListener('dragstart', (e) => startDragging(e, card));
+    }
+  });
+}
+
+function highlight(id) {
+  document.getElementById(id).classList.add('drag-area-highlight');
+}
+
+function removeHighlight(id) {
+  document.getElementById(id).classList.remove('drag-area-highlight');
+}
+
+init(); // Initialisieren Sie das Skript
