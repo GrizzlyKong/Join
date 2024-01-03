@@ -88,37 +88,63 @@ function clearInputAddingContact() {
 }
 
 
+function insertAfter(newNode, referenceNode) {
+  var nextSibling = referenceNode.nextSibling;
+  if (nextSibling) {
+      referenceNode.parentNode.insertBefore(newNode, nextSibling);
+  } else {
+      referenceNode.parentNode.appendChild(newNode);
+  }
+}
+
+
+function getRandomColor() {
+const letters = "0123456789ABCDEF";
+let color = "#";
+for (let i = 0; i < 6; i++) {
+  color += letters[Math.floor(Math.random() * 16)];
+}
+return color;
+}
+
+
 function addingContact() {
   const name = document.getElementById("contactNameInput").value;
   const email = document.getElementById("contactEmailInput").value;
   const phone = document.getElementById("contactPhoneInput").value;
 
   if (!name || !email || !phone) {
-    alert("Please fill in all fields before creating a contact.");
-    return;
+      alert("Please fill in all fields before creating a contact.");
+      return;
   }
+
+  const initialLetter = name.charAt(0).toUpperCase();
 
   const newContactElement = document.createElement("div");
   newContactElement.className = "added-contact pointer";
   newContactElement.onclick = showContact;
 
+  const randomColor = getRandomColor();
+
   newContactElement.innerHTML = `
-    <div class="primary-contact-icon-container">
-      <div class="added-contact-icon">${name.charAt(0)}</div>
-    </div>
-    <div class="moveRight">
+  <div class="primary-contact-icon-container">
+      <div class="added-contact-icon" style="background-color: ${randomColor} !important; border: 4px solid white;">${initialLetter}</div>
+  </div>
+  <div class="moveRight">
       <p>${name}</p>
       <a class="contact-link">${email}</a>
-    </div>
-  `;
+  </div>
+`;
 
   const contactsMenu = document.getElementById("contactsMenu");
-  contactsMenu.insertBefore(newContactElement, contactsMenu.childNodes[2]); // Insert at the third position
+  const referenceNode = contactsMenu.childNodes[2]; // Reference node at the third position
+  insertAfter(newContactElement, referenceNode);
 
-  updateLetterContacts(name.charAt(0));
+  updateLetterContacts(initialLetter);
   clearInputAddingContact();
   closeAddContact();
 }
+
 
 
 function updateLetterContacts(firstLetter) {
