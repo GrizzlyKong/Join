@@ -1,9 +1,12 @@
 let currentDraggedElement;
 let taskIdCounter = 0; // Ein Zähler, um eine einzigartige ID für jedes Task zu erstellen
 
+
+
 async function init() {
     await includeHTML();
-    updateHTML();
+  updateHTML();
+  AddPriorities();
 }
 
   
@@ -46,7 +49,7 @@ function addTask() {
   document.getElementById("add-task").classList.remove("d-none");
   document.getElementById("add-task").classList.add("sign-up-animation");
   addToTask.innerHTML = `
-  <div>
+  <form>
   <div class="headline-div">
     <h1>Add Task</h1>
     <img onclick="closeAddTodo()" class="goBack pointer" src="/assets/icons/close.svg">
@@ -56,11 +59,11 @@ function addTask() {
     <div class="add-tasks-left-side-div">
       <div class="title column">
         <div><span>Title</span><span class="important">*</span></div>
-        <input required placeholder="Enter a title">
+        <input maxlength="22" id="title-todo" required placeholder="Enter a title">
       </div>
       <div class="description">
         <div><span>Description</span></div>
-        <textarea placeholder="Enter a Description"></textarea>
+        <textarea maxlength="45" id="description-todo" placeholder="Enter a Description"></textarea>
       </div>
       <div class="assigned-to">
         <div><span>Assigned to</span></div>
@@ -75,26 +78,26 @@ function addTask() {
     <div class="add-tasks-right-side-div">
       <div class="duo-date">
         <div><span>Due date</span><span class="important">*</span></div>
-        <input required placeholder="dd/mm/yyyy"><img class="input-icon1" src="/assets/icons/date.svg" alt="">
+        <input id="date-todo" required placeholder="dd/mm/yyyy"><img class="input-icon1" src="/assets/icons/date.svg" alt="">
       </div>
       <div class="all-priorities">
         <span>Prio</span>
         <div class="priorities">
-          <div tabindex="1" class="prioprity-urgent pointer center">
+          <div id="priority-urgent-todo" tabindex="1" class="prioprity-urgent pointer center">
             <div>Urgent</div>
             <div>
               <img class="urgent1" src="/assets/icons/urgent3.svg" alt="">
               <img class="urgent2 d-none" src="/assets/icons/urgent2.svg" alt="">
             </div>
           </div>
-          <div tabindex="2" class="prioprity-medium pointer center">
+          <div id="priority-medium-todo" tabindex="2" class="prioprity-medium pointer center">
             <div>Medium</div>
             <div>
               <img class="medium1" src="/assets/icons/medium.svg" alt="">
               <img class="medium2 d-none" src="/assets/icons/medium2.svg" alt="">
             </div>
           </div>
-          <div tabindex="3" class="prioprity-low pointer center">
+          <div id="priority-low-todo" tabindex="3" class="prioprity-low pointer center">
             <div>Low</div>
             <div>
               <img class="low1" src="/assets/icons/low.svg" alt="">
@@ -105,7 +108,7 @@ function addTask() {
       </div>
       <div class="category">
         <div><span>Category</span><span class="important">*</span></div>
-        <select required class="pointer" placeholder="Select task category">
+        <select id="category-todo" required class="pointer" placeholder="Select task category">
           <option value="" class="d-none">Select task category</option>
           <option>Technical Task</option>
           <option>User Story</option>
@@ -113,7 +116,7 @@ function addTask() {
       </div>
       <div class="subtasks">
         <div><span>Subtasks</span><span class="important">*</span></div>
-        <input required placeholder="Add new subtask"><img class="input-icon2" src="/assets/icons/add.svg" alt="">
+        <input id="" required placeholder="Add new subtask"><img class="input-icon2" src="/assets/icons/add.svg" alt="">
       </div>
     </div>
   </div>
@@ -135,7 +138,7 @@ function addTask() {
       </div>
     </div>
   </div>
-</div>
+</form>
   `;
 }
     
@@ -146,13 +149,19 @@ function closeAddTodo() {
 
 
 function addTodo() {
+  let title = document.getElementById('title-todo').value;
+  let description = document.getElementById('description-todo').value;
+  let category = document.getElementById('category-todo').value;
+  /*   let date = document.getElementById('date-todo').value; */
+
   document.getElementById("add-task").classList.add("d-none");
   const taskId = `task-${taskIdCounter++}`; // Generiert eine einzigartige ID
+  AddPriorities(taskId);
   let taskHTML = `
     <div id="${taskId}" class="board-task-card pointer" draggable="true">
-            <div class="board-task-card-title">User story</div>
-            <div class="board-task-card-description">Kochwelt Page & Recipe Recommender</div>
-            <div class="board-task-card-task">tekst blablablablablabla</div>
+            <div class="board-task-card-title">${category}</div>
+            <div class="board-task-card-description">${title}</div>
+            <div class="board-task-card-task">${description}</div>
             <div class="board-task-card-subtasks">
               <div class="board-task-card-subtasks-bar">
                 <div class="bar-fill" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
@@ -161,13 +170,36 @@ function addTodo() {
             </div>
             <div class="board-task-card-users">
               <div class="board-task-card-users-amount">M</div>
-              <div class="board-task-card-priority"><img src="../assets/icons/medium-prio.png"></div>
+              <div class="board-task-card-priority"><img id="priorities-todo-${taskId}" src=""></img></div>
             </div>
           </div>
   `;
   document.getElementById('todo').innerHTML += taskHTML;
   bindDragEvents(document.getElementById(taskId));
 
+}
+
+function AddPriorities(taskId) {
+  document.getElementById('priority-urgent-todo').addEventListener('click', function() {
+    setPriority('urgent', taskId);
+  });
+  document.getElementById('priority-medium-todo').addEventListener('click', function() {
+    setPriority('medium', taskId);
+  });
+  document.getElementById('priority-low-todo').addEventListener('click', function() {
+    setPriority('low', taskId);
+  });
+}
+
+function setPriority(priority, taskId) {
+  let prioritySrc = {
+      'urgent': '../assets/icons/urgent3.svg',
+      'medium': '../assets/icons/medium.svg',
+      'low': '../assets/icons/low.svg'
+  };
+
+  let src = prioritySrc[priority] || ''; 
+  document.getElementById(`priorities-todo-${taskId}`).src = src;
 }
 
 function bindDragEvents(element) {
