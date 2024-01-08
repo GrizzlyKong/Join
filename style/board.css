@@ -67,6 +67,9 @@ body {
   font-weight: 700;
   font-size: 61px;
 }
+.title-todo{
+
+}
 
 .add-task-button {
   background-color: rgb(42, 54, 71);
@@ -208,6 +211,7 @@ body {
   align-items: flex-start;
 }
 
+
 .drag-area-highlight {
   background-color: rgba(0, 0, 0, 0.2);
 }
@@ -253,6 +257,7 @@ body {
 }
 
 .board-task-card-task {
+  overflow-wrap: break-word;
   font-size: 20px;
   color: rgb(168, 168, 168);
   padding-bottom: 16px;
