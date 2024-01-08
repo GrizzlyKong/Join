@@ -3,6 +3,7 @@ async function init() {
   displayUserContacts();
 }
 
+
 async function includeHTML() {
   let includeElements = document.querySelectorAll("[w3-include-html]");
   for (let i = 0; i < includeElements.length; i++) {
@@ -17,12 +18,13 @@ async function includeHTML() {
   }
 }
 
+
 function addNewContact() {
   let newContact = document.getElementById("add-new-contact");
   document.getElementById("contacts-div").classList.add("background");
   document.getElementById("add-new-contact").classList.add("sign-up-animation");
   document.getElementById("add-new-contact").classList.remove("d-none");
-  newContact.innerHTML = `
+  newContact.innerHTML = /* HTML */ `
     <div id="add-new-contact-id" class="addNewContactDiv">
       <div class ="left-side-add-contact column">
         <div><img src="/assets/icons/logo.svg"></div>
@@ -83,6 +85,7 @@ function clearInputAddingContact() {
   document.getElementById("contactPhoneInput").value = "";
 }
 
+
 function insertAfter(newNode, referenceNode) {
   var nextSibling = referenceNode.nextSibling;
   if (nextSibling) {
@@ -100,6 +103,7 @@ function getRandomColor() {
   }
   return color;
 }
+
 
 function addingContact() {
   const name = document.getElementById("contactNameInput").value;
@@ -129,7 +133,7 @@ function addingContact() {
   `;
 
   const contactsMenu = document.getElementById("contactsMenu");
-  const referenceNode = contactsMenu.childNodes[2];
+  const referenceNode = contactsMenu.childNodes[1];
   insertAfter(newContactElement, referenceNode);
 
   updateLetterContacts(initialLetter);
@@ -138,6 +142,7 @@ function addingContact() {
   saveContactToLocalStorage({ name, email, phone, color: randomColor });
   location.reload();
 }
+
 
 function saveContactToLocalStorage(contact) {
   const loggedInUserName = localStorage.getItem("loggedInUserName");
@@ -153,9 +158,14 @@ function saveContactToLocalStorage(contact) {
   localStorage.setItem(userContactsKey, JSON.stringify(existingContacts));
 }
 
+
 function updateLetterContacts(firstLetter) {
   const contactsMenu = document.getElementById("contactsMenu");
-  const existingLetterContacts = document.querySelector(`.letter-contacts[data-letter="${firstLetter}"]`);
+  const letterContacts = Array.from(contactsMenu.getElementsByClassName("letter-contacts"));
+
+  const existingLetterContacts = letterContacts.find((element) => {
+    return element.getAttribute("data-letter") === firstLetter;
+  });
 
   if (!existingLetterContacts) {
     const newLetterContacts = document.createElement("div");
@@ -163,14 +173,18 @@ function updateLetterContacts(firstLetter) {
     newLetterContacts.setAttribute("data-letter", firstLetter);
     newLetterContacts.innerHTML = `<p>${firstLetter}</p>`;
 
-    const primaryContact = contactsMenu.querySelector(".primary-contact");
-    if (primaryContact) {
-      primaryContact.insertAdjacentElement('afterend', newLetterContacts);
+    const insertIndex = letterContacts.findIndex((element) => {
+      return element.getAttribute("data-letter") > firstLetter;
+    });
+
+    if (insertIndex !== -1) {
+      contactsMenu.insertBefore(newLetterContacts, letterContacts[insertIndex]);
     } else {
-      contactsMenu.insertBefore(newLetterContacts, contactsMenu.firstChild);
+      contactsMenu.appendChild(newLetterContacts);
     }
   }
 }
+
 
 function closeAddContact() {
   document.getElementById("add-new-contact").classList.add("d-none");
@@ -204,6 +218,7 @@ function showContact() {
   contactInfoDiv.style.display = "flex";
   contactInfoDiv.classList.add("show-contact-animation");
 }
+
 
 function displayUserContacts() {
   const loggedInUserName = localStorage.getItem("loggedInUserName");
@@ -246,8 +261,6 @@ function displayUserContacts() {
 function deleteContact() {
   const contactInfoDiv = document.getElementById("contact-info");
   const contactName = document.querySelector(".contact-info-name").innerText;
-
-  // Remove the contact from the page
   const contactsLayout = document.getElementById("contactsLayout");
   const contactToDelete = Array.from(contactsLayout.getElementsByClassName("added-contact"))
     .find(contact => contact.querySelector(".moveRight p").innerText === contactName);
@@ -255,8 +268,6 @@ function deleteContact() {
   if (contactToDelete) {
     contactsLayout.removeChild(contactToDelete);
   }
-
-  // Remove the contact from local storage
   const loggedInUserName = localStorage.getItem("loggedInUserName");
 
   if (!loggedInUserName) {
@@ -267,18 +278,12 @@ function deleteContact() {
   const userContactsKey = `contacts_${loggedInUserName}`;
   let existingContacts = JSON.parse(localStorage.getItem(userContactsKey)) || [];
 
-  // Find the index of the contact to delete
   const contactIndex = existingContacts.findIndex(contact => contact.name === contactName);
-
   if (contactIndex !== -1) {
     existingContacts.splice(contactIndex, 1);
     localStorage.setItem(userContactsKey, JSON.stringify(existingContacts));
   }
-
-  // Hide the contact info div
   contactInfoDiv.style.display = "none";
-
-  // Reload the page
   location.reload();
 }
 
@@ -287,5 +292,110 @@ init();
 
 
 function editContact() {
-  
+  const contactInfoDiv = document.getElementById("contact-info");
+  const contactName = document.querySelector(".contact-info-name").innerText;
+  const loggedInUserName = localStorage.getItem("loggedInUserName");
+
+  if (!loggedInUserName) {
+    console.error("No logged-in user found. Contact cannot be edited.");
+    return;
+  }
+
+  const userContactsKey = `contacts_${loggedInUserName}`;
+  const existingContacts = JSON.parse(localStorage.getItem(userContactsKey)) || [];
+  const contactToEdit = existingContacts.find(contact => contact.name === contactName);
+
+  if (!contactToEdit) {
+    console.error("Contact not found in local storage.");
+    return;
+  }
+
+  // Display the edit form with existing contact details
+  const editContactDiv = document.getElementById("add-new-contact");
+  document.getElementById("contacts-div").classList.add("background");
+  document.getElementById("add-new-contact").classList.add("sign-up-animation");
+  document.getElementById("add-new-contact").classList.remove("d-none");
+
+  editContactDiv.innerHTML = /* HTML */ `
+    <div id="edit-contact-id" class="addNewContactDiv">
+      <div class="left-side-add-contact column">
+        <div><img src="/assets/icons/logo.svg"></div>
+        <h1>Edit contact</h1>
+        <span></span>
+        <div class="line"></div>
+      </div>
+      <div class="right-side-add-contact">
+        <img onclick="closeAddContact()" class="close absolute pointer" src="/assets/icons/close.svg">
+        <div class="account center">
+          <div class="adding-contact-icon" style="background-color: ${contactToEdit.color}">${contactToEdit.name.charAt(0).toUpperCase()}</div>
+        </div>
+        <div>
+          <form onsubmit="return false;">
+            <div class="form-contacs">
+              <div class="center">
+                <input id="contactNameInput" class="log-in-field column center pointer" required type="text" placeholder="Name" value="${contactToEdit.name}">
+                <img class="log-in-mail-lock-icon" src="../assets/icons/person-small.png">
+              </div>
+              <div class="center">
+                <input id="contactEmailInput" class="log-in-field column center pointer" required type="email" placeholder="Email" value="${contactToEdit.email}">
+                <img class="log-in-mail-lock-icon" src="../assets/icons/mail.png">
+              </div>
+              <div class="center">
+                <input id="contactPhoneInput" class="log-in-field column center pointer" required type="number" placeholder="Phone" value="${contactToEdit.phone}">
+                <img class="log-in-mail-lock-icon" src="../assets/icons/call.png">
+              </div>
+            </div>
+            <div class="right-bottom">
+              <div class="clear-and-update-contact">
+                <div class="clear pointer center" onclick="deleteContact()">
+                  <span>Delete</span>
+                  <img class="cancel1" src="/assets/icons/cancel.svg" alt="">
+                  <img class="cancel2 d-none" src="/assets/icons/cancel2.svg" alt="">
+                </div>
+                <div class="update-contact pointer center" onclick="updateContact(${existingContacts.indexOf(contactToEdit)})">
+                  <span>Save</span>
+                  <img src="/assets/icons/check.svg" alt="">
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+
+function updateContact(index) {
+  const contactNameInput = document.getElementById("contactNameInput").value;
+  const contactEmailInput = document.getElementById("contactEmailInput").value;
+  const contactPhoneInput = document.getElementById("contactPhoneInput").value;
+
+  if (!contactNameInput || !contactEmailInput || !contactPhoneInput) {
+    console.error("Please fill in all fields.");
+    return;
+  }
+
+  const loggedInUserName = localStorage.getItem("loggedInUserName");
+  const userContactsKey = `contacts_${loggedInUserName}`;
+  const existingContacts = JSON.parse(localStorage.getItem(userContactsKey)) || [];
+  const contactToUpdate = existingContacts[index];
+
+  if (!contactToUpdate) {
+    console.error("Contact not found in local storage.");
+    return;
+  }
+
+  const updatedContact = {
+    name: contactNameInput,
+    email: contactEmailInput,
+    phone: contactPhoneInput,
+    color: contactToUpdate.color,
+  };
+
+  existingContacts[index] = updatedContact;
+  localStorage.setItem(userContactsKey, JSON.stringify(existingContacts));
+
+  closeAddContact();
+  location.reload();
 }
