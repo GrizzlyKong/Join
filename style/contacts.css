@@ -105,6 +105,7 @@ body {
 }
 
 .primary-contact {
+  padding: 8px;
   background-color: rgb(42, 54, 71);
   color: white;
   border: 1px;
@@ -130,18 +131,17 @@ body {
 }
 
 .letter-contacts {
-  border-style: solid;
-  border-width: 0 0 2px 0;
-  border-color: rgb(226, 226, 226);
-  width: 280px;
-  height: 58px;
-  margin-top: 8px;
-  display: flex;
-  align-items: center;
+  display: inline-table;
 }
 
 .letter-contacts p {
-  padding-left: 28px;
+border-style: solid;
+border-color: rgb(209, 209, 209);
+border-top: 0;
+border-left: 0;
+border-right: 0;
+padding: 0 0 16px 28px;
+font-size: 24px;
 }
 
 .added-contact {
@@ -152,6 +152,8 @@ body {
 .added-contact p {
   margin: 20px 0 4px 0;
   font-size: 18px;
+  border: none;
+  padding: 0;
 }
 
 .added-contact-icon {

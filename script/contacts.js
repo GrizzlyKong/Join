@@ -231,6 +231,8 @@ function displayUserContacts() {
   const userContactsKey = `contacts_${loggedInUserName}`;
   const savedContacts = JSON.parse(localStorage.getItem(userContactsKey)) || [];
 
+  savedContacts.sort((a, b) => a.name.localeCompare(b.name)); // Sort contacts alphabetically by name
+
   savedContacts.forEach((contact, index) => {
     const { name, email, phone, color } = contact;
     const initialLetter = name.charAt(0).toUpperCase();
@@ -250,10 +252,25 @@ function displayUserContacts() {
     `;
 
     const contactsMenu = document.getElementById("contactsMenu");
-    const referenceNode = contactsMenu.childNodes[2];
-    insertAfter(newContactElement, referenceNode);
+    const letterContacts = Array.from(contactsMenu.getElementsByClassName("letter-contacts"));
+    let letterGroup = letterContacts.find((element) => element.getAttribute("data-letter") === initialLetter);
 
-    updateLetterContacts(initialLetter);
+    if (!letterGroup) {
+      letterGroup = document.createElement("div");
+      letterGroup.className = "letter-contacts";
+      letterGroup.setAttribute("data-letter", initialLetter);
+      letterGroup.innerHTML = `<p>${initialLetter}</p>`;
+
+      const insertIndex = letterContacts.findIndex((element) => element.getAttribute("data-letter") > initialLetter);
+
+      if (insertIndex !== -1) {
+        contactsMenu.insertBefore(letterGroup, letterContacts[insertIndex]);
+      } else {
+        contactsMenu.appendChild(letterGroup);
+      }
+    }
+
+    letterGroup.appendChild(newContactElement);
   });
 }
 
