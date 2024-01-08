@@ -136,6 +136,7 @@ function addingContact() {
   clearInputAddingContact();
   closeAddContact();
   saveContactToLocalStorage({ name, email, phone, color: randomColor });
+  location.reload();
 }
 
 function saveContactToLocalStorage(contact) {
