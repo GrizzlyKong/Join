@@ -256,6 +256,10 @@ body {
   font-weight: bold;
 }
 
+#calendar{
+
+}
+
 .board-task-card-task {
   overflow-wrap: break-word;
   font-size: 20px;
@@ -567,9 +571,79 @@ body {
   margin-left: -30px;
   margin-bottom: -6px;
 }
+.subtaskInput{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+#added-subtasks{
+  font-size: 16px !important;
+}
+.added-subtask{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-left: 20px;
+  margin-top: 10px;
+  width: 432px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  border-radius: 10px;
+}
+.added-subtask:hover{
+  background-color: #d1d1d1;
+}
+.added-subtask:hover .d-none{
+  display: block;
+  height: 17px;
+}
+.subtask-both-img{
+  margin-top: -7px;
+}
+.subtask-img1:hover{
+  padding-top: 1px;
+}
+.subtask-img2:hover{
+  padding-top: 1px;
+}
+.red{
+  color: red;
+}
+.stroke{
+
+}
+.oninput{
+display: flex;
+margin-left: -65px;
+width: 59px;
+}
 .input-icon2 {
-  margin-left: -25px;
-  margin-bottom: -2px;
+  margin-left: -30px;
+  margin-bottom: -4px;
+  padding: 5px;
+}
+.input-icon2:hover{
+  background-color: #d1d1d1;
+  border-radius: 50%;
+}
+.input-icon3 {
+  margin-bottom: -5px;
+  padding: 1px;
+  height: auto;
+  border-radius: 50%;
+}
+.input-icon3:hover{
+  background-color: #d1d1d1;
+
+}
+.input-icon4 {
+  margin-bottom: -5px;
+  padding: 1px;
+  border-radius: 50%;
+}
+.input-icon4:hover{
+  background-color: #d1d1d1;
+
 }
 /*Bottom*/
 

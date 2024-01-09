@@ -177,3 +177,4 @@ function showContact() {
   document.getElementById("contact-info").style.display = "flex";
   document.getElementById("contact-info").classList.add("show-contact-animation");
 }
+
