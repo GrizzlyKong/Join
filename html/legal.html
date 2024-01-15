@@ -9,14 +9,17 @@
     <title>Legal Notice</title>
     <link rel="stylesheet" href="../style/legal.css" />
 
-    <link rel="icon" type="image/x-icon" href="../assets/icons/favicon.png" />
+    <link rel="icon" type="image/x-icon" href="../assets/icons/favicon.png"/>
 
 
   <body onload="init()">
     <div w3-include-html="../assets/templates/header.html"></div>
     <div w3-include-html="../assets/templates/menu.html"></div>
 
-    <div class="legal-title"><p class="legal-title-head">Legal Notice</p><img class="arrow-left-line" src="../assets/icons/arrow-left-line.svg"></div>
+    <div class="legal-title">
+      <p class="legal-title-head">Legal Notice</p>
+      <img onclick="window.history.go(-1); return false;" class="arrow-left-line" src="../assets/icons/arrow-left-line.svg">
+    </div>
 
     <div class="legal-content">
     <h1>Imprint</h1><br>

@@ -32,7 +32,7 @@
   <form onsubmit="register(); return false;" class="sign-up-inputs center">
     <div>
       <input id="username" class="sign-up-field pointer" required type="text" placeholder="Name">
-      <img class="sign-up-mail-lock-icon" src="../assets/icons/person.png">
+      <img class="sign-up-mail-lock-icon" src="../assets/icons/person.svg">
     </div>
 
     <div>
@@ -51,15 +51,14 @@
       <img class="sign-up-mail-lock-icon" src="../assets/icons/lock.png">
     </div>
 
-    <div class="sign-up-checkbox-and-button column center">
+
       <div class="sign-up-privacy-policy">
         <input id="privacyCheckbox" type="checkbox" class="sign-up-checkbox pointer">
-        <p>I accept the <span class="sign-up-privacy-policy-span">Privacy policy</span></p>
+        <p>I accept the <span id="sign-up-privacy-policy-id" class="sign-up-privacy-policy-span">Privacy policy</span></p>
       </div>
 
     <div class="sign-up-login-buttons">
       <button id="registerBtn" class="sign-up-sign-up-button pointer">Sign up</button>
-    </div>
     </div>
 
   </form>

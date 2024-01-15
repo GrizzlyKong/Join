@@ -3,6 +3,9 @@ body {
   overflow-x: hidden;
 }
 
+.noHover{
+
+}
 .center {
   display: flex;
   justify-content: center;
@@ -257,7 +260,21 @@ body {
 }
 
 #calendar{
-
+}
+.border-radius-unset{
+  border-radius: 0px !important;
+}
+.edit-input{
+  font-size: 16px;
+  width: 85%;
+   border: 0; 
+  height: 25px;
+}
+.edit-input:focus{
+  outline: none;
+}
+.border-bottom-blue{
+  border-bottom: 2px solid #29ABE2;
 }
 
 .board-task-card-task {
@@ -284,7 +301,7 @@ body {
 }
 
 .bar-fill {
-  width: 70px;
+  width: 0%;
   height: 8px;
   background-color: rgb(69, 137, 255);
   border-radius: 8px;
@@ -593,6 +610,9 @@ body {
 .added-subtask:hover{
   background-color: #d1d1d1;
 }
+.added-subtask-unset:hover{
+  background-color: unset;
+}
 .added-subtask:hover .d-none{
   display: block;
   height: 17px;
@@ -693,6 +713,7 @@ width: 59px;
 }
 
 .create-task {
+  border: 0;
   font-weight: 700;
   color: white;
   background-color: #2a3647;

@@ -19,6 +19,7 @@
   <div w3-include-html="../assets/templates/header.html"></div>
   <div w3-include-html="../assets/templates/menu.html"></div>
 
+
   <div class="board" id="board-id">
 
 
@@ -44,7 +45,7 @@
             <img onclick="addTask()" class="board-column-title-img2 d-none pointer" src="../assets/icons/plusButton2.svg">
           </div>
         </div>
-        <div class="board-column-empty">No tasks To Do</div>
+        <div id="board-column-empty-id" class="board-column-empty">No tasks To Do</div>
         <div id="todo" class="drag-area column" ondragleave="removeHighlight('todo')" ondrop="drop(event, 'todo')" ondragover="allowDrop(event); highlight('todo')"></div>
       </div>
 
@@ -95,5 +96,7 @@
   <script src="../script/header.js"></script>
   <script src="/script/board.js"></script>
 </body>
+
+
 
 </html>

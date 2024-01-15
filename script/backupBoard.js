@@ -1,44 +1,12 @@
-const STORAGE_TOKEN = 'UK3WMTJPY9HCOS9AB0PGAT5U9XL1Y2BKP4MIYIVD';
-const STORAGE_URL = 'https://remote-storage.developerakademie.org/item';
-
 let currentDraggedElement;
-let taskIdCounter = 0;
-let subtaskIdCounter = 0;
+let taskIdCounter = 0; // Ein Zähler für Tasks
+let subtaskIdCounter = 0;  // Ein Zähler, um eine einzigartige ID für jedes Task zu erstellen
 let addCount = 0;
-
-async function setItem(key, value) {
-  const payload = { key, value, token: STORAGE_TOKEN };
-  return fetch(STORAGE_URL, { method: 'POST', body: JSON.stringify(payload) })
-      .then(res => res.json());
-}
-
-async function getItem(key) {
-  const url = `${STORAGE_URL}?key=${key}&token=${STORAGE_TOKEN}`;
-  return fetch(url).then(res => res.json()).then(res => {
-      if (res.data) {
-          return res.data.value;
-      } else {
-          throw `Could not find data with key "${key}".`;
-      }
-  });
-}
 
 async function init() {
   await includeHTML();
   updateHTML();
   AddPriorities();
-  loadTasks();
-}
-
-async function loadTasks() {
-  try {
-    let tasks = await getItem('tasks');
-    tasks.forEach(task => {
-        addTaskToDOM(task);
-    });
-  } catch (error) {
-    console.error('Fehler beim Laden der Tasks:', error);
-  }
 }
 
 async function includeHTML() {
@@ -192,7 +160,7 @@ function bindSubtaskEvents() {
       let target = event.target;
       if (target.tagName === 'IMG') {
         let subtaskId = target.closest('.added-subtask').id;
-        let taskId = 'Ihr-Task-ID'; // Ersetzen Sie dies durch die tatsächliche Task-ID
+        let taskId = target.closest('.board-task-card').id; // Ersetzen Sie dies durch die tatsächliche Task-ID
         if (target.classList.contains('subtask-img1')) {
           editSubtask(subtaskId);
         } else if (target.classList.contains('subtask-img2')) {
@@ -209,59 +177,34 @@ function closeAddTodo() {
   document.getElementById("add-task").classList.add("d-none");
 }
 
-async function addTodo() {
-  document.getElementById('board-column-empty-id').classList.add("d-none");
+function addTodo() {
   let title = document.getElementById("title-todo").value;
   let description = document.getElementById("description-todo").value;
   let category = document.getElementById("category-todo").value;
-
-  const taskId = `task-${taskIdCounter++}`;
-  let task = {
-      id: taskId,
-      title,
-      description,
-      category
-  };
+  /*   let date = document.getElementById('date-todo').value; */
 
   document.getElementById("add-task").classList.add("d-none");
-  addTaskToDOM(task);
-  await saveTask(task);
-}
-
-async function saveTask(task) {
-  try {
-      let tasks = await getItem('tasks') || [];
-      tasks.push(task);
-      await setItem('tasks', tasks);
-  } catch (error) {
-      console.error('Fehler beim Speichern des Tasks:', error);
-  }
-}
-
-
-function addTaskToDOM(task) {
+  const taskId = `task-${taskIdCounter++}`; // Generiert eine einzigartige ID
+  AddPriorities(taskId);
   let taskHTML = `
-      <div onclick="openTaskInfos(${task})" id="${task.id}" class="board-task-card pointer" draggable="true">
-          <div class="board-task-card-title">${task.category}</div>
-          <div class="board-task-card-description">${task.title}</div>
-          <div class="board-task-card-task">${task.description}</div>
-          <div class="board-task-card-subtasks">
+    <div id="${taskId}" class="board-task-card pointer" draggable="true">
+            <div class="board-task-card-title">${category}</div>
+            <div class="board-task-card-description">${title}</div>
+            <div class="board-task-card-task">${description}</div>
+            <div class="board-task-card-subtasks">
               <div class="board-task-card-subtasks-bar">
-                  <div class="bar-fill" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
+                <div class="bar-fill" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
               </div>
               <div class="board-task-card-subtasks-amount"></div>
-          </div>
-          <div class="board-task-card-users">
+            </div>
+            <div class="board-task-card-users">
               <div class="board-task-card-users-amount">M</div>
-              <div class="board-task-card-priority"><img id="priorities-todo-${task.id}" src=""></img></div>
+              <div class="board-task-card-priority"><img id="priorities-todo-${taskId}" src=""></img></div>
+            </div>
           </div>
-      </div>
   `;
   document.getElementById("todo").innerHTML += taskHTML;
-}
-
-function openTaskInfos(task){
-  
+  bindDragEvents(document.getElementById(taskId));
 }
 
 function AddPriorities(taskId) {
@@ -298,8 +241,8 @@ function bindDragEvents(element) {
 }
 
 function startDragging(event, element) {
-    currentDraggedElement = element;
-    event.dataTransfer.setData("text/plain", "");
+  currentDraggedElement = element;
+  event.dataTransfer.setData("text/plain", ""); // Für Firefox notwendig
 }
 
 function allowDrop(event) {
@@ -317,8 +260,10 @@ function drop(event, targetId) {
 function updateHTML() {
   let taskCards = document.querySelectorAll(".board-task-card");
   taskCards.forEach((card) => {
+    if (!card.getAttribute("draggable")) {
       card.setAttribute("draggable", true);
       card.addEventListener("dragstart", (e) => startDragging(e, card));
+    }
   });
 }
 
@@ -364,15 +309,20 @@ function cancelSubtask() {
   document.getElementById("subtask-cancel").classList.add("d-none");
   document.getElementById("subtask-correct").classList.add("d-none");
 }
+
 function correctSubtask() {
   let input = document.getElementById("add-subtasks").value.trim();
   if (input !== "") {
-    // Zählt die aktuell vorhandenen Subtasks
-    const currentSubtasks = document.getElementsByClassName("added-subtask").length;
+    // Finden Sie den übergeordneten Task-Container
+    let addedSubtasksContainer = document.getElementById("added-subtasks");
+    const taskElement = addedSubtasksContainer.closest(".board-task-card");
+
+    // Zählt die aktuell vorhandenen Subtasks innerhalb dieses Task-Containers
+    const currentSubtasks = taskElement.getElementsByClassName("added-subtask").length;
     
     // Erlaubt das Hinzufügen, wenn weniger als 2 Subtasks vorhanden sind
     if (currentSubtasks < 2) {
-      const subtaskId = `subtask-${subtaskIdCounter++}`;
+      const subtaskId = `subtask-${subtaskIdCounter++}`; // Generiert eine einzigartige ID für die Subtask
       let addedSubtasks = document.getElementById("added-subtasks");
       addedSubtasks.innerHTML += `
         <div id="${subtaskId}" class="added-subtask pointer">
@@ -384,6 +334,9 @@ function correctSubtask() {
         </div>
       `;
       document.getElementById("add-subtasks").value = "";
+
+      const taskElement = document.getElementById(subtaskId);
+      updateProgress(taskElement);
     } else {
       // Benachrichtigung, wenn das Limit von 2 Subtasks erreicht ist
       let inputElement = document.getElementById("add-subtasks");
@@ -397,7 +350,6 @@ function correctSubtask() {
       }, 3000);
     }
   }
-  updateProgress();
 }
 
 function editSubtask(subtaskId) {
@@ -439,25 +391,28 @@ function deleteSubtask(taskId, subtaskId) {
   let currentSubtask = document.getElementById(subtaskId);
   if (currentSubtask) {
     currentSubtask.remove();
-    updateProgress(taskId);
+
+    // Finden Sie den übergeordneten Task
+    const taskElement = document.getElementById(taskId);
+    updateProgress(taskElement);
   }
 }
 
-function updateProgress() {
+function updateProgress(taskElement) {
   const maxSubtasks = 2;
-  const currentSubtasks = document.getElementsByClassName("added-subtask").length;
+  const currentSubtasks = taskElement.getElementsByClassName("added-subtask").length;
 
   // Berechnen des Fortschritts in Prozent
   const progressPercent = (currentSubtasks / maxSubtasks) * 100;
 
-  // Aktualisieren der Fortschrittsleiste
-  const progressBar = document.querySelector(".bar-fill");
+  // Aktualisieren der Fortschrittsleiste für den spezifischen Task
+  const progressBar = taskElement.querySelector(".bar-fill");
   if (progressBar) {
     progressBar.style.width = `${progressPercent}%`;
   }
 
-  // Aktualisieren des Subtask-Textes
-  const subtaskText = document.querySelector(".board-task-card-subtasks-amount");
+  // Aktualisieren des Subtask-Textes für den spezifischen Task
+  const subtaskText = taskElement.querySelector(".board-task-card-subtasks-amount");
   if (subtaskText) {
     subtaskText.textContent = `${currentSubtasks}/${maxSubtasks} Subtasks`;
   }
