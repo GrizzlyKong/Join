@@ -16,79 +16,129 @@
 
 <body class="" id="body" onload="init()">
   <div id="board-div">
-  <div w3-include-html="../assets/templates/header.html"></div>
-  <div w3-include-html="../assets/templates/menu.html"></div>
+    <div w3-include-html="../assets/templates/header.html"></div>
+    <div w3-include-html="../assets/templates/menu.html"></div>
 
 
-  <div class="board" id="board-id">
 
+    <div class="board" id="board-id">
 
-    <div class="board-title">
+      <div id="all-task-infos">
 
-      <div class="board-title-head">Board</div>
-      <form class="find-task">
-        <input class="input-field" required type="text" placeholder="Find Task" id="findTask" oninput="findTask()">
-        <img class="find-task-img" src="../assets/icons/find.png">
-      </form>
-      <div class="add-task-button pointer">
-        Add Task <img src="../assets/icons/add.png" />
       </div>
 
-    </div>
-    <div class="board-column">
+      <div class="board-title">
 
-      <div class="move-right">
-        <div class="board-column-title">
-          <span>To do</span>
-          <div class="images">
-            <img class="board-column-title-img" src="../assets/icons/plusButton.svg">
-            <img onclick="addTask()" class="board-column-title-img2 d-none pointer" src="../assets/icons/plusButton2.svg">
+        <div class="board-title-head">Board</div>
+        <form class="find-task">
+          <input class="input-field" required type="text" placeholder="Find Task" id="findTask" oninput="findTask()">
+          <img class="find-task-img" src="../assets/icons/find.png">
+        </form>
+        <div class="add-task-button pointer">
+          Add Task <img src="../assets/icons/add.png" />
+        </div>
+
+      </div>
+      <div class="board-column">
+
+        <div class="move-right">
+          <div class="board-column-title">
+            <span>To do</span>
+            <div class="images">
+              <img class="board-column-title-img" src="../assets/icons/plusButton.svg">
+              <img onclick="addTask()" class="board-column-title-img2 d-none pointer"
+                src="../assets/icons/plusButton2.svg">
+            </div>
+          </div>
+          <div id="board-column-empty-id" class="board-column-empty">No tasks To Do</div>
+          <div id="todo" class="drag-area column" ondragleave="removeHighlight('todo')" ondrop="drop(event, 'todo')"
+            ondragover="allowDrop(event); highlight('todo')"></div>
+        </div>
+
+        <div class="whole-task-infos absolute">
+          <div class="task-info-top">
+            <div class="task-info-category">${category}</div>
+            <div><img onclick="closeTaskInfos()" src="../assets/icons/Close2.svg"></div>
+          </div>
+          <div class="task-info-title">${title}</div>
+          <div class="task-info-description">${description}</div>
+          <div class="task-info-due-date">
+            <div class="headline3">Due date:</div>
+            <div class="variable">${dueDate}</div>
+          </div>
+          <div class="task-info-prio">
+            <div class="headline3">Priority:</div>
+            <div class="task-info-current-prio">
+              <span>Urgent</span>
+              <img src="../assets/icons/urgent3.svg">
+            </div>
+          </div>
+          <div class="task-info-assigned-to">
+            <div class="headline3">Assigned To:</div>
+            <div class="variable">
+              <div class="task-info-contacts">Hier kommen die Kontakte</div>
+            </div>
+          </div>
+          <div class="task-info-subtasks">
+            <div class="headline3">Subtasks</div>
+            <div>${subtasksHtml}</div>
+          </div>
+          <div class="task-info-delete-edit center absolute">
+            <div class="task-info-delete pointer center">
+              <img class="img1" src="../assets/icons/delete2.svg" alt="">
+              <img class="img2 d-none" src="../assets/icons/delete2.png" alt="">
+              <span><b>Delete</b></span>
+            </div>
+            <div class="task-info-edit pointer center"> 
+              <img class="img3" src="../assets/icons/edit2.svg" alt="">
+              <img class="img4 d-none" src="../assets/icons/edit2.png" alt="">
+              <span><b>Edit</b></span>
+            </div>
           </div>
         </div>
-        <div id="board-column-empty-id" class="board-column-empty">No tasks To Do</div>
-        <div id="todo" class="drag-area column" ondragleave="removeHighlight('todo')" ondrop="drop(event, 'todo')" ondragover="allowDrop(event); highlight('todo')"></div>
-      </div>
+        <!-- Task-Card -->
+        <!---->
 
-      <!-- Task-Card -->
-      <!---->
-
-      <div class="move-right">
-        <div class="board-column-title">
-          <span>In progress</span>
-          <div class="images">
-            <img class="board-column-title-img" src="../assets/icons/plusButton.svg">
-            <img class="board-column-title-img2 d-none" src="../assets/icons/plusButton2.svg">
+        <div class="move-right">
+          <div class="board-column-title">
+            <span>In progress</span>
+            <div class="images">
+              <img class="board-column-title-img" src="../assets/icons/plusButton.svg">
+              <img class="board-column-title-img2 d-none" src="../assets/icons/plusButton2.svg">
+            </div>
           </div>
+          <div class="board-column-empty">No tasks in Progress</div>
+          <div id="inprogress" class="drag-area column" ondragleave="removeHighlight('inprogress')"
+            ondrop="drop(event, 'inprogress')" ondragover="allowDrop(event); highlight('inprogress')"></div>
         </div>
-        <div class="board-column-empty">No tasks in Progress</div>
-        <div id="inprogress" class="drag-area column" ondragleave="removeHighlight('inprogress')" ondrop="drop(event, 'inprogress')" ondragover="allowDrop(event); highlight('inprogress')"></div>
-      </div>
 
-      <div class="move-right">
-        <div class="board-column-title">
-          <span>Awaiting feedback</span>
-          <div class="images">
-            <img class="board-column-title-img" src="../assets/icons/plusButton.svg">
-            <img class="board-column-title-img2 d-none" src="../assets/icons/plusButton2.svg">
+        <div class="move-right">
+          <div class="board-column-title">
+            <span>Awaiting feedback</span>
+            <div class="images">
+              <img class="board-column-title-img" src="../assets/icons/plusButton.svg">
+              <img class="board-column-title-img2 d-none" src="../assets/icons/plusButton2.svg">
+            </div>
           </div>
+          <div class="board-column-empty">No Feedback awaited</div>
+          <div id="awaitingfeedback" class="drag-area column" ondragleave="removeHighlight('awaitingfeedback')"
+            ondrop="drop(event, 'awaitingfeedback')" ondragover="allowDrop(event); highlight('awaitingfeedback')"></div>
         </div>
-        <div class="board-column-empty">No Feedback awaited</div>
-        <div id="awaitingfeedback" class="drag-area column" ondragleave="removeHighlight('awaitingfeedback')" ondrop="drop(event, 'awaitingfeedback')" ondragover="allowDrop(event); highlight('awaitingfeedback')"></div>
-      </div>
 
-      <div class="move-right">
-        <div class="board-column-title">Done</div>
-        <div class="board-column-empty">No tasks Done</div>
-        <div id="done" class="drag-area column" ondragleave="removeHighlight('done')" ondrop="drop(event, 'done')" ondragover="allowDrop(event); highlight('done')"></div>
+        <div class="move-right">
+          <div class="board-column-title">Done</div>
+          <div class="board-column-empty">No tasks Done</div>
+          <div id="done" class="drag-area column" ondragleave="removeHighlight('done')" ondrop="drop(event, 'done')"
+            ondragover="allowDrop(event); highlight('done')"></div>
+        </div>
+
       </div>
 
     </div>
 
   </div>
-
-</div>
   <div id="add-task" class="add-tasks-whole-div d-none center column">
-          
+
   </div>
 
 

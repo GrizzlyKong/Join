@@ -10,7 +10,7 @@ async function init() {
   await includeHTML();
   updateHTML();
   AddPriorities();
-/*   loadTasks(); */
+  /*   loadTasks(); */
 }
 
 /* async function setItem(key, value) {
@@ -29,8 +29,6 @@ async function getItem(key) {
       }
   });
 } */
-
-
 
 /* async function loadTasks() {
   try {
@@ -74,8 +72,6 @@ function findTask() {
   });
 }
 
-
-
 function addTask() {
   let addToTask = document.getElementById("add-task");
   document.getElementById("board-div").classList.add("background");
@@ -85,7 +81,7 @@ function addTask() {
   <form onsubmit="addTodo(); return false;" class="addTaskForm">
   <div class="headline-div">
     <h1>Add Task</h1>
-    <img onclick="closeAddTodo()" class="goBack pointer" src="/assets/icons/close.svg">
+    <img onclick="closeAddTodo()" class="goBack pointer" src="../assets/icons/close.svg">
   </div>
 
   <div class="add-tasks-div center">
@@ -112,7 +108,7 @@ function addTask() {
       <div class="duo-date">
         <div><span>Due date</span><span class="important">*</span></div>
         <input maxlength="10" id="date-todo" required placeholder="dd/mm/yyyy">
-        <img onclick="getDate()" id="calendar" type="text" class="input-icon1 pointer" src="/assets/icons/date.svg" alt="">
+        <img onclick="getDate()" id="calendar" type="text" class="input-icon1 pointer" src="../assets/icons/date.svg" alt="">
       </div>
       <div class="all-priorities">
         <span>Prio</span>
@@ -120,22 +116,22 @@ function addTask() {
           <div id="priority-urgent-todo" tabindex="1" class="prioprity-urgent pointer center">
             <div>Urgent</div>
             <div>
-              <img class="urgent1" src="/assets/icons/urgent3.svg" alt="">
-              <img class="urgent2 d-none" src="/assets/icons/urgent2.svg" alt="">
+              <img class="urgent1" src="../assets/icons/urgent3.svg" alt="">
+              <img class="urgent2 d-none" src="../assets/icons/urgent2.svg" alt="">
             </div>
           </div>
           <div id="priority-medium-todo" tabindex="2" class="prioprity-medium pointer center">
             <div>Medium</div>
             <div>
-              <img class="medium1" src="/assets/icons/medium.svg" alt="">
-              <img class="medium2 d-none" src="/assets/icons/medium2.svg" alt="">
+              <img class="medium1" src="../assets/icons/medium.svg" alt="">
+              <img class="medium2 d-none" src="../assets/icons/medium2.svg" alt="">
             </div>
           </div>
           <div id="priority-low-todo" tabindex="3" class="prioprity-low pointer center">
             <div>Low</div>
             <div>
-              <img class="low1" src="/assets/icons/low.svg" alt="">
-              <img class="low2 d-none" src="/assets/icons/low2.svg" alt="">
+              <img class="low1" src="../assets/icons/low.svg" alt="">
+              <img class="low2 d-none" src="../assets/icons/low2.svg" alt="">
             </div>
           </div>
         </div>
@@ -152,10 +148,10 @@ function addTask() {
         <div><span>Subtasks</span><span class="important">*</span></div>
       <div class="subtaskInput">
         <input minlength="1" oninput="addSubtasks()" id="add-subtasks" type="text" placeholder="Add new subtask">
-        <img id="subtask-add" class="input-icon2 pointer" src="/assets/icons/add.svg">
+        <img id="subtask-add" class="input-icon2 pointer" src="../assets/icons/add.svg">
       <div class="oninput">
-        <img onclick="cancelSubtask()" id="subtask-cancel" class="input-icon3 d-none pointer center" src="/assets/icons/cancelX.svg">
-        <img onclick="correctSubtask()" id="subtask-correct" class="input-icon4 d-none pointer center" src="/assets/icons/correct.svg">
+        <img onclick="cancelSubtask()" id="subtask-cancel" class="input-icon3 d-none pointer center" src="../assets/icons/cancelX.svg">
+        <img onclick="correctSubtask()" id="subtask-correct" class="input-icon4 d-none pointer center" src="../assets/icons/correct.svg">
       </div>
     </div>
         </div>
@@ -172,12 +168,12 @@ function addTask() {
       <div class="clear-and-create-task center">
         <button onclick="closeAddTodo()" class="clear pointer center">
           <span>Clear</span>
-          <img class="cancel1" src="/assets/icons/cancel.svg" alt="">
-          <img class="cancel2 d-none" src="/assets/icons/cancel2.svg" alt="">
+          <img class="cancel1" src="../assets/icons/cancel.svg" alt="">
+          <img class="cancel2 d-none" src="../assets/icons/cancel2.svg" alt="">
         </button>
         <button type="submit" class="create-task pointer center">
           <span>Create Task</span>
-          <img src="/assets/icons/check.svg" alt="">
+          <img src="../assets/icons/check.svg" alt="">
         </button>
       </div>
     </div>
@@ -190,14 +186,14 @@ function addTask() {
 function bindSubtaskEvents() {
   let addedSubtasksContainer = document.getElementById("added-subtasks");
   if (addedSubtasksContainer) {
-    addedSubtasksContainer.addEventListener("click", function(event) {
+    addedSubtasksContainer.addEventListener("click", function (event) {
       let target = event.target;
-      if (target.tagName === 'IMG') {
-        let subtaskId = target.closest('.added-subtask').id;
-        let taskId = 'Ihr-Task-ID'; // Ersetzen Sie dies durch die tatsächliche Task-ID
-        if (target.classList.contains('subtask-img1')) {
+      if (target.tagName === "IMG") {
+        let subtaskId = target.closest(".added-subtask").id;
+        let taskId = "Ihr-Task-ID"; // Ersetzen Sie dies durch die tatsächliche Task-ID
+        if (target.classList.contains("subtask-img1")) {
           editSubtask(subtaskId);
-        } else if (target.classList.contains('subtask-img2')) {
+        } else if (target.classList.contains("subtask-img2")) {
           deleteSubtask(taskId, subtaskId);
         }
       }
@@ -205,23 +201,29 @@ function bindSubtaskEvents() {
   }
 }
 
-
-
 function closeAddTodo() {
   document.getElementById("add-task").classList.add("d-none");
 }
 
 function addTodo() {
+  document.getElementById("add-task").classList.add("d-none");
   let title = document.getElementById("title-todo").value;
   let description = document.getElementById("description-todo").value;
   let category = document.getElementById("category-todo").value;
-  /*   let date = document.getElementById('date-todo').value; */
+  let dueDate = document.getElementById("date-todo").value;
 
-  document.getElementById("add-task").classList.add("d-none");
+  /*   let date = document.getElementById('date-todo').value; */
+  let subtasks = Array.from(
+    document.querySelectorAll("#added-subtasks .added-subtask")
+  ).map((subtask) => subtask.textContent.trim());
   const taskId = `task-${taskIdCounter++}`; // Generiert eine einzigartige ID
   AddPriorities(taskId);
   let taskHTML = `
-    <div id="${taskId}" class="board-task-card pointer" draggable="true">
+    <div id="${taskId}" class="board-task-card pointer" draggable="true" onclick="openTaskInfos('${title}', '${description}', '${category}', '${dueDate}', ${JSON.stringify(
+    subtasks
+  )
+    .split('"')
+    .join("&quot;")})">
             <div class="board-task-card-title">${category}</div>
             <div class="board-task-card-description">${title}</div>
             <div class="board-task-card-task">${description}</div>
@@ -237,7 +239,9 @@ function addTodo() {
             </div>
           </div>
   `;
-  document.getElementById("todo").innerHTML += taskHTML;
+  document.getElementById("todo").insertAdjacentHTML("beforeend", taskHTML);
+
+  /*   document.getElementById("todo").innerHTML += taskHTML; */
   bindDragEvents(document.getElementById(taskId));
 }
 
@@ -251,10 +255,55 @@ function addTodo() {
   }
 } */
 
+function openTaskInfos(title, description, category, dueDate, subtasks) {
+  document.getElementById("all-task-infos").classList.remove("d-none");
 
+  let subtasksHtml = subtasks.map((subtask) => `<div class="column">${subtask}</div>`).join("");
 
-function openTaskInfos(task){
-  
+  let allTaskInfos = document.getElementById("all-task-infos");
+  allTaskInfos.innerHTML = `
+
+  `;
+}
+function correctSubtask() {
+  let input = document.getElementById("add-subtasks").value.trim();
+  if (input !== "") {
+    // Zählt die aktuell vorhandenen Subtasks
+    const currentSubtasks =
+      document.getElementsByClassName("added-subtask").length;
+
+    // Erlaubt das Hinzufügen, wenn weniger als 2 Subtasks vorhanden sind
+    if (currentSubtasks < 2) {
+      const subtaskId = `subtask-${subtaskIdCounter++}`;
+      let addedSubtasks = document.getElementById("added-subtasks");
+      addedSubtasks.innerHTML += `
+        <div id="${subtaskId}" class="added-subtask pointer">
+            <div> ${input}</div>
+          <div class="subtask-both-img d-none">
+            <img onclick="editSubtask('${subtaskId}')" class="subtask-img1" src="../assets/icons/edit.svg">
+            <img onclick="deleteSubtask('${subtaskId}')" class="subtask-img2" src="../assets/icons/delete.svg">
+          </div>
+        </div>
+      `;
+      document.getElementById("add-subtasks").value = "";
+    } else {
+      // Benachrichtigung, wenn das Limit von 2 Subtasks erreicht ist
+      let inputElement = document.getElementById("add-subtasks");
+      inputElement.value = "Maximal 2 Subtasks";
+      inputElement.classList.add("red");
+      inputElement.disabled = true;
+      setTimeout(() => {
+        inputElement.value = "";
+        inputElement.classList.remove("red");
+        inputElement.disabled = false;
+      }, 3000);
+    }
+  }
+  /*   updateProgress(); */
+}
+
+function closeTaskInfos() {
+  document.getElementById("all-task-infos").classList.add("d-none");
 }
 
 function AddPriorities(taskId) {
@@ -290,11 +339,10 @@ function bindDragEvents(element) {
   element.addEventListener("dragstart", (e) => startDragging(e, element));
 }
 
-
-
 function startDragging(event, element) {
-    currentDraggedElement = element;
-    event.dataTransfer.setData("text/plain", element.id);
+  console.log("Drag Start:", element.id); // Zum Debuggen
+  currentDraggedElement = element;
+  event.dataTransfer.setData("text/plain", element);
 }
 
 function allowDrop(event) {
@@ -306,15 +354,23 @@ function drop(event, targetId) {
   let target = document.getElementById(targetId);
   if (target && currentDraggedElement) {
     target.appendChild(currentDraggedElement);
+    document.getElementById(targetId).classList.remove("drag-area-highlight");
   }
+}
+
+function addTaskToDOM(task) {
+  // ... (Ihr bestehender Code)
+  let newCard = document.getElementById(task.id);
+  newCard.setAttribute("draggable", true);
+  newCard.addEventListener("dragstart", (e) => startDragging(e, newCard));
 }
 
 function updateHTML() {
   let taskCards = document.querySelectorAll(".board-task-card");
   taskCards.forEach((card, index) => {
-      card.setAttribute("draggable", true);
-      card.setAttribute("id", "task-card-" + index); // Stellen Sie sicher, dass jede Karte eine eindeutige ID hat
-      card.addEventListener("dragstart", (e) => startDragging(e, card));
+    card.setAttribute("draggable", true);
+    card.setAttribute("id", "task-card-" + index); // Stellen Sie sicher, dass jede Karte eine eindeutige ID hat
+    card.addEventListener("dragstart", (e) => startDragging(e, card));
   });
 }
 
@@ -350,7 +406,7 @@ function addSubtasks() {
     document.getElementById("subtask-cancel").classList.add("d-none");
     document.getElementById("subtask-correct").classList.add("d-none");
   }
-  updateProgress();
+  /*   updateProgress(); */
 }
 
 function cancelSubtask() {
@@ -364,8 +420,9 @@ function correctSubtask() {
   let input = document.getElementById("add-subtasks").value.trim();
   if (input !== "") {
     // Zählt die aktuell vorhandenen Subtasks
-    const currentSubtasks = document.getElementsByClassName("added-subtask").length;
-    
+    const currentSubtasks =
+      document.getElementsByClassName("added-subtask").length;
+
     // Erlaubt das Hinzufügen, wenn weniger als 2 Subtasks vorhanden sind
     if (currentSubtasks < 2) {
       const subtaskId = `subtask-${subtaskIdCounter++}`;
@@ -374,8 +431,8 @@ function correctSubtask() {
         <div id="${subtaskId}" class="added-subtask pointer">
             <div>&bull; ${input}</div>
           <div class="subtask-both-img d-none">
-            <img onclick="editSubtask('${subtaskId}')" class="subtask-img1" src="/assets/icons/edit.svg">
-            <img onclick="deleteSubtask('${subtaskId}')" class="subtask-img2" src="/assets/icons/delete.svg">
+            <img onclick="editSubtask('${subtaskId}')" class="subtask-img1" src="../assets/icons/edit.svg">
+            <img onclick="deleteSubtask('${subtaskId}')" class="subtask-img2" src="../assets/icons/delete.svg">
           </div>
         </div>
       `;
@@ -393,25 +450,24 @@ function correctSubtask() {
       }, 3000);
     }
   }
-  updateProgress();
+  /*   updateProgress(); */
 }
 
 function editSubtask(subtaskId) {
   let subtaskElement = document.getElementById(subtaskId);
-  let subtaskContent = subtaskElement.querySelector('div').textContent;
+  let subtaskContent = subtaskElement.querySelector("div").textContent;
   const taskId = `task-${taskIdCounter++}`;
 
   subtaskElement.innerHTML = `
     <input type="text" id="edit-${subtaskId}" class="edit-input" value="${subtaskContent.trim()}">
     <div>
-      <img onclick="deleteSubtask('${taskId}', '${subtaskId}')" src="/assets/icons/delete.svg">
-      <img onclick="saveEdit('${subtaskId}')" src="/assets/icons/correct.svg">
+      <img onclick="deleteSubtask('${taskId}', '${subtaskId}')" src="../assets/icons/delete.svg">
+      <img onclick="saveEdit('${subtaskId}')" src="../assets/icons/correct.svg">
     </div>
   `;
   document.getElementById(subtaskId).classList.add("border-bottom-blue");
   document.getElementById(subtaskId).classList.add("added-subtask-unset");
   document.getElementById(subtaskId).classList.add("border-radius-unset");
-
 }
 
 function saveEdit(subtaskId) {
@@ -422,8 +478,8 @@ function saveEdit(subtaskId) {
   subtaskElement.innerHTML = `
     <div>&bull; ${updatedText}</div>
     <div class="subtask-both-img d-none">
-      <img onclick="editSubtask('${subtaskId}')" class="subtask-img1" src="/assets/icons/edit.svg">
-      <img onclick="deleteSubtask('${subtaskId}')" class="subtask-img2" src="/assets/icons/delete.svg">
+      <img onclick="editSubtask('${subtaskId}')" class="subtask-img1" src="../assets/icons/edit.svg">
+      <img onclick="deleteSubtask('${subtaskId}')" class="subtask-img2" src="../assets/icons/delete.svg">
     </div>
   `;
   document.getElementById(subtaskId).classList.remove("border-bottom-blue");
@@ -435,11 +491,11 @@ function deleteSubtask(taskId, subtaskId) {
   let currentSubtask = document.getElementById(subtaskId);
   if (currentSubtask) {
     currentSubtask.remove();
-    updateProgress(taskId);
+    /*     updateProgress(taskId); */
   }
 }
 
-function updateProgress() {
+/* function updateProgress() {
   const maxSubtasks = 2;
   const currentSubtasks = document.getElementsByClassName("added-subtask").length;
 
@@ -457,7 +513,6 @@ function updateProgress() {
   if (subtaskText) {
     subtaskText.textContent = `${currentSubtasks}/${maxSubtasks} Subtasks`;
   }
-}
+} */
 
 init(); // Initialisieren Sie das Skript
-

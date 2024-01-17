@@ -206,9 +206,9 @@ body {
 }
 
 .drag-area {
-  min-height: 200px;
-  background-color: rgba(0, 0, 0, 0.1);
-  border: 1px dashed black;
+  min-height: 400px;
+/*   background-color: rgba(0, 0, 0, 0.1);
+  border: 1px dashed black; */
   margin-bottom: 50px;
   display: flex;
   align-items: flex-start;
@@ -738,3 +738,126 @@ width: 59px;
 .goBack:hover{
   background-color: rgb(128, 128, 128,0.2);
 }
+
+.whole-task-infos{
+
+  padding-left: 25px;
+  padding-right: 25px;
+  padding-top: 35px;
+  padding-bottom: 35px;
+  z-index: 999;
+  width: 396px;
+  height: 724px;
+  border-radius: 30px;
+  background-color: #ffffff;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+}
+
+.task-info-top{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.task-info-top img{
+  cursor: pointer;
+  border-radius: 50%;
+    padding: 2px;
+}
+.task-info-top img:hover{
+    background-color: rgb(128, 128, 128,0.2);
+}
+.task-info-category{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgb(0, 56, 255);
+  color: white;
+  border-radius: 8px;
+  width: 113px;
+  height: 27px;
+  font-size: 18px;
+}
+.task-info-title{
+  font-weight: 700;
+  font-size: 36px;
+  margin-top: 16px;
+  margin-bottom: 16px;
+}
+.task-info-description{
+  margin-bottom: 16px;
+  font-size: 16px;
+}
+.task-info-due-date{
+  gap: 16px;
+  margin-bottom: 16px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+.headline3{
+  font-weight: 700;
+color: #42526E;
+}
+.task-info-prio{
+  gap: 16px;
+
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin-bottom: 16px;
+}
+.task-info-current-prio{
+  display: flex;
+  gap: 12px;
+
+}
+.task-info-assigned-to{
+
+  margin-bottom: 16px;
+}
+.task-info-subtasks ul{
+  margin-top: 16px !important;
+margin-bottom: 0;
+padding-left: 10px;
+}
+.task-info-contacts{
+  margin-top: 16px;
+}
+.task-info-delete-edit{
+  bottom: 32px;
+  right: 32px;
+
+}
+.task-info-delete{
+  gap: 6px;
+  padding-right: 12px;
+  border-right: 1px solid #d1d1d1;
+}
+.task-info-edit{
+  padding-left: 12px;
+  gap: 6px;
+}
+.task-info-delete:hover{
+  color: rgb(41, 171, 226);
+
+}
+.task-info-delete:hover .img1{
+display: none;
+}
+.task-info-delete:hover .img2{
+  display: inline;
+  }
+
+.task-info-edit:hover{
+  color: rgb(41, 171, 226);
+
+}
+.task-info-edit:hover .img3{
+  display: none;
+  }
+  .task-info-edit:hover .img4{
+    display: inline;
+    }

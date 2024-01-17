@@ -27,15 +27,15 @@ function addNewContact() {
   newContact.innerHTML = /* HTML */ `
     <div id="add-new-contact-id" class="addNewContactDiv">
       <div class ="left-side-add-contact column">
-        <div><img src="/assets/icons/logo.svg"></div>
+        <div><img src="../assets/icons/logo.svg"></div>
         <h1>Add contact</h1>
         <span>Tasks are better with a team!</span>
         <div class="line"></div>
       </div>
       <div class = "right-side-add-contact">
-        <img onclick="closeAddContact()" class="close absolute pointer" src="/assets/icons/close.svg">
+        <img onclick="closeAddContact()" class="close absolute pointer" src="../assets/icons/close.svg">
         <div class = "account center">
-          <div class="adding-contact-icon"><img src="/assets/icons/person.png"></div>
+          <div class="adding-contact-icon"><img src="../assets/icons/person.png"></div>
         </div>
         <div>
           <form onsubmit="return false;">
@@ -51,12 +51,12 @@ function addNewContact() {
               <div class="clear-and-create-task">
                 <div class="clear pointer center" onclick="clearInputAddingContact()">
                   <span>Clear</span>
-                  <img class="cancel1" src="/assets/icons/cancel.svg" alt="">
-                  <img class="cancel2 d-none" src="/assets/icons/cancel2.svg" alt="">
+                  <img class="cancel1" src="../assets/icons/cancel.svg" alt="">
+                  <img class="cancel2 d-none" src="../assets/icons/cancel2.svg" alt="">
                 </div>
                 <div class="create-task pointer center" onclick="addingContact()">
                   <span>Create contact</span>
-                  <img src="/assets/icons/check.svg" alt="">
+                  <img src="../assets/icons/check.svg" alt="">
                 </div>
               </div>
             </div>
@@ -336,13 +336,13 @@ function editContact() {
   editContactDiv.innerHTML = /* HTML */ `
     <div id="edit-contact-id" class="addNewContactDiv">
       <div class="left-side-add-contact column">
-        <div><img src="/assets/icons/logo.svg"></div>
+        <div><img src="../assets/icons/logo.svg"></div>
         <h1>Edit contact</h1>
         <span></span>
         <div class="line"></div>
       </div>
       <div class="right-side-add-contact">
-        <img onclick="closeAddContact()" class="close absolute pointer" src="/assets/icons/close.svg">
+        <img onclick="closeAddContact()" class="close absolute pointer" src="../assets/icons/close.svg">
         <div class="account center">
           <div class="adding-contact-icon" style="background-color: ${contactToEdit.color}">${contactToEdit.name.charAt(0).toUpperCase()}</div>
         </div>
@@ -366,12 +366,12 @@ function editContact() {
               <div class="clear-and-update-contact">
                 <div class="clear pointer center" onclick="deleteContact()">
                   <span>Delete</span>
-                  <img class="cancel1" src="/assets/icons/cancel.svg" alt="">
-                  <img class="cancel2 d-none" src="/assets/icons/cancel2.svg" alt="">
+                  <img class="cancel1" src="../assets/icons/cancel.svg" alt="">
+                  <img class="cancel2 d-none" src="../assets/icons/cancel2.svg" alt="">
                 </div>
                 <div class="update-contact pointer center" onclick="updateContact(${existingContacts.indexOf(contactToEdit)})">
                   <span>Save</span>
-                  <img src="/assets/icons/check.svg" alt="">
+                  <img src="../assets/icons/check.svg" alt="">
                 </div>
               </div>
             </div>
