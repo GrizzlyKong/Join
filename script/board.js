@@ -1,12 +1,19 @@
-const STORAGE_TOKEN = 'UK3WMTJPY9HCOS9AB0PGAT5U9XL1Y2BKP4MIYIVD';
+/* const STORAGE_TOKEN = 'UK3WMTJPY9HCOS9AB0PGAT5U9XL1Y2BKP4MIYIVD';
 const STORAGE_URL = 'https://remote-storage.developerakademie.org/item';
-
+ */
 let currentDraggedElement;
 let taskIdCounter = 0;
 let subtaskIdCounter = 0;
 let addCount = 0;
 
-async function setItem(key, value) {
+async function init() {
+  await includeHTML();
+  updateHTML();
+  AddPriorities();
+/*   loadTasks(); */
+}
+
+/* async function setItem(key, value) {
   const payload = { key, value, token: STORAGE_TOKEN };
   return fetch(STORAGE_URL, { method: 'POST', body: JSON.stringify(payload) })
       .then(res => res.json());
@@ -21,16 +28,11 @@ async function getItem(key) {
           throw `Could not find data with key "${key}".`;
       }
   });
-}
+} */
 
-async function init() {
-  await includeHTML();
-  updateHTML();
-  AddPriorities();
-  loadTasks();
-}
 
-async function loadTasks() {
+
+/* async function loadTasks() {
   try {
     let tasks = await getItem('tasks');
     tasks.forEach(task => {
@@ -39,7 +41,7 @@ async function loadTasks() {
   } catch (error) {
     console.error('Fehler beim Laden der Tasks:', error);
   }
-}
+} */
 
 async function includeHTML() {
   let includeElements = document.querySelectorAll("[w3-include-html]");
@@ -209,26 +211,37 @@ function closeAddTodo() {
   document.getElementById("add-task").classList.add("d-none");
 }
 
-async function addTodo() {
-  document.getElementById('board-column-empty-id').classList.add("d-none");
+function addTodo() {
   let title = document.getElementById("title-todo").value;
   let description = document.getElementById("description-todo").value;
   let category = document.getElementById("category-todo").value;
-
-  const taskId = `task-${taskIdCounter++}`;
-  let task = {
-      id: taskId,
-      title,
-      description,
-      category
-  };
+  /*   let date = document.getElementById('date-todo').value; */
 
   document.getElementById("add-task").classList.add("d-none");
-  addTaskToDOM(task);
-  await saveTask(task);
+  const taskId = `task-${taskIdCounter++}`; // Generiert eine einzigartige ID
+  AddPriorities(taskId);
+  let taskHTML = `
+    <div id="${taskId}" class="board-task-card pointer" draggable="true">
+            <div class="board-task-card-title">${category}</div>
+            <div class="board-task-card-description">${title}</div>
+            <div class="board-task-card-task">${description}</div>
+            <div class="board-task-card-subtasks">
+              <div class="board-task-card-subtasks-bar">
+                <div class="bar-fill" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
+              </div>
+              <div class="board-task-card-subtasks-amount"></div>
+            </div>
+            <div class="board-task-card-users">
+              <div class="board-task-card-users-amount">M</div>
+              <div class="board-task-card-priority"><img id="priorities-todo-${taskId}" src=""></img></div>
+            </div>
+          </div>
+  `;
+  document.getElementById("todo").innerHTML += taskHTML;
+  bindDragEvents(document.getElementById(taskId));
 }
 
-async function saveTask(task) {
+/* async function saveTask(task) {
   try {
       let tasks = await getItem('tasks') || [];
       tasks.push(task);
@@ -236,29 +249,9 @@ async function saveTask(task) {
   } catch (error) {
       console.error('Fehler beim Speichern des Tasks:', error);
   }
-}
+} */
 
 
-function addTaskToDOM(task) {
-  let taskHTML = `
-      <div onclick="openTaskInfos(${task})" id="${task.id}" class="board-task-card pointer" draggable="true">
-          <div class="board-task-card-title">${task.category}</div>
-          <div class="board-task-card-description">${task.title}</div>
-          <div class="board-task-card-task">${task.description}</div>
-          <div class="board-task-card-subtasks">
-              <div class="board-task-card-subtasks-bar">
-                  <div class="bar-fill" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
-              </div>
-              <div class="board-task-card-subtasks-amount"></div>
-          </div>
-          <div class="board-task-card-users">
-              <div class="board-task-card-users-amount">M</div>
-              <div class="board-task-card-priority"><img id="priorities-todo-${task.id}" src=""></img></div>
-          </div>
-      </div>
-  `;
-  document.getElementById("todo").innerHTML += taskHTML;
-}
 
 function openTaskInfos(task){
   
@@ -297,9 +290,11 @@ function bindDragEvents(element) {
   element.addEventListener("dragstart", (e) => startDragging(e, element));
 }
 
+
+
 function startDragging(event, element) {
     currentDraggedElement = element;
-    event.dataTransfer.setData("text/plain", "");
+    event.dataTransfer.setData("text/plain", element.id);
 }
 
 function allowDrop(event) {
@@ -316,8 +311,9 @@ function drop(event, targetId) {
 
 function updateHTML() {
   let taskCards = document.querySelectorAll(".board-task-card");
-  taskCards.forEach((card) => {
+  taskCards.forEach((card, index) => {
       card.setAttribute("draggable", true);
+      card.setAttribute("id", "task-card-" + index); // Stellen Sie sicher, dass jede Karte eine eindeutige ID hat
       card.addEventListener("dragstart", (e) => startDragging(e, card));
   });
 }
@@ -464,3 +460,4 @@ function updateProgress() {
 }
 
 init(); // Initialisieren Sie das Skript
+
