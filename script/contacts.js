@@ -1,3 +1,31 @@
+const STORAGE_TOKEN = 'UK3WMTJPY9HCOS9AB0PGAT5U9XL1Y2BKP4MIYIVD';
+const STORAGE_URL = 'https://remote-storage.developerakademie.org/item';
+
+let contacts = [];
+
+
+async function setItem(key, value) {
+  const payload = { key, value, token: STORAGE_TOKEN };
+  return fetch(STORAGE_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(payload),
+  }).then(res => res.json());
+}
+
+
+async function getItem(key) {
+  const url = `${STORAGE_URL}?key=${key}&token=${STORAGE_TOKEN}`;
+  return fetch(url).then(res => res.json()).then(res => {
+    if (res.data) {
+      return res.data.value;
+    } throw `Could not find data with key "${key}".`;
+  });
+}
+
+
 async function init() {
   await includeHTML();
   displayUserContacts();
@@ -141,7 +169,7 @@ function getRandomColor() {
 }
 
 
-function addingContact() {
+async function addingContact() {
   const { name, email, phone } = getInputValues();
 
   if (!validateInputFields(name, email, phone)) {
@@ -156,8 +184,7 @@ function addingContact() {
   updateLetterContacts(initialLetter);
   clearInputAddingContact();
   closeAddContact();
-  saveContactToLocalStorage({ name, email, phone, color: getRandomColor() });
-  reloadPage();
+  await setItem(name, { name, email, phone, color: getRandomColor() });
 }
 
 
@@ -223,21 +250,6 @@ function generateNewContactElementHTML(initialLetter, name, email, randomColor) 
       <a class="contact-link">${email}</a>
     </div>
   `;
-}
-
-
-function saveContactToLocalStorage(contact) {
-  const loggedInUserName = localStorage.getItem("loggedInUserName");
-
-  if (!loggedInUserName) {
-    console.error("No logged-in user found. Contact cannot be saved.");
-    return;
-  }
-
-  const userContactsKey = `contacts_${loggedInUserName}`;
-  const existingContacts = JSON.parse(localStorage.getItem(userContactsKey)) || [];
-  existingContacts.push(contact);
-  localStorage.setItem(userContactsKey, JSON.stringify(existingContacts));
 }
 
 
@@ -341,7 +353,7 @@ function displayContactInfo(contactInfoDiv) {
 }
 
 
-function displayUserContacts() {
+async function displayUserContacts() {
   const loggedInUserName = localStorage.getItem("loggedInUserName");
 
   if (!loggedInUserName) {
@@ -349,15 +361,20 @@ function displayUserContacts() {
     return;
   }
 
-  const savedContacts = getSortedContacts(loggedInUserName);
+  try {
+    const response = await fetch(`${STORAGE_URL}?user=${loggedInUserName}&token=${STORAGE_TOKEN}`);
+    const savedContacts = await response.json();
 
-  savedContacts.forEach((contact) => {
-    const { name, email, phone, color } = contact;
-    const initialLetter = name.charAt(0).toUpperCase();
+    savedContacts.forEach((contact) => {
+      const { name, email, phone, color } = contact;
+      const initialLetter = name.charAt(0).toUpperCase();
 
-    const newContactElement = createContactElement(name, email, initialLetter, phone, color);
-    insertContactElement(newContactElement, initialLetter);
-  });
+      const newContactElement = createContactElement(name, email, initialLetter, phone, color);
+      insertContactElement(newContactElement, initialLetter);
+    });
+  } catch (error) {
+    console.error("Error fetching contacts from the server:", error);
+  }
 }
 
 
@@ -479,7 +496,6 @@ function deleteContactFromLocalStorage(contactName) {
 
   const contactIndex = findContactIndex(existingContacts, contactName);
   removeContact(existingContacts, contactIndex);
-  saveContactsToLocalStorage(userContactsKey, existingContacts);
 }
 
 
@@ -515,11 +531,6 @@ function removeContact(existingContacts, contactIndex) {
 }
 
 
-function saveContactsToLocalStorage(userContactsKey, existingContacts) {
-  localStorage.setItem(userContactsKey, JSON.stringify(existingContacts));
-}
-
-
 function hideContactInfo(contactInfoDiv) {
   contactInfoDiv.style.display = "none";
 }
@@ -528,8 +539,6 @@ function hideContactInfo(contactInfoDiv) {
 function reloadPage() {
   location.reload();
 }
-
-init();
 
 
 function editContact() {
