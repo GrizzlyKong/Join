@@ -20,32 +20,57 @@ async function includeHTML() {
 
 
 function addNewContact() {
-  let newContact = document.getElementById("add-new-contact");
-  document.getElementById("contacts-div").classList.add("background");
-  document.getElementById("add-new-contact").classList.add("sign-up-animation");
-  document.getElementById("add-new-contact").classList.remove("d-none");
-  newContact.innerHTML = /* HTML */ `
+  const newContact = document.getElementById("add-new-contact");
+  updateElementClass("contacts-div", "background", "add");
+  updateElementClass("add-new-contact", "sign-up-animation", "add");
+  updateElementClass("add-new-contact", "d-none", "remove");
+
+  newContact.innerHTML = generateNewContactHTML();
+
+  const newContactElement = createNewContactElement();
+  newContactElement.onclick = showContact;
+}
+
+
+function updateElementClass(elementId, className, action) {
+  const element = document.getElementById(elementId);
+  if (action === "add") {
+    element.classList.add(className);
+  } else {
+    element.classList.remove(className);
+  }
+}
+
+
+function generateNewContactHTML() {
+  return /* HTML */ `
     <div id="add-new-contact-id" class="addNewContactDiv">
-      <div class ="left-side-add-contact column">
+      <div class="left-side-add-contact column">
         <div><img src="/assets/icons/logo.svg"></div>
         <h1>Add contact</h1>
         <span>Tasks are better with a team!</span>
         <div class="line"></div>
       </div>
-      <div class = "right-side-add-contact">
+      <div class="right-side-add-contact">
         <img onclick="closeAddContact()" class="close absolute pointer" src="/assets/icons/close.svg">
-        <div class = "account center">
+        <div class="account center">
           <div class="adding-contact-icon"><img src="/assets/icons/person.png"></div>
         </div>
         <div>
           <form onsubmit="return false;">
             <div class="form-contacs">
-              <div class="center"><input id="contactNameInput" class="log-in-field column center pointer" required type="text" placeholder="Name"><img
-                class="log-in-mail-lock-icon" src="../assets/icons/person-small.png"></div>
-              <div class="center"><input id="contactEmailInput" class="log-in-field column center pointer" required type="email" placeholder="Email"><img
-                class="log-in-mail-lock-icon" src="../assets/icons/mail.png"></div>
-              <div class="center"><input id="contactPhoneInput" class="log-in-field column center pointer" required type="number" placeholder="Phone"><img
-                class="log-in-mail-lock-icon" src="../assets/icons/call.png"></div>
+              <div class="center">
+                <input id="contactNameInput" class="log-in-field column center pointer" required type="text" placeholder="Name">
+                <img class="log-in-mail-lock-icon" src="../assets/icons/person-small.png">
+              </div>
+              <div class="center">
+                <input id="contactEmailInput" class="log-in-field column center pointer" required type="email" placeholder="Email">
+                <img class="log-in-mail-lock-icon" src="../assets/icons/mail.png">
+              </div>
+              <div class="center">
+                <input id="contactPhoneInput" class="log-in-field column center pointer" required type="number" placeholder="Phone">
+                <img class="log-in-mail-lock-icon" src="../assets/icons/call.png">
+              </div>
             </div>
             <div class="right-bottom">
               <div class="clear-and-create-task">
@@ -65,10 +90,19 @@ function addNewContact() {
       </div>
     </div>
   `;
+}
+
+
+function createNewContactElement() {
   const newContactElement = document.createElement("div");
   newContactElement.className = "added-contact pointer";
-  newContactElement.onclick = showContact;
-  newContactElement.innerHTML = `
+  newContactElement.innerHTML = generateNewContactElementHTML();
+  return newContactElement;
+}
+
+
+function generateNewContactElementHTML() {
+  return `
     <div class="primary-contact-icon-container">
       <div class="added-contact-icon"></div>
     </div>
@@ -78,6 +112,7 @@ function addNewContact() {
     </div>
   `;
 }
+
 
 function clearInputAddingContact() {
   document.getElementById("contactNameInput").value = "";
@@ -95,6 +130,7 @@ function insertAfter(newNode, referenceNode) {
   }
 }
 
+
 function getRandomColor() {
   const letters = "0123456789ABCDEF";
   let color = "#";
@@ -106,41 +142,87 @@ function getRandomColor() {
 
 
 function addingContact() {
-  const name = document.getElementById("contactNameInput").value;
-  const email = document.getElementById("contactEmailInput").value;
-  const phone = document.getElementById("contactPhoneInput").value;
+  const { name, email, phone } = getInputValues();
 
-  if (!name || !email || !phone) {
+  if (!validateInputFields(name, email, phone)) {
     alert("Please fill in all fields before creating a contact.");
     return;
   }
 
-  const initialLetter = name.charAt(0).toUpperCase();
-  const newContactElement = document.createElement("div");
-  newContactElement.className = "added-contact pointer";
-  newContactElement.onclick = showContact;
+  const initialLetter = getInitialLetter(name);
+  const newContactElement = createNewContactElement(name, email, initialLetter);
 
-  const randomColor = getRandomColor();
-
-  newContactElement.innerHTML = `
-    <div class="primary-contact-icon-container">
-        <div class="added-contact-icon" style="background-color: ${randomColor} !important; border: 4px solid white;">${initialLetter}</div>
-    </div>
-    <div class="moveRight">
-        <p>${name}</p>
-        <a class="contact-link">${email}</a>
-    </div>
-  `;
-
-  const contactsMenu = document.getElementById("contactsMenu");
-  const referenceNode = contactsMenu.childNodes[1];
-  insertAfter(newContactElement, referenceNode);
-
+  insertNewContactElement(newContactElement);
   updateLetterContacts(initialLetter);
   clearInputAddingContact();
   closeAddContact();
-  saveContactToLocalStorage({ name, email, phone, color: randomColor });
+  saveContactToLocalStorage({ name, email, phone, color: getRandomColor() });
+  reloadPage();
+}
+
+
+function getInputValues() {
+  return {
+    name: document.getElementById("contactNameInput").value,
+    email: document.getElementById("contactEmailInput").value,
+    phone: document.getElementById("contactPhoneInput").value,
+  };
+}
+
+
+function getInitialLetter(name) {
+  return name.charAt(0).toUpperCase();
+}
+
+
+function createNewContactElement(name, email, initialLetter) {
+  const newContactElement = document.createElement("div");
+  newContactElement.className = "added-contact pointer";
+  newContactElement.onclick = showContact;
+  const randomColor = getRandomColor();
+
+  newContactElement.innerHTML = generateNewContactElementHTML(initialLetter, name, email, randomColor);
+  return newContactElement;
+}
+
+
+function insertNewContactElement(newContactElement) {
+  const contactsMenu = document.getElementById("contactsMenu");
+  const referenceNode = contactsMenu.childNodes[1];
+  insertAfter(newContactElement, referenceNode);
+}
+
+function reloadPage() {
   location.reload();
+}
+
+
+function validateInputFields(name, email, phone) {
+  return name && email && phone;
+}
+
+
+function createNewContactElement(name, email, initialLetter) {
+  const newContactElement = document.createElement("div");
+  newContactElement.className = "added-contact pointer";
+  newContactElement.onclick = showContact;
+  const randomColor = getRandomColor();
+
+  newContactElement.innerHTML = generateNewContactElementHTML(initialLetter, name, email, randomColor);
+  return newContactElement;
+}
+
+
+function generateNewContactElementHTML(initialLetter, name, email, randomColor) {
+  return `
+    <div class="primary-contact-icon-container">
+      <div class="added-contact-icon" style="background-color: ${randomColor} !important; border: 4px solid white;">${initialLetter}</div>
+    </div>
+    <div class="moveRight">
+      <p>${name}</p>
+      <a class="contact-link">${email}</a>
+    </div>
+  `;
 }
 
 
@@ -161,27 +243,48 @@ function saveContactToLocalStorage(contact) {
 
 function updateLetterContacts(firstLetter) {
   const contactsMenu = document.getElementById("contactsMenu");
-  const letterContacts = Array.from(contactsMenu.getElementsByClassName("letter-contacts"));
+  const letterContacts = getLetterContactsArray(contactsMenu);
 
-  const existingLetterContacts = letterContacts.find((element) => {
-    return element.getAttribute("data-letter") === firstLetter;
-  });
+  const existingLetterContacts = findExistingLetterContacts(letterContacts, firstLetter);
 
   if (!existingLetterContacts) {
-    const newLetterContacts = document.createElement("div");
-    newLetterContacts.className = "letter-contacts";
-    newLetterContacts.setAttribute("data-letter", firstLetter);
-    newLetterContacts.innerHTML = `<p>${firstLetter}</p>`;
+    const newLetterContacts = createNewLetterContacts(firstLetter);
 
-    const insertIndex = letterContacts.findIndex((element) => {
-      return element.getAttribute("data-letter") > firstLetter;
-    });
+    const insertIndex = getInsertIndex(letterContacts, firstLetter);
+    insertNewLetterContacts(contactsMenu, newLetterContacts, letterContacts, insertIndex);
+  }
+}
 
-    if (insertIndex !== -1) {
-      contactsMenu.insertBefore(newLetterContacts, letterContacts[insertIndex]);
-    } else {
-      contactsMenu.appendChild(newLetterContacts);
-    }
+
+function getLetterContactsArray(contactsMenu) {
+  return Array.from(contactsMenu.getElementsByClassName("letter-contacts"));
+}
+
+
+function findExistingLetterContacts(letterContacts, firstLetter) {
+  return letterContacts.find((element) => element.getAttribute("data-letter") === firstLetter);
+}
+
+
+function createNewLetterContacts(firstLetter) {
+  const newLetterContacts = document.createElement("div");
+  newLetterContacts.className = "letter-contacts";
+  newLetterContacts.setAttribute("data-letter", firstLetter);
+  newLetterContacts.innerHTML = `<p>${firstLetter}</p>`;
+  return newLetterContacts;
+}
+
+
+function getInsertIndex(letterContacts, firstLetter) {
+  return letterContacts.findIndex((element) => element.getAttribute("data-letter") > firstLetter);
+}
+
+
+function insertNewLetterContacts(contactsMenu, newLetterContacts, letterContacts, insertIndex) {
+  if (insertIndex !== -1) {
+    contactsMenu.insertBefore(newLetterContacts, letterContacts[insertIndex]);
+  } else {
+    contactsMenu.appendChild(newLetterContacts);
   }
 }
 
@@ -191,6 +294,7 @@ function closeAddContact() {
   document.getElementById("add-new-contact").classList.add("sign-up-animation-close");
 }
 
+
 function showContact() {
   const contactInfoDiv = document.getElementById("contact-info");
   const contactInfoName = document.querySelector(".contact-info-name");
@@ -198,12 +302,26 @@ function showContact() {
   const contactInfoLink = document.querySelector(".contact-link");
   const contactInfoDetails = document.querySelector(".contact-information-details span");
 
-  const name = this.querySelector(".moveRight p").innerText;
-  const email = this.querySelector(".moveRight a").innerText;
-  const initialLetter = this.querySelector(".added-contact-icon").innerText;
-  const color = this.querySelector(".added-contact-icon").style.backgroundColor;
-  const phoneNumber = this.getAttribute("data-phone-number");
+  const { name, email, initialLetter, color, phoneNumber } = getContactInfo(this);
 
+  updateContactInfo(contactInfoName, contactInfoIcon, contactInfoLink, contactInfoDetails, name, email, initialLetter, color, phoneNumber);
+
+  displayContactInfo(contactInfoDiv);
+}
+
+
+function getContactInfo(contactElement) {
+  return {
+    name: contactElement.querySelector(".moveRight p").innerText,
+    email: contactElement.querySelector(".moveRight a").innerText,
+    initialLetter: contactElement.querySelector(".added-contact-icon").innerText,
+    color: contactElement.querySelector(".added-contact-icon").style.backgroundColor,
+    phoneNumber: contactElement.getAttribute("data-phone-number"),
+  };
+}
+
+
+function updateContactInfo(contactInfoName, contactInfoIcon, contactInfoLink, contactInfoDetails, name, email, initialLetter, color, phoneNumber) {
   contactInfoName.innerText = name;
   contactInfoIcon.innerText = initialLetter;
   contactInfoIcon.style.backgroundColor = color;
@@ -214,7 +332,10 @@ function showContact() {
     <p>Phone</p>
     <span>${phoneNumber}</span>
   `;
+}
 
+
+function displayContactInfo(contactInfoDiv) {
   contactInfoDiv.style.display = "flex";
   contactInfoDiv.classList.add("show-contact-animation");
 }
@@ -228,97 +349,192 @@ function displayUserContacts() {
     return;
   }
 
-  const userContactsKey = `contacts_${loggedInUserName}`;
-  const savedContacts = JSON.parse(localStorage.getItem(userContactsKey)) || [];
+  const savedContacts = getSortedContacts(loggedInUserName);
 
-  savedContacts.sort((a, b) => a.name.localeCompare(b.name)); // Sort contacts alphabetically by name
-
-  savedContacts.forEach((contact, index) => {
+  savedContacts.forEach((contact) => {
     const { name, email, phone, color } = contact;
     const initialLetter = name.charAt(0).toUpperCase();
 
-    const newContactElement = document.createElement("div");
-    newContactElement.className = "added-contact pointer";
-    newContactElement.onclick = showContact;
-    newContactElement.setAttribute("data-phone-number", phone);
-    newContactElement.innerHTML = `
-      <div class="primary-contact-icon-container">
-        <div class="added-contact-icon" style="background-color: ${color} !important; border: 4px solid white;">${initialLetter}</div>
-      </div>
-      <div class="moveRight">
-        <p>${name}</p>
-        <a class="contact-link">${email}</a>
-      </div>
-    `;
-
-    const contactsMenu = document.getElementById("contactsMenu");
-    const letterContacts = Array.from(contactsMenu.getElementsByClassName("letter-contacts"));
-    let letterGroup = letterContacts.find((element) => element.getAttribute("data-letter") === initialLetter);
-
-    if (!letterGroup) {
-      letterGroup = document.createElement("div");
-      letterGroup.className = "letter-contacts";
-      letterGroup.setAttribute("data-letter", initialLetter);
-      letterGroup.innerHTML = `<p>${initialLetter}</p>`;
-
-      const insertIndex = letterContacts.findIndex((element) => element.getAttribute("data-letter") > initialLetter);
-
-      if (insertIndex !== -1) {
-        contactsMenu.insertBefore(letterGroup, letterContacts[insertIndex]);
-      } else {
-        contactsMenu.appendChild(letterGroup);
-      }
-    }
-
-    letterGroup.appendChild(newContactElement);
+    const newContactElement = createContactElement(name, email, initialLetter, phone, color);
+    insertContactElement(newContactElement, initialLetter);
   });
+}
+
+
+function getSortedContacts(loggedInUserName) {
+  const userContactsKey = `contacts_${loggedInUserName}`;
+  const savedContacts = JSON.parse(localStorage.getItem(userContactsKey)) || [];
+
+  return savedContacts.sort((a, b) => a.name.localeCompare(b.name)); // Sort contacts alphabetically by name
+}
+
+
+function createContactElement(name, email, initialLetter, phone, color) {
+  const newContactElement = document.createElement("div");
+  newContactElement.className = "added-contact pointer";
+  newContactElement.onclick = showContact;
+  newContactElement.setAttribute("data-phone-number", phone);
+  newContactElement.innerHTML = generateContactElementHTML(name, email, initialLetter, color);
+  return newContactElement;
+}
+
+
+function generateContactElementHTML(name, email, initialLetter, color) {
+  return `
+    <div class="primary-contact-icon-container">
+      <div class="added-contact-icon" style="background-color: ${color} !important; border: 4px solid white;">${initialLetter}</div>
+    </div>
+    <div class="moveRight">
+      <p>${name}</p>
+      <a class="contact-link">${email}</a>
+    </div>
+  `;
+}
+
+
+function insertContactElement(newContactElement, initialLetter) {
+  const contactsMenu = document.getElementById("contactsMenu");
+  const letterContacts = Array.from(contactsMenu.getElementsByClassName("letter-contacts"));
+  let letterGroup = getOrCreateLetterGroup(letterContacts, initialLetter);
+
+  letterGroup.appendChild(newContactElement);
+}
+
+
+function getOrCreateLetterGroup(letterContacts, initialLetter) {
+  let letterGroup = letterContacts.find((element) => element.getAttribute("data-letter") === initialLetter);
+
+  if (!letterGroup) {
+    letterGroup = createLetterGroup(initialLetter);
+    insertLetterGroup(letterGroup, letterContacts, initialLetter);
+  }
+
+  return letterGroup;
+}
+
+
+function createLetterGroup(initialLetter) {
+  const letterGroup = document.createElement("div");
+  letterGroup.className = "letter-contacts";
+  letterGroup.setAttribute("data-letter", initialLetter);
+  letterGroup.innerHTML = `<p>${initialLetter}</p>`;
+  return letterGroup;
+}
+
+
+function insertLetterGroup(letterGroup, letterContacts, initialLetter) {
+  const contactsMenu = document.getElementById("contactsMenu");
+  const insertIndex = letterContacts.findIndex((element) => element.getAttribute("data-letter") > initialLetter);
+
+  if (insertIndex !== -1) {
+    contactsMenu.insertBefore(letterGroup, letterContacts[insertIndex]);
+  } else {
+    contactsMenu.appendChild(letterGroup);
+  }
 }
 
 
 function deleteContact() {
   const contactInfoDiv = document.getElementById("contact-info");
-  const contactName = document.querySelector(".contact-info-name").innerText;
+  const contactName = getContactName();
   const contactsLayout = document.getElementById("contactsLayout");
-  const contactToDelete = Array.from(contactsLayout.getElementsByClassName("added-contact"))
-    .find(contact => contact.querySelector(".moveRight p").innerText === contactName);
+  const contactToDelete = findContactToDelete(contactsLayout, contactName);
 
+  removeContactFromLayout(contactsLayout, contactToDelete);
+  deleteContactFromLocalStorage(contactName);
+
+  hideContactInfo(contactInfoDiv);
+  reloadPage();
+}
+
+
+function getContactName() {
+  return document.querySelector(".contact-info-name").innerText;
+}
+
+
+function findContactToDelete(contactsLayout, contactName) {
+  return Array.from(contactsLayout.getElementsByClassName("added-contact"))
+    .find(contact => contact.querySelector(".moveRight p").innerText === contactName);
+}
+
+
+function removeContactFromLayout(contactsLayout, contactToDelete) {
   if (contactToDelete) {
     contactsLayout.removeChild(contactToDelete);
   }
-  const loggedInUserName = localStorage.getItem("loggedInUserName");
+}
+
+
+function deleteContactFromLocalStorage(contactName) {
+  const loggedInUserName = getLoggedInUserName();
 
   if (!loggedInUserName) {
-    console.error("No logged-in user found. Contact cannot be deleted from local storage.");
+    logError("No logged-in user found. Contact cannot be deleted from local storage.");
     return;
   }
 
-  const userContactsKey = `contacts_${loggedInUserName}`;
-  let existingContacts = JSON.parse(localStorage.getItem(userContactsKey)) || [];
+  const userContactsKey = getUserContactsKey(loggedInUserName);
+  let existingContacts = getExistingContacts(userContactsKey);
 
-  const contactIndex = existingContacts.findIndex(contact => contact.name === contactName);
-  if (contactIndex !== -1) {
-    existingContacts.splice(contactIndex, 1);
-    localStorage.setItem(userContactsKey, JSON.stringify(existingContacts));
-  }
-  contactInfoDiv.style.display = "none";
-  location.reload();
+  const contactIndex = findContactIndex(existingContacts, contactName);
+  removeContact(existingContacts, contactIndex);
+  saveContactsToLocalStorage(userContactsKey, existingContacts);
 }
 
+
+function getLoggedInUserName() {
+  return localStorage.getItem("loggedInUserName");
+}
+
+
+function logError(errorMessage) {
+  console.error(errorMessage);
+}
+
+
+function getUserContactsKey(loggedInUserName) {
+  return `contacts_${loggedInUserName}`;
+}
+
+
+function getExistingContacts(userContactsKey) {
+  return JSON.parse(localStorage.getItem(userContactsKey)) || [];
+}
+
+
+function findContactIndex(existingContacts, contactName) {
+  return existingContacts.findIndex(contact => contact.name === contactName);
+}
+
+
+function removeContact(existingContacts, contactIndex) {
+  if (contactIndex !== -1) {
+    existingContacts.splice(contactIndex, 1);
+  }
+}
+
+
+function saveContactsToLocalStorage(userContactsKey, existingContacts) {
+  localStorage.setItem(userContactsKey, JSON.stringify(existingContacts));
+}
+
+
+function hideContactInfo(contactInfoDiv) {
+  contactInfoDiv.style.display = "none";
+}
+
+
+function reloadPage() {
+  location.reload();
+}
 
 init();
 
 
 function editContact() {
-  const contactInfoDiv = document.getElementById("contact-info");
   const contactName = document.querySelector(".contact-info-name").innerText;
-  const loggedInUserName = localStorage.getItem("loggedInUserName");
-
-  if (!loggedInUserName) {
-    console.error("No logged-in user found. Contact cannot be edited.");
-    return;
-  }
-
-  const userContactsKey = `contacts_${loggedInUserName}`;
+  const userContactsKey = `contacts_${localStorage.getItem("loggedInUserName")}`;
   const existingContacts = JSON.parse(localStorage.getItem(userContactsKey)) || [];
   const contactToEdit = existingContacts.find(contact => contact.name === contactName);
 
@@ -327,13 +543,21 @@ function editContact() {
     return;
   }
 
-  // Display the edit form with existing contact details
   const editContactDiv = document.getElementById("add-new-contact");
-  document.getElementById("contacts-div").classList.add("background");
-  document.getElementById("add-new-contact").classList.add("sign-up-animation");
-  document.getElementById("add-new-contact").classList.remove("d-none");
+  const addNewContactDiv = document.getElementById("add-new-contact");
 
-  editContactDiv.innerHTML = /* HTML */ `
+  [editContactDiv, addNewContactDiv].forEach(elem => elem.classList.add("background", "sign-up-animation"));
+  addNewContactDiv.classList.remove("d-none");
+
+  editContactDiv.innerHTML = generateEditContactFormHTML(contactToEdit, existingContacts.indexOf(contactToEdit));
+}
+
+
+function generateEditContactFormHTML(contactToEdit, contactIndex) {
+  const { name, email, phone, color } = contactToEdit;
+  const initialLetter = name.charAt(0).toUpperCase();
+
+  return /* HTML */ `
     <div id="edit-contact-id" class="addNewContactDiv">
       <div class="left-side-add-contact column">
         <div><img src="/assets/icons/logo.svg"></div>
@@ -344,21 +568,21 @@ function editContact() {
       <div class="right-side-add-contact">
         <img onclick="closeAddContact()" class="close absolute pointer" src="/assets/icons/close.svg">
         <div class="account center">
-          <div class="adding-contact-icon" style="background-color: ${contactToEdit.color}">${contactToEdit.name.charAt(0).toUpperCase()}</div>
+          <div class="adding-contact-icon" style="background-color: ${color}">${initialLetter}</div>
         </div>
         <div>
           <form onsubmit="return false;">
             <div class="form-contacs">
               <div class="center">
-                <input id="contactNameInput" class="log-in-field column center pointer" required type="text" placeholder="Name" value="${contactToEdit.name}">
+                <input id="contactNameInput" class="log-in-field column center pointer" required type="text" placeholder="Name" value="${name}">
                 <img class="log-in-mail-lock-icon" src="../assets/icons/person-small.png">
               </div>
               <div class="center">
-                <input id="contactEmailInput" class="log-in-field column center pointer" required type="email" placeholder="Email" value="${contactToEdit.email}">
+                <input id="contactEmailInput" class="log-in-field column center pointer" required type="email" placeholder="Email" value="${email}">
                 <img class="log-in-mail-lock-icon" src="../assets/icons/mail.png">
               </div>
               <div class="center">
-                <input id="contactPhoneInput" class="log-in-field column center pointer" required type="number" placeholder="Phone" value="${contactToEdit.phone}">
+                <input id="contactPhoneInput" class="log-in-field column center pointer" required type="number" placeholder="Phone" value="${phone}">
                 <img class="log-in-mail-lock-icon" src="../assets/icons/call.png">
               </div>
             </div>
@@ -369,7 +593,7 @@ function editContact() {
                   <img class="cancel1" src="/assets/icons/cancel.svg" alt="">
                   <img class="cancel2 d-none" src="/assets/icons/cancel2.svg" alt="">
                 </div>
-                <div class="update-contact pointer center" onclick="updateContact(${existingContacts.indexOf(contactToEdit)})">
+                <div class="update-contact pointer center" onclick="updateContact(${contactIndex})">
                   <span>Save</span>
                   <img src="/assets/icons/check.svg" alt="">
                 </div>
@@ -384,35 +608,29 @@ function editContact() {
 
 
 function updateContact(index) {
-  const contactNameInput = document.getElementById("contactNameInput").value;
-  const contactEmailInput = document.getElementById("contactEmailInput").value;
-  const contactPhoneInput = document.getElementById("contactPhoneInput").value;
+  const [name, email, phone] = ["contactNameInput", "contactEmailInput", "contactPhoneInput"].map(getValueById);
+  if (!validateInputFields(name, email, phone)) return console.error("Please fill in all fields.");
 
-  if (!contactNameInput || !contactEmailInput || !contactPhoneInput) {
-    console.error("Please fill in all fields.");
-    return;
-  }
+  const key = `contacts_${localStorage.getItem("loggedInUserName")}`;
+  const contacts = JSON.parse(localStorage.getItem(key)) || [];
+  const contact = contacts[index];
 
-  const loggedInUserName = localStorage.getItem("loggedInUserName");
-  const userContactsKey = `contacts_${loggedInUserName}`;
-  const existingContacts = JSON.parse(localStorage.getItem(userContactsKey)) || [];
-  const contactToUpdate = existingContacts[index];
+  if (!contact) return console.error("Contact not found in local storage.");
 
-  if (!contactToUpdate) {
-    console.error("Contact not found in local storage.");
-    return;
-  }
-
-  const updatedContact = {
-    name: contactNameInput,
-    email: contactEmailInput,
-    phone: contactPhoneInput,
-    color: contactToUpdate.color,
-  };
-
-  existingContacts[index] = updatedContact;
-  localStorage.setItem(userContactsKey, JSON.stringify(existingContacts));
+  const updatedContact = { ...contact, name, email, phone };
+  contacts[index] = updatedContact;
+  localStorage.setItem(key, JSON.stringify(contacts));
 
   closeAddContact();
   location.reload();
+}
+
+
+function getValueById(id) {
+  return document.getElementById(id).value;
+}
+
+
+function validateInputFields(...values) {
+  return values.every(value => value.trim() !== '');
 }
