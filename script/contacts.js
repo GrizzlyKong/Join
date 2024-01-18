@@ -645,4 +645,4 @@ function validateInputFields(...values) {
 }
 
 
-init()
+init();
