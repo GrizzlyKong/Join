@@ -28,7 +28,7 @@ async function getItem(key) {
 
 async function init() {
   await includeHTML();
-  displayUserContacts();
+  await displayUserContacts();
 }
 
 
@@ -643,3 +643,6 @@ function getValueById(id) {
 function validateInputFields(...values) {
   return values.every(value => value.trim() !== '');
 }
+
+
+init()
