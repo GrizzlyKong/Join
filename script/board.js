@@ -219,7 +219,7 @@ function addTodo() {
   const taskId = `task-${taskIdCounter++}`; // Generiert eine einzigartige ID
   AddPriorities(taskId);
   let taskHTML = `
-    <div id="${taskId}" class="board-task-card pointer" draggable="true" onclick="openTaskInfos('${title}', '${description}', '${category}', '${dueDate}', ${JSON.stringify(
+    <div id="${taskId}" class="board-task-card pointer" draggable="true" onclick="openTaskInfos('${taskId}','${title}', '${description}', '${category}', '${dueDate}', ${JSON.stringify(
     subtasks
   )
     .split('"')
@@ -255,16 +255,120 @@ function addTodo() {
   }
 } */
 
-function openTaskInfos(title, description, category, dueDate, subtasks) {
+function openTaskInfos(taskId, title, description, category, dueDate, subtasks) {
+  console.log("Löschversuch für Task mit ID:", taskId);
+
   document.getElementById("all-task-infos").classList.remove("d-none");
 
   let subtasksHtml = subtasks.map((subtask) => `<div class="column">${subtask}</div>`).join("");
 
   let allTaskInfos = document.getElementById("all-task-infos");
   allTaskInfos.innerHTML = `
-
+  <div class="whole-task-infos absolute">
+  <div class="task-info-top">
+    <div class="task-info-category">${category}</div>
+    <div><img onclick="closeTaskInfos()" src="../assets/icons/Close2.svg"></div>
+  </div>
+  <div class="task-info-title">${title}</div>
+  <div class="task-info-description">${description}</div>
+  <div class="task-info-due-date">
+    <div class="headline3">Due date:</div>
+    <div class="variable">${dueDate}</div>
+  </div>
+  <div class="task-info-prio">
+    <div class="headline3">Priority:</div>
+    <div class="task-info-current-prio">
+      <span>Urgent</span>
+      <img src="../assets/icons/urgent3.svg">
+    </div>
+  </div>
+  <div class="task-info-assigned-to">
+    <div class="headline3">Assigned To:</div>
+    <div class="variable">
+      <div class="task-info-contacts">Hier kommen die Kontakte</div>
+    </div>
+  </div>
+  <div class="task-info-subtasks">
+    <div class="headline3">Subtasks</div>
+    <div>${subtasksHtml}</div>
+  </div>
+  <div class="task-info-delete-edit center absolute">
+    <div onclick="deleteTaskInfos('${taskId}')" class="task-info-delete pointer center">
+      <img class="img1" src="../assets/icons/delete2.svg" alt="">
+      <img class="img2 d-none" src="../assets/icons/delete2.png" alt="">
+      <span><b>Delete</b></span>
+    </div>
+    <div onclick="editTaskInfos('${taskId}')" class="task-info-edit pointer center"> 
+      <img class="img3" src="../assets/icons/edit2.svg" alt="">
+      <img class="img4 d-none" src="../assets/icons/edit2.png" alt="">
+      <span><b>Edit</b></span>
+    </div>
+  </div>
+</div>
   `;
 }
+
+function deleteTaskInfos(taskId) {
+  console.log("Löschversuch für Task mit ID:", taskId);
+  let taskElement = document.getElementById(taskId);
+  if (taskElement) {
+    taskElement.remove(); // Entfernt das Element aus dem DOM
+  }
+  let wholeTaskInfos = document.querySelector('.whole-task-infos');
+  wholeTaskInfos.classList.add('d-none')
+}
+
+function editTaskInfos(taskId) {
+  let taskInfoContainer = document.querySelector('.whole-task-infos');
+
+  if (!taskInfoContainer) {
+    console.error('Task-Info-Container nicht gefunden');
+    return;
+  }
+
+  // Extrahieren der aktuellen Werte
+  let title = taskInfoContainer.querySelector('.task-info-title').textContent;
+  let description = taskInfoContainer.querySelector('.task-info-description').textContent;
+  let category = taskInfoContainer.querySelector('.task-info-category').textContent;
+  let dueDate = taskInfoContainer.querySelector('.task-info-due-date .variable').textContent;
+  // Für Subtasks müssen Sie eine eigene Logik implementieren, abhängig von deren Struktur
+
+  // Umwandeln der Textelemente in Eingabefelder
+  taskInfoContainer.innerHTML = `
+    <div>Title: <input type="text" id="edit-title-${taskId}" value="${title}"></div>
+    <div>Description: <textarea id="edit-description-${taskId}">${description}</textarea></div>
+    <div>Category: <input type="text" id="edit-category-${taskId}" value="${category}"></div>
+    <div>Due Date: <input type="date" id="edit-due-date-${taskId}" value="${dueDate}"></div>
+    // Fügen Sie hier Eingabefelder für Subtasks hinzu
+    <button onclick="saveEditedTaskInfo('${taskId}')">Änderungen speichern</button>
+  `;
+}
+
+
+
+function saveEditedTaskInfo(taskId) {
+  let editedTitle = document.getElementById(`edit-title-${taskId}`).value;
+  let editedDescription = document.getElementById(`edit-description-${taskId}`).value;
+  let editedCategory = document.getElementById(`edit-category-${taskId}`).value;
+  let editedDueDate = document.getElementById(`edit-due-date-${taskId}`).value;
+ // Lesen Sie hier die Werte der anderen bearbeiteten Felder aus
+
+  let taskElement = document.getElementById(taskId);
+  if (!taskElement) {
+    console.error('Task-Element nicht gefunden');
+    return;
+  }
+
+  // Aktualisieren des Task-Elements mit den neuen Werten
+  taskElement.querySelector('.board-task-card-description').textContent = editedTitle;
+  taskElement.querySelector('.board-task-card-task').textContent = editedDescription;
+  // Aktualisieren Sie hier weitere Felder entsprechend
+
+  // Schließen des Bearbeitungsmodus und aktualisieren der Anzeige
+  openTaskInfos(taskId, editedTitle, editedDescription, editedCategory, editedDueDate);
+}
+
+
 function correctSubtask() {
   let input = document.getElementById("add-subtasks").value.trim();
   if (input !== "") {
