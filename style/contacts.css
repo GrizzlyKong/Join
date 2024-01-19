@@ -30,20 +30,7 @@ body {
   cursor: pointer;
 }
 
-.sign-up-animation { 
-  animation: move-from-bottom 1s forwards;
-}
-
-@keyframes move-from-bottom {
-  0% {
-    transform: translateY(600px);
-  }
-  100% {
-    transform: translateY(100px);
-  }
-}
-
-.show-contact-animation { 
+.sign-up-animation {
   animation: move-from-right 0.2s forwards;
 }
 
@@ -56,21 +43,94 @@ body {
   }
 }
 
-.addnew{
-  left: 200px;
+.show-contact-animation {
+  animation: move-from-right 0.2s forwards;
+}
+
+@keyframes move-from-right {
+  0% {
+    transform: translatex(2000px);
+  }
+  100% {
+    transform: translatex(0px);
+  }
+}
+
+.success-message {
+  display: flex;
+  padding: 8px;
+  background-color: rgb(42, 54, 71);
+  color: white;
+  border: 1px;
+  border-radius: 10px;
+  width: 280px;
+  height: 50px;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  font-size: 20px;
+  font-weight: bold;
+  z-index: 12;
+  position: relative;
+  top: 80vh;
+  left: 50vw;
+}
+
+.successfull-contact-animation {
+  animation: move-from-right 0.2s forwards;
+}
+
+.move-to-right {
+  animation: move-to-right 0.2s forwards;
+}
+
+@keyframes move-from-right {
+  0% {
+    transform: translateX(2000px);
+  }
+  100% {
+    transform: translateX(0px);
+  }
+}
+
+@keyframes move-to-right {
+  0% {
+    transform: translateX(0px);
+  }
+  100% {
+    transform: translateX(2000px);
+  }
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(128, 128, 128, 0.5);
+  z-index: 10;
+}
+
+.no-scroll {
+  overflow: hidden;
+}
+
+.addnew {
+  position: relative;
+  top: 9vh;
   z-index: 6 !important;
 }
 
-.addNewContactDiv{
+.addNewContactDiv {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  left: 300px;
   width: 1212px;
   height: auto;
 }
 
-.background{
+.background {
   background: rgba(0, 0, 0, 0.2) !important;
   position: absolute;
   z-index: 5;
@@ -135,13 +195,13 @@ body {
 }
 
 .letter-contacts p {
-border-style: solid;
-border-color: rgb(209, 209, 209);
-border-top: 0;
-border-left: 0;
-border-right: 0;
-padding: 0 0 16px 28px;
-font-size: 24px;
+  border-style: solid;
+  border-color: rgb(209, 209, 209);
+  border-top: 0;
+  border-left: 0;
+  border-right: 0;
+  padding: 0 0 16px 28px;
+  font-size: 24px;
 }
 
 .added-contact {
@@ -330,18 +390,23 @@ font-size: 24px;
   font-weight: bold;
 }
 
-.left-side-add-contact{
+.left-side-add-contact {
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  width: 30%;
+  width: 36%;
   height: 80vh;
-  background-color: #2A3647;
+  background-color: #2a3647;
   border-top-left-radius: 30px;
   border-bottom-left-radius: 30px;
 }
 
-.left-side-add-contact h1{
+.items-right {
+  position: relative;
+  left: 10%;
+}
+
+.left-side-add-contact h1 {
   margin: 0;
   padding-top: 16px;
   color: white;
@@ -349,7 +414,7 @@ font-size: 24px;
   font-size: 61px;
 }
 
-.left-side-add-contact span{
+.left-side-add-contact span {
   padding-top: 16px;
   color: white;
   font-weight: 400;
@@ -357,12 +422,12 @@ font-size: 24px;
   margin-bottom: 16px;
 }
 
-.line{
+.line {
   width: 76px;
-  border-top: 3px solid #29ABE2;
+  border-top: 3px solid #29abe2;
 }
 
-.right-side-add-contact{
+.right-side-add-contact {
   display: flex;
   justify-content: space-around;
   align-items: center;
@@ -373,7 +438,7 @@ font-size: 24px;
   border-bottom-right-radius: 30px;
 }
 
-.form-contacs input{
+.form-contacs input {
   border: solid;
   padding-left: 16px;
   font-size: 20px;
@@ -384,24 +449,30 @@ font-size: 24px;
   border-color: rgb(209, 209, 209);
 }
 
-.log-in-field::placeholder{
+.log-in-field::placeholder {
   color: #d1d1d1;
 }
 
-.form-contacs img{
+.form-contacs img {
   margin-left: -30px;
   margin-bottom: -30px;
 }
 
-.close{
+.close-div {
+  position: relative;
+  left: 89%;
+  bottom: 44%;
+}
+
+.close {
   top: 60px;
-  right: 67px;
+  right: 12%;
   border-radius: 50%;
   padding: 2px;
 }
 
-.close:hover{
-  background-color: rgb(128, 128, 128,0.2);
+.close:hover {
+  background-color: rgb(128, 128, 128, 0.2);
 }
 
 .clear-and-create-task {
@@ -425,7 +496,6 @@ font-size: 24px;
   border: 2px solid #29abe2;
   color: #29abe2;
   box-shadow: 0px 5px 6px rgba(0, 0, 0, 0.2);
-
 }
 
 .clear:hover .cancel1 {
@@ -450,7 +520,7 @@ font-size: 24px;
   gap: 4px;
 }
 
-.create-task:hover{
+.create-task:hover {
   background-color: #29abe2;
   box-shadow: 0px 5px 6px rgba(0, 0, 0, 0.2);
 }

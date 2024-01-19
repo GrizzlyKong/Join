@@ -53,6 +53,13 @@ function addNewContact() {
   updateElementClass("add-new-contact", "sign-up-animation", "add");
   updateElementClass("add-new-contact", "d-none", "remove");
 
+  // Create overlay and prevent scrolling
+  const overlay = document.createElement('div');
+  overlay.className = 'overlay';
+  overlay.style.zIndex = '5';
+  document.body.appendChild(overlay);
+  document.body.classList.add('no-scroll');
+
   newContact.innerHTML = generateNewContactHTML();
 
   const newContactElement = createNewContactElement();
@@ -74,13 +81,15 @@ function generateNewContactHTML() {
   return /* HTML */ `
     <div id="add-new-contact-id" class="addNewContactDiv">
       <div class ="left-side-add-contact column">
+        <div class="items-right">
         <div><img src="../assets/icons/logo.svg"></div>
         <h1>Add contact</h1>
         <span>Tasks are better with a team!</span>
         <div class="line"></div>
       </div>
+      </div>
       <div class = "right-side-add-contact">
-        <img onclick="closeAddContact()" class="close absolute pointer" src="../assets/icons/close.svg">
+        <div class="close-div"><img onclick="closeAddContact()" class="close pointer" src="../assets/icons/close.svg"></div>
         <div class = "account center">
           <div class="adding-contact-icon"><img src="../assets/icons/person.png"></div>
         </div>
@@ -172,10 +181,7 @@ function getRandomColor() {
 async function addingContact() {
   const { name, email, phone } = getInputValues();
 
-  if (!validateInputFields(name, email, phone)) {
-    alert("Please fill in all fields before creating a contact.");
-    return;
-  }
+ 
 
   const initialLetter = getInitialLetter(name);
   const newContactElement = createNewContactElement(name, email, initialLetter);
@@ -185,6 +191,7 @@ async function addingContact() {
   clearInputAddingContact();
   closeAddContact();
   await setItem(name, { name, email, phone, color: getRandomColor() });
+  successfullyCreatedContact();
 }
 
 
@@ -218,6 +225,23 @@ function insertNewContactElement(newContactElement) {
   const referenceNode = contactsMenu.childNodes[1];
   insertAfter(newContactElement, referenceNode);
 }
+
+
+function successfullyCreatedContact() {
+  let successMessage = document.getElementById("successMessage");
+  successMessage.classList.remove("d-none");
+  successMessage.classList.add("successfull-contact-animation");
+
+  setTimeout(function () {
+    successMessage.classList.add("move-to-right");
+  }, 1300);
+
+  setTimeout(function () {
+    successMessage.classList.add("d-none");
+    successMessage.classList.remove("successfull-contact-animation", "move-to-right");
+  }, 1500);
+}
+
 
 function reloadPage() {
   location.reload();
@@ -304,6 +328,16 @@ function insertNewLetterContacts(contactsMenu, newLetterContacts, letterContacts
 function closeAddContact() {
   document.getElementById("add-new-contact").classList.add("d-none");
   document.getElementById("add-new-contact").classList.add("sign-up-animation-close");
+  closeOverlay();
+}
+
+
+function closeOverlay() {
+  const overlay = document.querySelector('.overlay');
+  if (overlay) {
+    document.body.removeChild(overlay);
+  }
+  document.body.classList.remove('no-scroll');
 }
 
 
