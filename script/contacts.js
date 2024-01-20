@@ -1,35 +1,25 @@
-const STORAGE_TOKEN = 'UK3WMTJPY9HCOS9AB0PGAT5U9XL1Y2BKP4MIYIVD';
-const STORAGE_URL = 'https://remote-storage.developerakademie.org/item';
-
 let contacts = [];
-
-
-async function setItem(key, value) {
-  const payload = { key, value, token: STORAGE_TOKEN };
-  return fetch(STORAGE_URL, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(payload),
-  }).then(res => res.json());
-}
-
-
-async function getItem(key) {
-  const url = `${STORAGE_URL}?key=${key}&token=${STORAGE_TOKEN}`;
-  return fetch(url).then(res => res.json()).then(res => {
-    if (res.data) {
-      return res.data.value;
-    } throw `Could not find data with key "${key}".`;
-  });
-}
-
 
 async function init() {
   await includeHTML();
+  await loadContacts();
   await displayUserContacts();
 }
+
+async function loadContacts() {
+  try {
+    const loggedInUserName = localStorage.getItem("loggedInUserName");
+    if (!loggedInUserName) {
+      console.error("No logged-in user found. Contacts cannot be loaded.");
+      return;
+    }
+
+    contacts = JSON.parse(await getItem(`contacts_${loggedInUserName}`)) || [];
+  } catch (e) {
+    console.error("Loading error:", e);
+  }
+}
+
 
 
 async function includeHTML() {
@@ -181,17 +171,29 @@ function getRandomColor() {
 async function addingContact() {
   const { name, email, phone } = getInputValues();
 
- 
-
   const initialLetter = getInitialLetter(name);
   const newContactElement = createNewContactElement(name, email, initialLetter);
-
   insertNewContactElement(newContactElement);
   updateLetterContacts(initialLetter);
   clearInputAddingContact();
-  closeAddContact();
-  await setItem(name, { name, email, phone, color: getRandomColor() });
-  successfullyCreatedContact();
+
+  // Push the new contact to the local array (contacts)
+  const newContact = { name, email, phone, color: getRandomColor() };
+  contacts.push(newContact);
+
+  // Save the updated contacts array to the server
+  try {
+    const loggedInUserName = localStorage.getItem("loggedInUserName");
+    if (!loggedInUserName) {
+      console.error("No logged-in user found. Contacts cannot be saved to the server.");
+      return;
+    }
+
+    await setItem(`contacts_${loggedInUserName}`, JSON.stringify(contacts));
+    successfullyCreatedContact();
+  } catch (error) {
+    console.error("Error adding contact:", error);
+  }
 }
 
 
@@ -381,12 +383,6 @@ function updateContactInfo(contactInfoName, contactInfoIcon, contactInfoLink, co
 }
 
 
-function displayContactInfo(contactInfoDiv) {
-  contactInfoDiv.style.display = "flex";
-  contactInfoDiv.classList.add("show-contact-animation");
-}
-
-
 async function displayUserContacts() {
   const loggedInUserName = localStorage.getItem("loggedInUserName");
 
@@ -396,20 +392,49 @@ async function displayUserContacts() {
   }
 
   try {
-    const response = await fetch(`${STORAGE_URL}?user=${loggedInUserName}&token=${STORAGE_TOKEN}`);
-    const savedContacts = await response.json();
+    const response = await fetch(`${STORAGE_URL}?user=${loggedInUserName}&token=${STORAGE_TOKEN}&key=contacts_${loggedInUserName}`);
+    const responseText = await response.text();
 
-    savedContacts.forEach((contact) => {
-      const { name, email, phone, color } = contact;
-      const initialLetter = name.charAt(0).toUpperCase();
+    console.log("Server response status:", response.status);
+    console.log("Server response body:", responseText);
 
-      const newContactElement = createContactElement(name, email, initialLetter, phone, color);
-      insertContactElement(newContactElement, initialLetter);
-    });
+    if (response.ok) {
+      try {
+        const serverResponse = JSON.parse(responseText);
+
+        if (serverResponse && serverResponse.status === "success" && serverResponse.data && serverResponse.data.value) {
+          const savedContacts = JSON.parse(serverResponse.data.value);
+
+          if (Array.isArray(savedContacts)) {
+            savedContacts.forEach((contact) => {
+              const { name, email, phone, color } = contact;
+
+              // Skip contacts with empty names, emails, and phones
+              if (name.trim() !== "" || email.trim() !== "" || phone.trim() !== "") {
+                const initialLetter = name.charAt(0).toUpperCase();
+                const newContactElement = createContactElement(name, email, initialLetter, phone, color);
+                insertContactElement(newContactElement, initialLetter);
+              }
+            });
+          } else {
+            console.error("Invalid contacts format received from the server. Expected an array.");
+          }
+        } else {
+          console.error("Invalid server response. Missing 'status' or 'data' properties.");
+          console.error("Server response:", serverResponse);
+        }
+      } catch (error) {
+        console.error("Error parsing JSON:", error);
+        console.error("Invalid contacts format received from the server.");
+      }
+    } else {
+      console.error("Invalid server response:", response.status);
+    }
   } catch (error) {
     console.error("Error fetching contacts from the server:", error);
   }
 }
+
 
 
 function getSortedContacts(loggedInUserName) {
