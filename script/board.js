@@ -353,14 +353,20 @@ function editTaskInfos(taskId, encodedSubtasksHtml) {
   }
 
   let editableSubtasksHtml = subtasks.map((subtask, index) => `
-  <div class="hover-subtask column pointer" onmouseover="showIcons(${index})" onmouseout="hideIcons(${index})">
-    <span>${subtask}</span>
-    <div class="subtask-icons">
-      <img id="edit-icon-${index}" onclick="editExistingSubtask(${index})" src="../assets/icons/edit.svg" style="display:none;"/>
-      <img id="delete-icon-${index}" onclick="deleteExistingSubtask(${index})" src="../assets/icons/delete.svg" style="display:none;"/>
-    </div>
-  </div>`
-).join("");
+  <div class="editable-subtask" id="editable-subtask-${index}">
+  <div class="subtaskInput">
+  <input class="add-input-Subtasks" minlength="1" oninput="addSubtasks()" id="add-subtasks" type="text" placeholder="Add new subtask">
+  <img class="add-img pointer" id="subtask-add" class="input-icon2 pointer" src="../assets/icons/add.svg">
+<div class="oninput">
+  <img onclick="cancelSubtask()" id="subtask-cancel" class="input-icon3 d-none pointer center" src="../assets/icons/cancelX.svg">
+  <img onclick="correctSubtask()" id="subtask-correct" class="input-icon4 d-none pointer center" src="../assets/icons/correct.svg">
+</div>
+</div>
+  <span class="hover-subtask">${subtask}</span>
+  <img id="edit-icon-${index}" onclick="editExistingSubtask(${index})" src="../assets/icons/edit.svg" style="display:none;"/>
+  <img id="delete-icon-${index}" onclick="deleteExistingSubtask(${index})" src="../assets/icons/delete.svg" style="display:none;"/>
+  </div>
+`).join("");
 
   // Extrahieren der aktuellen Werte
   let title = taskInfoContainer.querySelector('.task-info-title').textContent;
