@@ -233,7 +233,8 @@ body {
   flex-direction: column;
   gap: 30px;
   width: 230px;
-  height: 300px;
+  min-height: 300px;
+  max-height: 450px;
   padding: 24px;
   border-radius: 30px;
   border-width: 0;
@@ -255,6 +256,7 @@ body {
 }
 
 .board-task-card-description {
+  word-wrap: break-word;
   font-size: 20px;
   font-weight: bold;
 }
@@ -590,8 +592,19 @@ body {
 }
 .subtaskInput{
   display: flex;
-  justify-content: center;
-  align-items: center;
+}
+.add-img{
+  margin-left: -25px;
+  margin-top: 28px;
+  border-radius: 50%;
+  width: auto;
+  height: 15px;  
+  padding: 3px;
+z-index: 9;
+}
+.add-img:hover{
+  background-color: #d1d1d1;
+
 }
 #added-subtasks{
   font-size: 16px !important;
@@ -740,19 +753,19 @@ width: 59px;
 }
 
 .whole-task-infos{
-
+  width: 451px;
   padding-left: 25px;
   padding-right: 25px;
   padding-top: 35px;
   padding-bottom: 35px;
   z-index: 999;
-  width: 396px;
-  height: 724px;
+  height: 900px;
   border-radius: 30px;
   background-color: #ffffff;
   top: 40%;
   left: 50%;
   transform: translate(-50%, -50%);
+
 
 }
 
@@ -781,6 +794,7 @@ width: 59px;
   font-size: 18px;
 }
 .task-info-title{
+  word-wrap: break-word;
   font-weight: 700;
   font-size: 36px;
   margin-top: 16px;
@@ -860,4 +874,127 @@ display: none;
   }
   .task-info-edit:hover .img4{
     display: inline;
+    }
+    .calendarPicker::-webkit-calendar-picker-indicator{
+        cursor: pointer;
+    }
+    .edit-the-category{
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: center;
+    }
+    .edit-the-category div{
+      color: #2A3647;
+      font-size: 20px;
+    }
+    .edit-the-category-select{
+      margin-top: 12px;
+      margin-bottom: 32px;
+      border: 1px solid #d1d1d1;
+      border-radius: 10px;
+      font-size: 18px;
+      width: 445px;
+      height: 48px;
+    }
+    .edit-the-category-select option{
+        font-size: 16px;
+    }    
+
+    .edit-the-category{
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: center;
+    }
+    .edit-the-title div{
+      color: #2A3647;
+      font-size: 20px;
+    }
+    .edit-the-title-input{
+      margin-top: 12px;
+      margin-bottom: 32px;
+      border: 1px solid #d1d1d1;
+      border-radius: 10px;
+      font-size: 18px;
+      width: 440px;
+      height: 48px;
+    }
+    .edit-the-description{
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: center;
+    }
+    .edit-the-description div{
+      color: #2A3647;
+      font-size: 20px;
+    }
+    .edit-the-description-textarea{
+      margin-top: 12px;
+      margin-bottom: 32px;
+      border: 1px solid #d1d1d1;
+      border-radius: 10px;
+      font-size: 18px;
+      width: 440px;
+      height: 120px;
+    }
+    .edit-the-dueDate{
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: center;
+    }
+    .edit-the-dueDate div{
+      color: #2A3647;
+      font-size: 20px;
+    }
+    .edit-the-dueDate-input{
+      margin-top: 12px;
+      margin-bottom: 32px;
+      border: 1px solid #d1d1d1;
+      border-radius: 10px;
+      font-size: 18px;
+      width: 445px;
+      height: 48px;
+    }
+    .save-edited-Task {
+      border: 0;
+      font-weight: 700;
+      color: white;
+      background-color: #2a3647;
+      border-radius: 10px;
+      width: 89px;
+      height: 57px;
+
+    }
+    
+    .save-edited-Task:hover{
+      background-color: #29abe2;
+      box-shadow: 0px 5px 6px rgba(0, 0, 0, 0.2);
+    }
+    
+    .save-edited-Task span {
+      font-size: 21px;
+    }
+    .save-edited-task-button{
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+    }
+    .hover-subtask{
+
+    }
+    .hover-subtask:hover{
+      background-color: #d1d1d1;
+    }
+    .add-input-Subtasks{
+      margin-top: 12px;
+      margin-bottom: 32px;
+      border: 1px solid #d1d1d1;
+      border-radius: 10px;
+      font-size: 18px;
+      width: 445px;
+      height: 48px;
     }

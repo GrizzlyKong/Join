@@ -107,8 +107,8 @@ function addTask() {
     <div class="add-tasks-right-side-div">
       <div class="duo-date">
         <div><span>Due date</span><span class="important">*</span></div>
-        <input maxlength="10" id="date-todo" required placeholder="dd/mm/yyyy">
-        <img onclick="getDate()" id="calendar" type="text" class="input-icon1 pointer" src="../assets/icons/date.svg" alt="">
+        <input class="calendarPicker" type="date" maxlength="10" id="date-todo" required placeholder="dd/mm/yyyy">
+        
       </div>
       <div class="all-priorities">
         <span>Prio</span>
@@ -227,6 +227,7 @@ function addTodo() {
             <div class="board-task-card-title">${category}</div>
             <div class="board-task-card-description">${title}</div>
             <div class="board-task-card-task">${description}</div>
+            <div class="board-task-card-date d-none">${dueDate}</div>
             <div class="board-task-card-subtasks">
               <div class="board-task-card-subtasks-bar">
                 <div class="bar-fill" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
@@ -256,24 +257,37 @@ function addTodo() {
 } */
 
 function openTaskInfos(taskId, title, description, category, dueDate, subtasks) {
-  console.log("Löschversuch für Task mit ID:", taskId);
+  let taskElement = document.getElementById(taskId);
+  if (!taskElement) {
+    console.error('Task-Element nicht gefunden:', taskId);
+    return;
+  }
+  document.getElementById("all-task-infos").classList.remove("d-none");
+  let currentTitle = taskElement.querySelector('.board-task-card-description').textContent;
+  let currentDescription = taskElement.querySelector('.board-task-card-task').textContent;
+  let currentCategory = taskElement.querySelector('.board-task-card-title').textContent;
+  let currentDueDate = taskElement.querySelector('.board-task-card-date').textContent;
+
+  let subtasksHtml = subtasks.map((subtask, index) => // Fügen Sie den Index hier hinzu
+  `<div class="subtask-text">
+    ${subtask}
+  </div>`
+).join("");
+  let encodedSubtasksHtml = encodeURIComponent(subtasksHtml);
 
   document.getElementById("all-task-infos").classList.remove("d-none");
-
-  let subtasksHtml = subtasks.map((subtask) => `<div class="column">${subtask}</div>`).join("");
-
   let allTaskInfos = document.getElementById("all-task-infos");
   allTaskInfos.innerHTML = `
   <div class="whole-task-infos absolute">
   <div class="task-info-top">
-    <div class="task-info-category">${category}</div>
+    <div class="task-info-category">${currentCategory}</div>
     <div><img onclick="closeTaskInfos()" src="../assets/icons/Close2.svg"></div>
   </div>
-  <div class="task-info-title">${title}</div>
-  <div class="task-info-description">${description}</div>
+  <div class="task-info-title">${currentTitle}</div>
+  <div class="task-info-description">${currentDescription}</div>
   <div class="task-info-due-date">
     <div class="headline3">Due date:</div>
-    <div class="variable">${dueDate}</div>
+    <div class="variable">${currentDueDate}</div>
   </div>
   <div class="task-info-prio">
     <div class="headline3">Priority:</div>
@@ -298,7 +312,7 @@ function openTaskInfos(taskId, title, description, category, dueDate, subtasks) 
       <img class="img2 d-none" src="../assets/icons/delete2.png" alt="">
       <span><b>Delete</b></span>
     </div>
-    <div onclick="editTaskInfos('${taskId}')" class="task-info-edit pointer center"> 
+    <div onclick="editTaskInfos('${taskId}', '${encodedSubtasksHtml}')" class="task-info-edit pointer center"> 
       <img class="img3" src="../assets/icons/edit2.svg" alt="">
       <img class="img4 d-none" src="../assets/icons/edit2.png" alt="">
       <span><b>Edit</b></span>
@@ -306,6 +320,16 @@ function openTaskInfos(taskId, title, description, category, dueDate, subtasks) 
   </div>
 </div>
   `;
+}
+
+function showIcons(index) {
+  document.getElementById(`edit-icon-${index}`).style.display = 'inline';
+  document.getElementById(`delete-icon-${index}`).style.display = 'inline';
+}
+
+function hideIcons(index) {
+  document.getElementById(`edit-icon-${index}`).style.display = 'none';
+  document.getElementById(`delete-icon-${index}`).style.display = 'none';
 }
 
 function deleteTaskInfos(taskId) {
@@ -318,55 +342,141 @@ function deleteTaskInfos(taskId) {
   wholeTaskInfos.classList.add('d-none')
 }
 
-function editTaskInfos(taskId) {
+function editTaskInfos(taskId, encodedSubtasksHtml) {
   let taskInfoContainer = document.querySelector('.whole-task-infos');
+  let subtasksHtml = decodeURIComponent(encodedSubtasksHtml);
+  let subtasks = subtasksHtml.split(",").map(subtask => subtask.trim());
 
   if (!taskInfoContainer) {
     console.error('Task-Info-Container nicht gefunden');
     return;
   }
 
+  let editableSubtasksHtml = subtasks.map((subtask, index) => `
+  <div class="hover-subtask column pointer" onmouseover="showIcons(${index})" onmouseout="hideIcons(${index})">
+    <span>${subtask}</span>
+    <div class="subtask-icons">
+      <img id="edit-icon-${index}" onclick="editExistingSubtask(${index})" src="../assets/icons/edit.svg" style="display:none;"/>
+      <img id="delete-icon-${index}" onclick="deleteExistingSubtask(${index})" src="../assets/icons/delete.svg" style="display:none;"/>
+    </div>
+  </div>`
+).join("");
+
   // Extrahieren der aktuellen Werte
   let title = taskInfoContainer.querySelector('.task-info-title').textContent;
   let description = taskInfoContainer.querySelector('.task-info-description').textContent;
   let category = taskInfoContainer.querySelector('.task-info-category').textContent;
   let dueDate = taskInfoContainer.querySelector('.task-info-due-date .variable').textContent;
-  // Für Subtasks müssen Sie eine eigene Logik implementieren, abhängig von deren Struktur
+ 
 
-  // Umwandeln der Textelemente in Eingabefelder
   taskInfoContainer.innerHTML = `
-    <div>Title: <input type="text" id="edit-title-${taskId}" value="${title}"></div>
-    <div>Description: <textarea id="edit-description-${taskId}">${description}</textarea></div>
-    <div>Category: <input type="text" id="edit-category-${taskId}" value="${category}"></div>
-    <div>Due Date: <input type="date" id="edit-due-date-${taskId}" value="${dueDate}"></div>
-    // Fügen Sie hier Eingabefelder für Subtasks hinzu
-    <button onclick="saveEditedTaskInfo('${taskId}')">Änderungen speichern</button>
+  <form onsubmit="saveEditedTaskInfo('${taskId}'); return false;">
+    <div class="edit-the-category">
+    <div>Category:</div>
+      <select value="${category}" type="text" id="edit-category-${taskId}" required class="edit-the-category-select pointer" placeholder="Select task category">
+        <option value="" class="d-none">Select task category</option>
+        <option>Technical Task</option>
+        <option>User Story</option>
+      </select>
+    </div>
+
+    <div class="edit-the-title">
+    <div>Title:</div>
+    <input maxlength="60" class="edit-the-title-input" required type="text" id="edit-title-${taskId}" value="${title}">
+    </div>
+    <div class="edit-the-description">
+    <div>Description:</div>
+    <textarea maxlength="75" class="edit-the-description-textarea" required id="edit-description-${taskId}">${description}</textarea>
+    </div>
+    <div class="edit-the-dueDate">
+    <div>Due Date:</div>
+    <input class="edit-the-dueDate-input" required type="date" id="edit-due-date-${taskId}" value="${dueDate}">
+    </div>
+    
+        <div id="edited-subtasks">
+            ${editableSubtasksHtml}
+        </div>
+    </div>
+    <div class="save-edited-task-button">
+    <button type="submit" class="save-edited-Task pointer center">
+      <span>OK</span>
+      <img src="../assets/icons/check.svg" alt="">
+    </button>
+    </div>
+  </form>
   `;
 }
 
-
+function deleteExistingSubtask(index) {
+  // Logik zum Löschen einer bestehenden Subtask
+  let subtaskElement = document.getElementById(`editable-subtask-${index}`);
+  if (subtaskElement) {
+    subtaskElement.remove();
+  }
+}
 
 function saveEditedTaskInfo(taskId) {
+  // Extrahieren der bearbeiteten Werte
   let editedTitle = document.getElementById(`edit-title-${taskId}`).value;
   let editedDescription = document.getElementById(`edit-description-${taskId}`).value;
   let editedCategory = document.getElementById(`edit-category-${taskId}`).value;
   let editedDueDate = document.getElementById(`edit-due-date-${taskId}`).value;
- // Lesen Sie hier die Werte der anderen bearbeiteten Felder aus
 
   let taskElement = document.getElementById(taskId);
-  if (!taskElement) {
-    console.error('Task-Element nicht gefunden');
-    return;
+  if (taskElement) {
+    taskElement.querySelector('.board-task-card-description').textContent = editedTitle;
+    taskElement.querySelector('.board-task-card-task').textContent = editedDescription;
+    taskElement.querySelector('.board-task-card-title').textContent = editedCategory;
+    taskElement.querySelector('.board-task-card-date').textContent = editedDueDate;
   }
 
-  // Aktualisieren des Task-Elements mit den neuen Werten
-  taskElement.querySelector('.board-task-card-description').textContent = editedTitle;
-  taskElement.querySelector('.board-task-card-task').textContent = editedDescription;
-  // Aktualisieren Sie hier weitere Felder entsprechend
+  // Aktualisieren der Ansicht in whole-task-infos mit den neuen Informationen
+  let taskInfoContainer = document.querySelector('.whole-task-infos');
+  if (taskInfoContainer) {
+    taskInfoContainer.innerHTML = `
+      <div class="task-info-top">
+        <div class="task-info-category">${editedCategory}</div>
+        <div><img onclick="closeTaskInfos()" src="../assets/icons/Close2.svg"></div>
+      </div>
+      <div class="task-info-title">${editedTitle}</div>
+      <div class="task-info-description">${editedDescription}</div>
+      <div class="task-info-due-date">
+        <div class="headline3">Due date:</div>
+        <div class="variable">${editedDueDate}</div>
+      </div>
+      <div class="task-info-prio">
+        <div class="headline3">Priority:</div>
+        <div class="task-info-current-prio">
 
-  // Schließen des Bearbeitungsmodus und aktualisieren der Anzeige
+        </div>
+      </div>
+      <div class="task-info-assigned-to">
+        <div class="headline3">Assigned To:</div>
+        <div class="variable">
+          <div class="task-info-contacts">Kontakte aktualisieren</div>
+        </div>
+      </div>
+      <div class="task-info-subtasks">
+        <div class="headline3">Subtasks</div>
+
+      </div>
+      <div class="task-info-delete-edit center absolute">
+        <div onclick="deleteTaskInfos('${taskId}')" class="task-info-delete pointer center">
+          <img class="img1" src="../assets/icons/delete2.svg" alt="">
+          <img class="img2 d-none" src="../assets/icons/delete2.png" alt="">
+          <span><b>Delete</b></span>
+        </div>
+        <div onclick="editTaskInfos('${taskId}')" class="task-info-edit pointer center"> 
+          <img class="img3" src="../assets/icons/edit2.svg" alt="">
+          <img class="img4 d-none" src="../assets/icons/edit2.png" alt="">
+          <span><b>Edit</b></span>
+        </div>
+      </div>
+    `;
+  }
   openTaskInfos(taskId, editedTitle, editedDescription, editedCategory, editedDueDate);
 }
+
 
 
 function correctSubtask() {
@@ -486,7 +596,7 @@ function removeHighlight(id) {
   document.getElementById(id).classList.remove("drag-area-highlight");
 }
 
-function getDate() {
+/* function getDate() {
   let today = new Date();
   let yyyy = today.getFullYear();
   let mm = today.getMonth() + 1; // Der Monat beginnt mit der 0
@@ -498,7 +608,7 @@ function getDate() {
   let formattedToday = dd + "/" + mm + "/" + yyyy;
 
   document.getElementById("date-todo").value = formattedToday;
-}
+} */
 function addSubtasks() {
   let input = document.getElementById("add-subtasks");
   if (input.value.length > 0) {
