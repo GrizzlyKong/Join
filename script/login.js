@@ -148,3 +148,47 @@ function guestLogin() {
 
   location.replace("../html/summary.html");
 }
+
+
+// Function to update password visibility
+function updatePasswordVisibility() {
+  const passwordInput = document.getElementById('loginPassword');
+  const lockIcon = document.getElementById('lockIcon');
+  const eyeIcon = document.getElementById('eyeIcon');
+  const eyeIconHidden = document.getElementById('eyeIconHidden');
+
+  const passwordValue = passwordInput.value.trim();
+
+  if (passwordInput.type === 'password') {
+    // Password is hidden
+    lockIcon.style.display = passwordValue === '' ? 'inline-block' : 'none';
+    eyeIcon.style.display = passwordValue === '' ? 'none' : 'inline-block';
+    eyeIconHidden.style.display = 'none';
+  } else {
+    // Password is visible
+    lockIcon.style.display = passwordValue === '' ? 'inline-block' : 'none';
+    eyeIcon.style.display = 'none';
+    eyeIconHidden.style.display = passwordValue === '' ? 'none' : 'inline-block';
+  }
+}
+
+// Call the function on page load
+document.addEventListener('DOMContentLoaded', () => {
+  updatePasswordVisibility();
+  // Add an event listener to the password input to update the icons dynamically
+  document.getElementById('loginPassword').addEventListener('input', updatePasswordVisibility);
+});
+
+// Function to toggle password visibility
+function togglePasswordVisibility() {
+  const passwordInput = document.getElementById('loginPassword');
+
+  if (passwordInput.type === 'password') {
+    passwordInput.type = 'text';
+  } else {
+    passwordInput.type = 'password';
+  }
+
+  updatePasswordVisibility();
+}
+

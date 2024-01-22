@@ -105,3 +105,71 @@ function privacyPolicyHoverCheckbox() {
     privacyCheckbox.classList.remove("hovered");
   });
 }
+
+
+function updatePasswordVisibility(field) {
+  const passwordInput = document.getElementById(field === 'password' ? 'password' : 'passwordConfirm');
+  const lockIcon = document.getElementById(`lockIcon${field === 'password' ? 'Password' : 'Confirm'}`);
+  const eyeIcon = document.getElementById(`eyeIcon${field === 'password' ? 'Password' : 'Confirm'}`);
+  const eyeIconHidden = document.getElementById(`eyeIconHidden${field === 'password' ? 'Password' : 'Confirm'}`);
+
+  const passwordValue = passwordInput.value.trim();
+
+  if (passwordInput.type === 'password') {
+    // Password is hidden
+    lockIcon.style.display = passwordValue === '' ? 'inline-block' : 'none';
+    eyeIcon.style.display = passwordValue === '' ? 'none' : 'inline-block';
+    eyeIconHidden.style.display = 'none';
+  } else {
+    // Password is visible
+    lockIcon.style.display = passwordValue === '' ? 'inline-block' : 'none';
+    eyeIcon.style.display = 'none';
+    eyeIconHidden.style.display = passwordValue === '' ? 'none' : 'inline-block';
+  }
+}
+
+// Add event listeners to the eye icons to toggle password visibility
+document.getElementById('eyeIconPassword').addEventListener('click', () => togglePasswordVisibility('password'));
+
+// Call the function on page load
+document.addEventListener('DOMContentLoaded', () => {
+  updatePasswordVisibilityForPassword();
+
+  // Add an event listener to the password input to update the icons dynamically
+  document.getElementById('password').addEventListener('input', updatePasswordVisibilityForPassword);
+});
+
+function togglePasswordVisibility(field) {
+  const passwordInput = document.getElementById(field === 'password' ? 'password' : 'passwordConfirm');
+  const eyeIcon = document.getElementById(`eyeIcon${field === 'password' ? 'Password' : 'Confirm'}`);
+
+  if (passwordInput.type === 'password') {
+    passwordInput.type = 'text';
+    eyeIcon.src = '../assets/icons/eyeNO.png'; // Change to eyeNO.png when password is visible
+  } else {
+    passwordInput.type = 'password';
+    eyeIcon.src = '../assets/icons/eyeYES.png'; // Change to eyeYES.png when password is hidden
+  }
+}
+
+function updatePasswordVisibilityForPassword() {
+  updatePasswordVisibility('password');
+}
+
+function updatePasswordVisibilityForConfirmPassword() {
+  updatePasswordVisibility('passwordConfirm');
+}
+
+// Call the functions on page load
+document.addEventListener('DOMContentLoaded', () => {
+  updatePasswordVisibilityForPassword();
+  updatePasswordVisibilityForConfirmPassword();
+
+  // Add event listeners to the password inputs to update the icons dynamically
+  document.getElementById('password').addEventListener('input', updatePasswordVisibilityForPassword);
+  document.getElementById('passwordConfirm').addEventListener('input', updatePasswordVisibilityForConfirmPassword);
+});
+
+// Add event listeners to the eye icons to toggle password visibility
+document.getElementById('eyeIconPassword').addEventListener('click', () => togglePasswordVisibility('password'));
+document.getElementById('eyeIconConfirmPassword').addEventListener('click', () => togglePasswordVisibility('passwordConfirm'));

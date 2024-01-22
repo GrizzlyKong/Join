@@ -25,8 +25,12 @@
 
     <form onsubmit="login(); return false;" class="log-in-inputs">
       <div><input id="loginEmail" class="log-in-field pointer" required type="email" placeholder="Email"><img class="log-in-mail-lock-icon" src="../assets/icons/mail.png"></div>
-      <div><input id="loginPassword" class="log-in-field pointer" required type="password" placeholder="Password"><img class="log-in-mail-lock-icon" src="../assets/icons/lock.png"></div>
-    
+      <div>
+        <input id="loginPassword" class="log-in-field pointer" required type="password" placeholder="Password">
+        <img id="lockIcon" class="log-in-mail-lock-icon" src="../assets/icons/lock.png" onclick="togglePasswordVisibility()">
+        <img id="eyeIcon" class="log-in-mail-lock-icon" src="../assets/icons/eyeYES.png" onclick="togglePasswordVisibility()" style="display: none;">
+        <img id="eyeIconHidden" class="log-in-mail-lock-icon" src="../assets/icons/eyeNO.png" onclick="togglePasswordVisibility()" style="display: none;">
+      </div>
       <div class="log-in-remember-me">
         <input type="checkbox" id="remember-me-checkbox" class="log-in-checkbox pointer">
         <label for="remember-me-checkbox">Remember me</label>

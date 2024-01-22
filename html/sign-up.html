@@ -42,13 +42,16 @@
 
     <div>
       <input id="password" class="sign-up-field pointer" required type="password" minlength="6" placeholder="Password">
-      <img class="sign-up-mail-lock-icon" src="../assets/icons/lock.png">
-      <div id="passwordLengthError" class="error-min-characters"></div>
+      <img id="lockIconPassword" class="sign-up-mail-lock-icon" src="../assets/icons/lock.png" onclick="togglePasswordVisibility('password')">
+      <img id="eyeIconPassword" class="sign-up-mail-lock-icon" src="../assets/icons/eyeYES.png" onclick="togglePasswordVisibility('password')" style="display: none;">
+      <img id="eyeIconHiddenPassword" class="sign-up-mail-lock-icon" src="../assets/icons/eyeNO.png" onclick="togglePasswordVisibility('password')" style="display: none;">
     </div>
-
+    
     <div>
       <input id="passwordConfirm" class="sign-up-field pointer" required type="password" minlength="6" placeholder="Confirm Password">
-      <img class="sign-up-mail-lock-icon" src="../assets/icons/lock.png">
+      <img id="lockIconConfirm" class="sign-up-mail-lock-icon" src="../assets/icons/lock.png" onclick="togglePasswordVisibility('confirm')">
+      <img id="eyeIconConfirm" class="sign-up-mail-lock-icon" src="../assets/icons/eyeYES.png" onclick="togglePasswordVisibility('confirm')" style="display: none;">
+      <img id="eyeIconHiddenConfirm" class="sign-up-mail-lock-icon" src="../assets/icons/eyeNO.png" onclick="togglePasswordVisibility('confirm')" style="display: none;">
     </div>
 
 
