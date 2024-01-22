@@ -671,35 +671,35 @@ function generateEditContactFormHTML(contactToEdit, contactIndex) {
           <div class="adding-contact-icon" style="background-color: ${color}">${initialLetter}</div>
         </div>
         <div>
-          <form onsubmit="return false;">
-            <div class="form-contacs">
-              <div class="center">
-                <input id="contactNameInput" class="log-in-field column center pointer" required type="text" placeholder="Name" value="${name}">
-                <img class="log-in-mail-lock-icon" src="../assets/icons/person-small.png">
-              </div>
-              <div class="center">
-                <input id="contactEmailInput" class="log-in-field column center pointer" required type="email" placeholder="Email" value="${email}">
-                <img class="log-in-mail-lock-icon" src="../assets/icons/mail.png">
-              </div>
-              <div class="center">
-                <input id="contactPhoneInput" class="log-in-field column center pointer" required type="number" placeholder="Phone" value="${phone}">
-                <img class="log-in-mail-lock-icon" src="../assets/icons/call.png">
-              </div>
-            </div>
-            <div class="right-bottom">
-              <div class="clear-and-update-contact">
-                <div class="clear pointer center" onclick="deleteContact()">
-                  <span>Delete</span>
-                  <img class="cancel1" src="../assets/icons/cancel.svg" alt="">
-                  <img class="cancel2 d-none" src="../assets/icons/cancel2.svg" alt="">
-                </div>
-                <div class="update-contact pointer center" onclick="updateContact(${contactIndex})">
-                  <span>Save</span>
-                  <img src="../assets/icons/check.svg" alt="">
-                </div>
-              </div>
-            </div>
-          </form>
+        <form onsubmit="return false;">
+      <div class="form-contacts">
+        <div class="center">
+          <input id="contactNameInput" class="log-in-field column center pointer" required type="text" placeholder="Name">
+          <img class="log-in-mail-lock-icon" src="../assets/icons/person-small.png">
+        </div>
+        <div class="center">
+          <input id="contactEmailInput" class="log-in-field column center pointer" required type="email" placeholder="Email">
+          <img class="log-in-mail-lock-icon" src="../assets/icons/mail.png">
+        </div>
+        <div class="center">
+          <input id="contactPhoneInput" class="log-in-field column center pointer" required type="number" placeholder="Phone">
+          <img class="log-in-mail-lock-icon" src="../assets/icons/call.png">
+        </div>
+      </div>
+      <div class="right-bottom">
+        <div class="clear-and-create-task">
+          <div class="clear pointer center" onclick="clearInputAddingContact()">
+            <span>Clear</span>
+            <img class="cancel1" src="../assets/icons/cancel.svg" alt="">
+            <img class="cancel2 d-none" src="../assets/icons/cancel2.svg" alt="">
+          </div>
+          <div class="create-task pointer center" onclick="addingContact()">
+            <span>Create contact</span>
+            <img src="../assets/icons/check.svg" alt="">
+          </div>
+        </div>
+      </div>
+    </form>
         </div>
       </div>
     </div>
@@ -721,7 +721,7 @@ async function updateContact(index) {
     const contact = contacts[index];
 
     if (!contact) {
-      console.error("Contact not found in local storage.");
+      console.error("Contact not found.");
       return;
     }
 
