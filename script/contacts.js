@@ -85,7 +85,7 @@ function generateNewContactHTML() {
           <div class="adding-contact-icon"><img src="../assets/icons/person.png"></div>
         </div>
         <div>
-          <form onsubmit="return false;">
+          <form onsubmit="addingContact(); return false;">
             <div class="form-contacs">
               <div class="center">
                 <input id="contactNameInput" class="log-in-field column center pointer" required type="text" placeholder="Name">
@@ -107,10 +107,10 @@ function generateNewContactHTML() {
                   <img class="cancel1" src="../assets/icons/cancel.svg" alt="">
                   <img class="cancel2 d-none" src="../assets/icons/cancel2.svg" alt="">
                 </div>
-                <div class="create-task pointer center" onclick="addingContact()">
+                <button class="create-task pointer center">
                   <span>Create contact</span>
                   <img src="../assets/icons/check.svg" alt="">
-                </div>
+                </button>
               </div>
             </div>
           </form>
