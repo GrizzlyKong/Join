@@ -269,8 +269,10 @@ function openTaskInfos(taskId, title, description, category, dueDate, subtasks) 
   let currentDueDate = taskElement.querySelector('.board-task-card-date').textContent;
 
   let subtasksHtml = subtasks.map((subtask, index) => // Fügen Sie den Index hier hinzu
-  `<div class="subtask-text">
+  `<div class="hover-subtask column pointer" onmouseover="showIcons(${index})" onmouseout="hideIcons(${index})">
     ${subtask}
+    <img id="edit-icon-${index}" onclick="editExistingSubtask(${index})" src="../assets/icons/edit.svg" style="display:none;"/>
+    <img id="delete-icon-${index}" onclick="deleteExistingSubtask(${index})" src="../assets/icons/delete.svg" style="display:none;"/>
   </div>`
 ).join("");
   let encodedSubtasksHtml = encodeURIComponent(subtasksHtml);
@@ -363,8 +365,7 @@ function editTaskInfos(taskId, encodedSubtasksHtml) {
 </div>
 </div>
   <span class="hover-subtask">${subtask}</span>
-  <img id="edit-icon-${index}" onclick="editExistingSubtask(${index})" src="../assets/icons/edit.svg" style="display:none;"/>
-  <img id="delete-icon-${index}" onclick="deleteExistingSubtask(${index})" src="../assets/icons/delete.svg" style="display:none;"/>
+
   </div>
 `).join("");
 
