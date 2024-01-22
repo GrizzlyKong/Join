@@ -203,6 +203,11 @@ body {
   background-color: rgb(238, 238, 238);
 } */
 
+.log-in-checkbox[type="checkbox"]:not(:disabled):hover:after {
+  background-image: linear-gradient(135deg, #8BB0C2 0%, #FFF 100%);
+  border-color: #85A9BB #92C2DA #92C2DA #85A9BB;
+}
+
 .log-in-checkbox[type="checkbox"]:before {
   position: relative;
   display: block;

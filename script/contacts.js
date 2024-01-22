@@ -43,18 +43,22 @@ function addNewContact() {
   updateElementClass("contacts-div", "background", "add");
   updateElementClass("add-new-contact", "sign-up-animation", "add");
   updateElementClass("add-new-contact", "d-none", "remove");
-
-  // Create overlay and prevent scrolling
-  const overlay = document.createElement('div');
-  overlay.className = 'overlay';
-  overlay.style.zIndex = '5';
-  document.body.appendChild(overlay);
-  document.body.classList.add('no-scroll');
+  greyOverlay ();
 
   newContact.innerHTML = generateNewContactHTML();
 
   const newContactElement = createNewContactElement();
   newContactElement.onclick = showContact;
+}
+
+
+function greyOverlay () {
+    // Create overlay and prevent scrolling
+    const overlay = document.createElement('div');
+    overlay.className = 'overlay';
+    overlay.style.zIndex = '5';
+    document.body.appendChild(overlay);
+    document.body.classList.add('no-scroll');
 }
 
 
@@ -116,19 +120,6 @@ function generateNewContactHTML() {
           </form>
         </div>
       </div>
-    </div>
-  `;
-}
-
-
-function generateNewContactElementHTML() {
-  return `
-    <div class="primary-contact-icon-container">
-      <div class="added-contact-icon"></div>
-    </div>
-    <div class="moveRight">
-      <p></p>
-      <a class="contact-link"></a>
     </div>
   `;
 }
@@ -342,11 +333,7 @@ function showContact() {
   const { name, email, initialLetter, color, phoneNumber } = getContactInfo(this);
 
   updateContactInfo(contactInfoName, contactInfoIcon, contactInfoLink, contactInfoDetails, name, email, initialLetter, color, phoneNumber);
-
-  // Display the contact information
   displayContactInfo(contactInfoDiv);
-
-  // Generate and display the edit form
   generateEditContactFormHTML(name, email, phoneNumber, initialLetter, color);
 }
 
@@ -515,8 +502,6 @@ async function deleteContact() {
   const contactToDelete = findContactToDelete(contactsLayout, contactName);
 
   removeContactFromLayout(contactsLayout, contactToDelete);
-
-  // Delete the contact from the server
   await deleteContactFromServer(contactName);
 
   hideContactInfo(contactInfoDiv);
@@ -561,10 +546,7 @@ async function deleteContactFromServer(contactName) {
     const contactIndex = contacts.findIndex(contact => contact.name === contactName);
 
     if (contactIndex !== -1) {
-      // Remove the contact from the array
       contacts.splice(contactIndex, 1);
-
-      // Update the contacts on the server
       await setItem(key, JSON.stringify(contacts));
 
       console.log(`Contact ${contactName} deleted successfully from the server.`);
@@ -642,6 +624,8 @@ async function editContact() {
     [editContactDiv, addNewContactDiv].forEach(elem => elem.classList.add("background", "sign-up-animation"));
     addNewContactDiv.classList.remove("d-none");
 
+    greyOverlay ();
+
     editContactDiv.innerHTML = generateEditContactFormHTML(contactToEdit, existingContacts.indexOf(contactToEdit));
   } catch (error) {
     console.error("Error fetching contacts from the server:", error);
@@ -651,9 +635,6 @@ async function editContact() {
 
 
 function generateEditContactFormHTML(contactToEdit, contactIndex) {
-  if (!contactToEdit || typeof contactToEdit.name !== 'string') {
-    return "";
-  }
   const { name, email, phone, color } = contactToEdit;
   const initialLetter = name.charAt(0).toUpperCase();
 
@@ -671,35 +652,35 @@ function generateEditContactFormHTML(contactToEdit, contactIndex) {
           <div class="adding-contact-icon" style="background-color: ${color}">${initialLetter}</div>
         </div>
         <div>
-        <form onsubmit="return false;">
-      <div class="form-contacts">
-        <div class="center">
-          <input id="contactNameInput" class="log-in-field column center pointer" required type="text" placeholder="Name">
-          <img class="log-in-mail-lock-icon" src="../assets/icons/person-small.png">
-        </div>
-        <div class="center">
-          <input id="contactEmailInput" class="log-in-field column center pointer" required type="email" placeholder="Email">
-          <img class="log-in-mail-lock-icon" src="../assets/icons/mail.png">
-        </div>
-        <div class="center">
-          <input id="contactPhoneInput" class="log-in-field column center pointer" required type="number" placeholder="Phone">
-          <img class="log-in-mail-lock-icon" src="../assets/icons/call.png">
-        </div>
-      </div>
-      <div class="right-bottom">
-        <div class="clear-and-create-task">
-          <div class="clear pointer center" onclick="clearInputAddingContact()">
-            <span>Clear</span>
-            <img class="cancel1" src="../assets/icons/cancel.svg" alt="">
-            <img class="cancel2 d-none" src="../assets/icons/cancel2.svg" alt="">
-          </div>
-          <div class="create-task pointer center" onclick="addingContact()">
-            <span>Create contact</span>
-            <img src="../assets/icons/check.svg" alt="">
-          </div>
-        </div>
-      </div>
-    </form>
+          <form onsubmit="return false;">
+            <div class="form-contacs">
+              <div class="center">
+                <input id="contactNameInput" class="log-in-field column center pointer" required type="text" placeholder="Name" value="${name}">
+                <img class="log-in-mail-lock-icon" src="../assets/icons/person-small.png">
+              </div>
+              <div class="center">
+                <input id="contactEmailInput" class="log-in-field column center pointer" required type="email" placeholder="Email" value="${email}">
+                <img class="log-in-mail-lock-icon" src="../assets/icons/mail.png">
+              </div>
+              <div class="center">
+                <input id="contactPhoneInput" class="log-in-field column center pointer" required type="number" placeholder="Phone" value="${phone}">
+                <img class="log-in-mail-lock-icon" src="../assets/icons/call.png">
+              </div>
+            </div>
+            <div class="right-bottom">
+              <div class="clear-and-update-contact">
+                <div class="clear pointer center" onclick="deleteContact()">
+                  <span>Delete</span>
+                  <img class="cancel1" src="../assets/icons/cancel.svg" alt="">
+                  <img class="cancel2 d-none" src="../assets/icons/cancel2.svg" alt="">
+                </div>
+                <div class="update-contact pointer center" onclick="updateContact(${contactIndex})">
+                  <span>Save</span>
+                  <img src="../assets/icons/check.svg" alt="">
+                </div>
+              </div>
+            </div>
+          </form>
         </div>
       </div>
     </div>

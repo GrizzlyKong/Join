@@ -222,17 +222,13 @@
 .sign-up-privacy-policy span {
   color: rgb(41, 171, 226);
 }
-.sign-up-privacy-policy-span{
 
-}
 .sign-up-privacy-policy-span:hover {
   font-weight: bold;
   cursor: pointer;
   text-decoration: underline;
 }
 
-.sign-up-privacy-policy:hover .sign-up-checkbox {
-}
 
 .sign-up-privacy-policy.error p {
   color: red;
@@ -307,9 +303,8 @@
   border-color: #3D7591;
 }
 
-
-
-
-
-
-
+.sign-up-checkbox[type="checkbox"]:not(:disabled):hover:after,
+#privacyCheckbox.hovered:after {
+  background-image: linear-gradient(135deg, #8BB0C2 0%, #FFF 100%);
+  border-color: #85A9BB #92C2DA #92C2DA #85A9BB;
+}

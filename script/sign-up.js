@@ -1,5 +1,6 @@
 async function init() {
   loadUsers();
+  privacyPolicyHoverCheckbox();
 }
 
 
@@ -89,3 +90,18 @@ passwordInput.addEventListener("input", function() {
     passwordLengthError.innerText = "";
   }
 });
+
+
+
+function privacyPolicyHoverCheckbox() {
+  const privacyPolicySpan = document.getElementById("sign-up-privacy-policy-id");
+  const privacyCheckbox = document.getElementById("privacyCheckbox");
+
+  privacyPolicySpan.addEventListener("mouseenter", function() {
+    privacyCheckbox.classList.add("hovered");
+  });
+
+  privacyPolicySpan.addEventListener("mouseleave", function() {
+    privacyCheckbox.classList.remove("hovered");
+  });
+}
