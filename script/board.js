@@ -8,10 +8,23 @@ let addCount = 0;
 
 async function init() {
   await includeHTML();
+  displayLoggedInUser();
   updateHTML();
   AddPriorities();
   /*   loadTasks(); */
 }
+
+
+function displayLoggedInUser() {
+  const loggedInUserName = localStorage.getItem('loggedInUserName');
+
+  if (loggedInUserName) {
+    const userNameIcon = document.getElementById('board-user-icon');
+    const firstLetter = loggedInUserName.charAt(0).toUpperCase();
+    userNameIcon.textContent = firstLetter;
+  }
+}
+
 
 /* async function setItem(key, value) {
   const payload = { key, value, token: STORAGE_TOKEN };
