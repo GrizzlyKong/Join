@@ -11,102 +11,8 @@ async function init() {
   await includeHTML();
   displayLoggedInUser();
   updateHTML();
-<<<<<<< HEAD
 }
 
-=======
-  AddPriorities();
-  populateContactsDropdown();
-  /*   loadTasks(); */
-}
-
-
-async function populateContactsDropdown() {
-  try {
-    const loggedInUserName = localStorage.getItem("loggedInUserName");
-    if (!loggedInUserName) {
-      console.error("No logged-in user found. Contacts cannot be loaded.");
-      return;
-    }
-
-    const contactsData = await getItem(`contacts_${loggedInUserName}`);
-    const userContacts = JSON.parse(contactsData) || [];
-
-    const selectedContact = document.getElementById("selectedContact");
-    const contactsDropdown = document.getElementById("contactsDropdownTask");
-    const contactsContainer = document.getElementById("contactsContainerTask");
-    contactsDropdown.innerHTML = '<option value="" selected disabled>Select contacts to assign</option>';
-
-    contactsContainer.innerHTML = '';
-
-
-    userContacts.forEach((contact, index) => {
-      const { name, color } = contact;
-      if (!name) {
-        return;
-      }
-
-      const option = document.createElement("option");
-      option.value = name;
-      option.textContent = name;
-
-      contactsDropdown.appendChild(option);
-
-      const contactElement = createContactIcon(contact);
-      contactsContainer.appendChild(contactElement);
-    });
-    contactsDropdown.addEventListener("change", () => {
-      selectedContact.textContent = contactsDropdown.value;
-    });
-  } catch (error) {
-    console.error("Error loading contacts:", error);
-  }
-}
-
-
-
-
-
-function displayLoggedInUser() {
-  const loggedInUserName = localStorage.getItem('loggedInUserName');
-
-  if (loggedInUserName) {
-    const userNameIcon = document.getElementById('board-user-icon');
-    const firstLetter = loggedInUserName.charAt(0).toUpperCase();
-    userNameIcon.textContent = firstLetter;
-  }
-}
-
-
-/* async function setItem(key, value) {
-  const payload = { key, value, token: STORAGE_TOKEN };
-  return fetch(STORAGE_URL, { method: 'POST', body: JSON.stringify(payload) })
-      .then(res => res.json());
-}
-
-async function getItem(key) {
-  const url = `${STORAGE_URL}?key=${key}&token=${STORAGE_TOKEN}`;
-  return fetch(url).then(res => res.json()).then(res => {
-      if (res.data) {
-          return res.data.value;
-      } else {
-          throw `Could not find data with key "${key}".`;
-      }
-  });
-} */
-
-/* async function loadTasks() {
-  try {
-    let tasks = await getItem('tasks');
-    tasks.forEach(task => {
-        addTaskToDOM(task);
-    });
-  } catch (error) {
-    console.error('Fehler beim Laden der Tasks:', error);
-  }
-} */
-
->>>>>>> 9f1854aee5815d39b4e73831a49eaf36696c02b6
 async function includeHTML() {
   let includeElements = document.querySelectorAll("[w3-include-html]");
   for (let i = 0; i < includeElements.length; i++) {
@@ -148,7 +54,6 @@ function addTask() {
   <div class="headline-div">
     <h1>Add Task</h1>
     <img onclick="closeAddTodo()" class="goBack pointer" src="../assets/icons/close.svg">
-<<<<<<< HEAD
   </div>
 
   <div class="add-tasks-div center">
@@ -200,71 +105,8 @@ function addTask() {
               <img class="low1" src="../assets/icons/low.svg" alt="">
               <img class="low2 d-none" src="../assets/icons/low2.svg" alt="">
             </div>
-=======
-      </div>
-      <div class="add-tasks-div center">
-        <div class="add-tasks-left-side-div">
-          <div class="title column">
-            <div><span>Title</span><span class="important">*</span></div>
-            <input maxlength="22" id="title-todo" required type="text" placeholder="Enter a title">
-          </div>
-          <div class="description">
-            <div><span>Description</span></div>
-            <textarea required type="text" maxlength="45" id="description-todo" placeholder="Enter a Description"></textarea>
-          </div>
-
-
-          <div class="assigned-to">
-          <label for="contactsDropdownTask"><span>Assigned to</span></label>
-          <div class="custom-dropdown" id="contactsDropdownContainer">
-            <select id="contactsDropdownTask">
-              <option value="" selected disabled>Select contacts to assign</option>
-              <!-- Options will be dynamically added here using JavaScript -->
-            </select>
->>>>>>> 9f1854aee5815d39b4e73831a49eaf36696c02b6
           </div>
         </div>
-        <div class="contacts-container" id="contactsContainerTask"></div>
-
-
-          <div class="contacts-container" id="contactsContainerTask"></div>
-        </div>
-        <div class="add-tasks-right-side-div">
-          <div class="duo-date">
-            <div><span>Due date</span><span class="important">*</span></div>
-            <input class="calendarPicker" type="date" maxlength="10" id="date-todo" required placeholder="dd/mm/yyyy">
-          </div>
-          <div class="all-priorities">
-          <span>Prio</span>
-          <div class="priorities">
-            <div id="priority-urgent-todo" tabindex="1" class="prioprity-urgent pointer center">
-              <div>Urgent</div>
-              <div>
-                <img class="urgent1" src="../assets/icons/urgent3.svg" alt="">
-                <img class="urgent2 d-none" src="../assets/icons/urgent2.svg" alt="">
-              </div>
-            </div>
-            <div id="priority-medium-todo" tabindex="2" class="prioprity-medium pointer center">
-              <div>Medium</div>
-              <div>
-                <img class="medium1" src="../assets/icons/medium.svg" alt="">
-                <img class="medium2 d-none" src="../assets/icons/medium2.svg" alt="">
-              </div>
-            </div>
-            <div id="priority-low-todo" tabindex="3" class="prioprity-low pointer center">
-              <div>Low</div>
-              <div>
-                <img class="low1" src="../assets/icons/low.svg" alt="">
-                <img class="low2 d-none" src="../assets/icons/low2.svg" alt="">
-              </div>
-            </div>
-            </div>
-          </div>
-          <div class="bottom">
-          <div class="left-bottom">
-            <span class="important">*</span><span>This field is required</span>
-          </div>
-          <div class="absolute" id="added-subtasks"></div>
       </div>
       <div class="category">
         <div><span>Category</span><span class="important">*</span></div>
@@ -285,21 +127,9 @@ function addTask() {
       </div>
     </div>
         </div>
-        <div class="right-bottom">
-        <div class="clear-and-create-task center">
-          <button onclick="closeAddTodo()" class="clear pointer center">
-            <span>Clear</span>
-            <img class="cancel1" src="../assets/icons/cancel.svg" alt="">
-            <img class="cancel2 d-none" src="../assets/icons/cancel2.svg" alt="">
-          </button>
-          <button type="submit" class="create-task pointer center">
-            <span>Create Task</span>
-            <img src="../assets/icons/check.svg" alt="">
-          </button>
-        </div>
+        <div class="absolute" id="added-subtasks">
         
         </div>
-<<<<<<< HEAD
     </div>
   </div>
   <div class="bottom">
@@ -321,54 +151,10 @@ function addTask() {
     </div>
   </div>
 </form>
-=======
-      
-          </div>
- 
-    </form>
->>>>>>> 9f1854aee5815d39b4e73831a49eaf36696c02b6
   `;
   bindSubtaskEvents();
 }
 
-<<<<<<< HEAD
-=======
-
-function displayAssignedContacts() {
-  const loggedInUserName = localStorage.getItem("loggedInUserName");
-  const contactsData = getItem(`contacts_${loggedInUserName}`);
-  const userContacts = JSON.parse(contactsData) || [];
-
-  const contactsContainer = document.getElementById("contactsContainerTask");
-  userContacts.forEach((contact) => {
-    const contactElement = createContactIcon(contact);
-    contactsContainer.appendChild(contactElement);
-  });
-}
-
-function createContactIcon(contact) {
-  const { name, color } = contact;
-
-  if (!name) {
-    return null;
-  }
-
-  const contactElement = document.createElement("div");
-  contactElement.className = "contact-icon";
-  contactElement.style.backgroundColor = color;
-
-  const nameElement = document.createElement("div");
-  nameElement.className = "contact-icon-name";
-  nameElement.textContent = name.charAt(0).toUpperCase();
-
-  contactElement.appendChild(nameElement);
-
-  return contactElement;
-}
-
-
-
->>>>>>> 9f1854aee5815d39b4e73831a49eaf36696c02b6
 function bindSubtaskEvents() {
   let addedSubtasksContainer = document.getElementById("added-subtasks");
   if (addedSubtasksContainer) {
@@ -847,20 +633,6 @@ function highlight(id) {
 function removeHighlight(id) {
   document.getElementById(id).classList.remove("drag-area-highlight");
 }
-
-function updateAssignedUserIcon(taskId, userIconPath) {
-  let assignedToDiv = document.getElementById(`assigned-to-icon-${taskId}`);
-
-  if (assignedToDiv && userIconPath) {
-    assignedToDiv.innerHTML = "";  // Clear existing content
-
-    let assignedUserIcon = document.createElement("img");
-    assignedUserIcon.src = userIconPath;
-    assignedUserIcon.alt = "Assigned User";
-    assignedToDiv.appendChild(assignedUserIcon);
-  }
-}
-
 
 /* function getDate() {
   let today = new Date();
