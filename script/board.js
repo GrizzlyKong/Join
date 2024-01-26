@@ -9,6 +9,7 @@ let selectedPriority = null;
 
 async function init() {
   await includeHTML();
+  displayLoggedInUser();
   updateHTML();
 }
 
