@@ -11,49 +11,7 @@ async function init() {
   await includeHTML();
   displayLoggedInUser();
   updateHTML();
-  AddPriorities();
-  /*   loadTasks(); */
 }
-
-
-function displayLoggedInUser() {
-  const loggedInUserName = localStorage.getItem('loggedInUserName');
-
-  if (loggedInUserName) {
-    const userNameIcon = document.getElementById('board-user-icon');
-    const firstLetter = loggedInUserName.charAt(0).toUpperCase();
-    userNameIcon.textContent = firstLetter;
-  }
-}
-
-
-/* async function setItem(key, value) {
-  const payload = { key, value, token: STORAGE_TOKEN };
-  return fetch(STORAGE_URL, { method: 'POST', body: JSON.stringify(payload) })
-      .then(res => res.json());
-}
-
-async function getItem(key) {
-  const url = `${STORAGE_URL}?key=${key}&token=${STORAGE_TOKEN}`;
-  return fetch(url).then(res => res.json()).then(res => {
-      if (res.data) {
-          return res.data.value;
-      } else {
-          throw `Could not find data with key "${key}".`;
-      }
-  });
-} */
-
-/* async function loadTasks() {
-  try {
-    let tasks = await getItem('tasks');
-    tasks.forEach(task => {
-        addTaskToDOM(task);
-    });
-  } catch (error) {
-    console.error('Fehler beim Laden der Tasks:', error);
-  }
-} */
 
 async function includeHTML() {
   let includeElements = document.querySelectorAll("[w3-include-html]");
@@ -92,11 +50,11 @@ function addTask() {
   document.getElementById("add-task").classList.remove("d-none");
   document.getElementById("add-task").classList.add("sign-up-animation");
   addToTask.innerHTML = `
-    <form onsubmit="addTodo(); return false;" class="addTaskForm">
-      <div class="headline-div">
-        <h1>Add Task</h1>
-        <img onclick="closeAddTodo()" class="goBack pointer" src="../assets/icons/close.svg">
-      </div>
+  <form onsubmit="addTodo(); return false;" class="addTaskForm">
+  <div class="headline-div">
+    <h1>Add Task</h1>
+    <img onclick="closeAddTodo()" class="goBack pointer" src="../assets/icons/close.svg">
+  </div>
 
   <div class="add-tasks-div center">
     <div class="add-tasks-left-side-div">
@@ -127,21 +85,21 @@ function addTask() {
       <div class="all-priorities">
         <span>Prio</span>
         <div class="priorities">
-          <div id="priority-urgent-todo" tabindex="1" class="prioprity-urgent pointer center">
+        <div id="priority-urgent-todo" tabindex="1" class="prioprity-urgent pointer center" onclick="setSelectedPriority('urgent')">
             <div>Urgent</div>
             <div>
               <img class="urgent1" src="../assets/icons/urgent3.svg" alt="">
               <img class="urgent2 d-none" src="../assets/icons/urgent2.svg" alt="">
             </div>
           </div>
-          <div id="priority-medium-todo" tabindex="2" class="prioprity-medium pointer center">
+          <div id="priority-medium-todo" tabindex="2" class="prioprity-medium pointer center" onclick="setSelectedPriority('medium')">
             <div>Medium</div>
             <div>
               <img class="medium1" src="../assets/icons/medium.svg" alt="">
               <img class="medium2 d-none" src="../assets/icons/medium2.svg" alt="">
             </div>
           </div>
-          <div id="priority-low-todo" tabindex="3" class="prioprity-low pointer center">
+          <div id="priority-low-todo" tabindex="3" class="prioprity-low pointer center" onclick="setSelectedPriority('low')">
             <div>Low</div>
             <div>
               <img class="low1" src="../assets/icons/low.svg" alt="">
@@ -172,65 +130,30 @@ function addTask() {
         <div class="absolute" id="added-subtasks">
         
         </div>
+    </div>
+  </div>
+  <div class="bottom">
+    <div class="left-bottom">
+      <span class="important">*</span><span>This field is required</span>
+    </div>
+    <div class="right-bottom">
+      <div class="clear-and-create-task center">
+        <button onclick="closeAddTodo()" class="clear pointer center">
+          <span>Clear</span>
+          <img class="cancel1" src="../assets/icons/cancel.svg" alt="">
+          <img class="cancel2 d-none" src="../assets/icons/cancel2.svg" alt="">
+        </button>
+        <button type="submit" class="create-task pointer center">
+          <span>Create Task</span>
+          <img src="../assets/icons/check.svg" alt="">
+        </button>
       </div>
-
-      <div class="bottom">
-        <div class="left-bottom">
-          <span class="important">*</span><span>This field is required</span>
-        </div>
-        <div class="right-bottom">
-          <div class="clear-and-create-task center">
-            <button onclick="closeAddTodo()" class="clear pointer center">
-              <span>Clear</span>
-              <img class="cancel1" src="../assets/icons/cancel.svg" alt="">
-              <img class="cancel2 d-none" src="../assets/icons/cancel2.svg" alt="">
-            </button>
-            <button type="submit" class="create-task pointer center">
-              <span>Create Task</span>
-              <img src="../assets/icons/check.svg" alt="">
-            </button>
-          </div>
-        </div>
-      </div>
-    </form>
+    </div>
+  </div>
+</form>
   `;
-
-  populateContactsDropdown("contactsDropdownTask");
   bindSubtaskEvents();
 }
-
-
-function displayAssignedContacts() {
-  const loggedInUserName = localStorage.getItem("loggedInUserName");
-  const contactsData = getItem(`contacts_${loggedInUserName}`);
-  const userContacts = JSON.parse(contactsData) || [];
-
-  const contactsContainer = document.getElementById("contactsContainerTask");
-
-  // Display assigned contacts
-  userContacts.forEach((contact) => {
-    const contactElement = createContactIcon(contact);
-    contactsContainer.appendChild(contactElement);
-  });
-}
-
-function createContactIcon(contact) {
-  const { name, color } = contact;
-
-  const contactElement = document.createElement("div");
-  contactElement.className = "contact-icon";
-  contactElement.style.backgroundColor = color;
-
-  const nameElement = document.createElement("div");
-  nameElement.className = "contact-icon-name";
-  nameElement.textContent = name.charAt(0).toUpperCase();
-
-  contactElement.appendChild(nameElement);
-
-  return contactElement;
-}
-
-
 
 function bindSubtaskEvents() {
   let addedSubtasksContainer = document.getElementById("added-subtasks");
@@ -823,3 +746,4 @@ function deleteSubtask(taskId, subtaskId) {
 }
 
 init();
+
