@@ -11,6 +11,7 @@ async function init() {
   displayLoggedInUser();
   updateHTML();
   AddPriorities();
+  populateContactsDropdown();
   /*   loadTasks(); */
 }
 
@@ -22,6 +23,71 @@ function displayLoggedInUser() {
     const userNameIcon = document.getElementById('board-user-icon');
     const firstLetter = loggedInUserName.charAt(0).toUpperCase();
     userNameIcon.textContent = firstLetter;
+  }
+}
+
+async function populateContactsDropdown() {
+  try {
+    const loggedInUserName = localStorage.getItem("loggedInUserName");
+    if (!loggedInUserName) {
+      console.error("No logged-in user found. Contacts cannot be loaded.");
+      return;
+    }
+
+    const contactsData = await getItem(`contacts_${loggedInUserName}`);
+    const userContacts = JSON.parse(contactsData) || [];
+
+    const selectedContact = document.getElementById("selectedContact");
+    const dropdownOptions = document.getElementById("dropdownOptions");
+    const customDropdown = document.getElementById("contactsDropdownTask");
+
+    // Clear existing options
+    dropdownOptions.innerHTML = '';
+
+    // Populate dropdown with contacts
+    userContacts.forEach((contact, index) => {
+      const { name, color } = contact;
+
+      const option = document.createElement("div");
+      option.className = "dropdown-option";
+      option.dataset.value = index.toString(); // Set the value to the index for reference
+
+      // Set the contact icon with the added-contact-icon class and the background color
+      const contactIcon = document.createElement("div");
+      contactIcon.className = "added-contact-icon";
+      contactIcon.style.backgroundColor = color; // Set the background color of the contact icon
+
+      const nameElement = document.createElement("div");
+      nameElement.className = "contact-icon-name";
+      nameElement.textContent = name.charAt(0).toUpperCase();
+
+      contactIcon.appendChild(nameElement);
+      option.appendChild(contactIcon);
+
+      option.innerHTML += `<span class="contact-name">${name}</span>`; // Append the name with the appropriate class
+
+      option.addEventListener("click", () => {
+        selectedContact.textContent = name;
+        customDropdown.classList.remove("active");
+        // Handle the selected contact value here
+      });
+
+      dropdownOptions.appendChild(option);
+    });
+
+    // Toggle dropdown visibility on click
+    customDropdown.addEventListener("click", () => {
+      customDropdown.classList.toggle("active");
+    });
+
+    // Close dropdown when clicking outside
+    document.addEventListener("click", (event) => {
+      if (!customDropdown.contains(event.target)) {
+        customDropdown.classList.remove("active");
+      }
+    });
+  } catch (error) {
+    console.error("Error loading contacts:", error);
   }
 }
 
@@ -91,110 +157,156 @@ function addTask() {
   document.getElementById("add-task").classList.remove("d-none");
   document.getElementById("add-task").classList.add("sign-up-animation");
   addToTask.innerHTML = `
-  <form onsubmit="addTodo(); return false;" class="addTaskForm">
-  <div class="headline-div">
-    <h1>Add Task</h1>
-    <img onclick="closeAddTodo()" class="goBack pointer" src="../assets/icons/close.svg">
-  </div>
+    <form onsubmit="addTodo(); return false;" class="addTaskForm">
+      <div class="headline-div">
+        <h1>Add Task</h1>
+        <img onclick="closeAddTodo()" class="goBack pointer" src="../assets/icons/close.svg">
+      </div>
 
-  <div class="add-tasks-div center">
-    <div class="add-tasks-left-side-div">
-      <div class="title column">
-        <div><span>Title</span><span class="important">*</span></div>
-        <input maxlength="22" id="title-todo" required type="text" placeholder="Enter a title">
-      </div>
-      <div class="description">
-        <div><span>Description</span></div>
-        <textarea required type="text" maxlength="45" id="description-todo" placeholder="Enter a Description"></textarea>
-      </div>
-      <div class="assigned-to">
-        <div><span>Assigned to</span></div>
-        <select required type="text" class="pointer" placeholder="Select contacts to assign">
-          <option value="" class="d-none">Select contacts to assign</option>
-          <option>1</option>
-          <option>2</option>
-          <option>3</option>
-        </select>
-      </div>
-    </div>
-    <div class="add-tasks-right-side-div">
-      <div class="duo-date">
-        <div><span>Due date</span><span class="important">*</span></div>
-        <input class="calendarPicker" type="date" maxlength="10" id="date-todo" required placeholder="dd/mm/yyyy">
-        
-      </div>
-      <div class="all-priorities">
-        <span>Prio</span>
-        <div class="priorities">
-          <div id="priority-urgent-todo" tabindex="1" class="prioprity-urgent pointer center">
-            <div>Urgent</div>
-            <div>
-              <img class="urgent1" src="../assets/icons/urgent3.svg" alt="">
-              <img class="urgent2 d-none" src="../assets/icons/urgent2.svg" alt="">
+      <div class="add-tasks-div center">
+        <div class="add-tasks-left-side-div">
+          <div class="title column">
+            <div><span>Title</span><span class="important">*</span></div>
+            <input maxlength="22" id="title-todo" required type="text" placeholder="Enter a title">
+          </div>
+          <div class="description">
+            <div><span>Description</span></div>
+            <textarea required type="text" maxlength="45" id="description-todo" placeholder="Enter a Description"></textarea>
+          </div>
+
+
+
+          <div class="assigned-to">
+            <div><span>Assigned to</span></div>
+
+
+
+            <div class="custom-dropdown" id="contactsDropdownTask">
+            <div class="dropdown-selected" id="selectedContact">Select contacts to assign</div>
+            <div class="dropdown-options" id="dropdownOptions"></div>
+          
+       
+
+
+          </div>
+          </div>
+          <div class="contacts-container" id="contactsContainerTask"></div>
+
+
+
+
+        </div>
+        <div class="add-tasks-right-side-div">
+          <div class="duo-date">
+            <div><span>Due date</span><span class="important">*</span></div>
+            <input class="calendarPicker" type="date" maxlength="10" id="date-todo" required placeholder="dd/mm/yyyy">
+          </div>
+          <div class="all-priorities">
+            <span>Prio</span>
+            <div class="priorities">
+              <div id="priority-urgent-todo" tabindex="1" class="prioprity-urgent pointer center">
+                <div>Urgent</div>
+                <div>
+                  <img class="urgent1" src="../assets/icons/urgent3.svg" alt="">
+                  <img class="urgent2 d-none" src="../assets/icons/urgent2.svg" alt="">
+                </div>
+              </div>
+              <div id="priority-medium-todo" tabindex="2" class="prioprity-medium pointer center">
+                <div>Medium</div>
+                <div>
+                  <img class="medium1" src="../assets/icons/medium.svg" alt="">
+                  <img class="medium2 d-none" src="../assets/icons/medium2.svg" alt="">
+                </div>
+              </div>
+              <div id="priority-low-todo" tabindex="3" class="prioprity-low pointer center">
+                <div>Low</div>
+                <div>
+                  <img class="low1" src="../assets/icons/low.svg" alt="">
+                  <img class="low2 d-none" src="../assets/icons/low2.svg" alt="">
+                </div>
+              </div>
             </div>
           </div>
-          <div id="priority-medium-todo" tabindex="2" class="prioprity-medium pointer center">
-            <div>Medium</div>
-            <div>
-              <img class="medium1" src="../assets/icons/medium.svg" alt="">
-              <img class="medium2 d-none" src="../assets/icons/medium2.svg" alt="">
+          <div class="category">
+            <div><span>Category</span><span class="important">*</span></div>
+            <select type="text" id="category-todo" required class="pointer" placeholder="Select task category">
+              <option value="" class="d-none">Select task category</option>
+              <option>Technical Task</option>
+              <option>User Story</option>
+            </select>
+          </div>
+          <div class="subtasks">
+            <div><span>Subtasks</span><span class="important">*</span></div>
+            <div class="subtaskInput">
+              <input minlength="1" oninput="addSubtasks()" id="add-subtasks" type="text" placeholder="Add new subtask">
+              <img id="subtask-add" class="input-icon2 pointer" src="../assets/icons/add.svg">
+              <div class="oninput">
+                <img onclick="cancelSubtask()" id="subtask-cancel" class="input-icon3 d-none pointer center" src="../assets/icons/cancelX.svg">
+                <img onclick="correctSubtask()" id="subtask-correct" class="input-icon4 d-none pointer center" src="../assets/icons/correct.svg">
+              </div>
             </div>
           </div>
-          <div id="priority-low-todo" tabindex="3" class="prioprity-low pointer center">
-            <div>Low</div>
-            <div>
-              <img class="low1" src="../assets/icons/low.svg" alt="">
-              <img class="low2 d-none" src="../assets/icons/low2.svg" alt="">
-            </div>
+          <div class="absolute" id="added-subtasks"></div>
+        </div>
+      </div>
+
+      <div class="bottom">
+        <div class="left-bottom">
+          <span class="important">*</span><span>This field is required</span>
+        </div>
+        <div class="right-bottom">
+          <div class="clear-and-create-task center">
+            <button onclick="closeAddTodo()" class="clear pointer center">
+              <span>Clear</span>
+              <img class="cancel1" src="../assets/icons/cancel.svg" alt="">
+              <img class="cancel2 d-none" src="../assets/icons/cancel2.svg" alt="">
+            </button>
+            <button type="submit" class="create-task pointer center">
+              <span>Create Task</span>
+              <img src="../assets/icons/check.svg" alt="">
+            </button>
           </div>
         </div>
       </div>
-      <div class="category">
-        <div><span>Category</span><span class="important">*</span></div>
-        <select type="text" id="category-todo" required class="pointer" placeholder="Select task category">
-          <option value="" class="d-none">Select task category</option>
-          <option>Technical Task</option>
-          <option>User Story</option>
-        </select>
-      </div>
-      <div class="subtasks">
-        <div><span>Subtasks</span><span class="important">*</span></div>
-      <div class="subtaskInput">
-        <input minlength="1" oninput="addSubtasks()" id="add-subtasks" type="text" placeholder="Add new subtask">
-        <img id="subtask-add" class="input-icon2 pointer" src="../assets/icons/add.svg">
-      <div class="oninput">
-        <img onclick="cancelSubtask()" id="subtask-cancel" class="input-icon3 d-none pointer center" src="../assets/icons/cancelX.svg">
-        <img onclick="correctSubtask()" id="subtask-correct" class="input-icon4 d-none pointer center" src="../assets/icons/correct.svg">
-      </div>
-    </div>
-        </div>
-        <div class="absolute" id="added-subtasks">
-        
-        </div>
-    </div>
-  </div>
-  <div class="bottom">
-    <div class="left-bottom">
-      <span class="important">*</span><span>This field is required</span>
-    </div>
-    <div class="right-bottom">
-      <div class="clear-and-create-task center">
-        <button onclick="closeAddTodo()" class="clear pointer center">
-          <span>Clear</span>
-          <img class="cancel1" src="../assets/icons/cancel.svg" alt="">
-          <img class="cancel2 d-none" src="../assets/icons/cancel2.svg" alt="">
-        </button>
-        <button type="submit" class="create-task pointer center">
-          <span>Create Task</span>
-          <img src="../assets/icons/check.svg" alt="">
-        </button>
-      </div>
-    </div>
-  </div>
-</form>
+    </form>
   `;
+
+  populateContactsDropdown("contactsDropdownTask");
   bindSubtaskEvents();
 }
+
+
+function displayAssignedContacts() {
+  const loggedInUserName = localStorage.getItem("loggedInUserName");
+  const contactsData = getItem(`contacts_${loggedInUserName}`);
+  const userContacts = JSON.parse(contactsData) || [];
+
+  const contactsContainer = document.getElementById("contactsContainerTask");
+
+  // Display assigned contacts
+  userContacts.forEach((contact) => {
+    const contactElement = createContactIcon(contact);
+    contactsContainer.appendChild(contactElement);
+  });
+}
+
+function createContactIcon(contact) {
+  const { name, color } = contact;
+
+  const contactElement = document.createElement("div");
+  contactElement.className = "contact-icon";
+  contactElement.style.backgroundColor = color;
+
+  const nameElement = document.createElement("div");
+  nameElement.className = "contact-icon-name";
+  nameElement.textContent = name.charAt(0).toUpperCase();
+
+  contactElement.appendChild(nameElement);
+
+  return contactElement;
+}
+
+
 
 function bindSubtaskEvents() {
   let addedSubtasksContainer = document.getElementById("added-subtasks");

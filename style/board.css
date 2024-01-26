@@ -999,3 +999,63 @@ display: none;
       width: 445px;
       height: 48px;
     }
+
+
+
+    .custom-dropdown {
+      position: relative;
+      display: inline-block;
+    }
+  
+    .dropdown-selected {
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+  
+    .dropdown-options {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      display: none;
+      background-color: #fff;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      border: 1px solid #ccc;
+      border-top: none;
+      border-radius: 0 0 4px 4px;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+  
+    .dropdown-option {
+      display: flex;
+      align-items: center;
+      padding: 8px;
+      cursor: pointer;
+    }
+  
+    .added-contact-icon {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      margin-right: 8px;
+    }
+  
+    .contact-name {
+      font-weight: bold;
+    }
+  
+    .custom-dropdown.active .dropdown-options {
+      display: block;
+    }
+
+    .contact-icon-name {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      color: #fff; /* Set the text color to white */
+      font-weight: bold;
+    }
