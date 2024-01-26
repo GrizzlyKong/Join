@@ -183,6 +183,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+  text-align: center;
   font-size: 18px;
   border-style: dashed;
   border-radius: 10px;
@@ -300,6 +301,7 @@ body {
   height: 8px;
   background-color: rgb(244, 244, 244);
   border-radius: 8px;
+  overflow: hidden;
 }
 
 .bar-fill {
@@ -307,10 +309,15 @@ body {
   height: 8px;
   background-color: rgb(69, 137, 255);
   border-radius: 8px;
+  transition: width 0.5s;
 }
 
 .board-task-card-subtasks-amount {
-  font-size: 18px;
+  font-size: 17px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
 }
 
 .board-task-card-users {
