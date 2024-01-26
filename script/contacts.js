@@ -621,7 +621,7 @@ async function editContact() {
     const editContactDiv = document.getElementById("add-new-contact");
     const addNewContactDiv = document.getElementById("add-new-contact");
 
-    [editContactDiv, addNewContactDiv].forEach(elem => elem.classList.add("background", "sign-up-animation"));
+    [editContactDiv, addNewContactDiv].forEach(elem => elem.classList.add("sign-up-animation"));
     addNewContactDiv.classList.remove("d-none");
 
     greyOverlay ();

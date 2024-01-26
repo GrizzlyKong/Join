@@ -12,8 +12,55 @@ async function init() {
   displayLoggedInUser();
   updateHTML();
   AddPriorities();
+  populateContactsDropdown();
   /*   loadTasks(); */
 }
+
+
+async function populateContactsDropdown() {
+  try {
+    const loggedInUserName = localStorage.getItem("loggedInUserName");
+    if (!loggedInUserName) {
+      console.error("No logged-in user found. Contacts cannot be loaded.");
+      return;
+    }
+
+    const contactsData = await getItem(`contacts_${loggedInUserName}`);
+    const userContacts = JSON.parse(contactsData) || [];
+
+    const selectedContact = document.getElementById("selectedContact");
+    const contactsDropdown = document.getElementById("contactsDropdownTask");
+    const contactsContainer = document.getElementById("contactsContainerTask");
+    contactsDropdown.innerHTML = '<option value="" selected disabled>Select contacts to assign</option>';
+
+    contactsContainer.innerHTML = '';
+
+
+    userContacts.forEach((contact, index) => {
+      const { name, color } = contact;
+      if (!name) {
+        return;
+      }
+
+      const option = document.createElement("option");
+      option.value = name;
+      option.textContent = name;
+
+      contactsDropdown.appendChild(option);
+
+      const contactElement = createContactIcon(contact);
+      contactsContainer.appendChild(contactElement);
+    });
+    contactsDropdown.addEventListener("change", () => {
+      selectedContact.textContent = contactsDropdown.value;
+    });
+  } catch (error) {
+    console.error("Error loading contacts:", error);
+  }
+}
+
+
+
 
 
 function displayLoggedInUser() {
@@ -92,63 +139,73 @@ function addTask() {
   document.getElementById("add-task").classList.remove("d-none");
   document.getElementById("add-task").classList.add("sign-up-animation");
   addToTask.innerHTML = `
-    <form onsubmit="addTodo(); return false;" class="addTaskForm">
-      <div class="headline-div">
-        <h1>Add Task</h1>
-        <img onclick="closeAddTodo()" class="goBack pointer" src="../assets/icons/close.svg">
+  <form onsubmit="addTodo(); return false;" class="addTaskForm">
+  <div class="headline-div">
+    <h1>Add Task</h1>
+    <img onclick="closeAddTodo()" class="goBack pointer" src="../assets/icons/close.svg">
       </div>
+      <div class="add-tasks-div center">
+        <div class="add-tasks-left-side-div">
+          <div class="title column">
+            <div><span>Title</span><span class="important">*</span></div>
+            <input maxlength="22" id="title-todo" required type="text" placeholder="Enter a title">
+          </div>
+          <div class="description">
+            <div><span>Description</span></div>
+            <textarea required type="text" maxlength="45" id="description-todo" placeholder="Enter a Description"></textarea>
+          </div>
 
-  <div class="add-tasks-div center">
-    <div class="add-tasks-left-side-div">
-      <div class="title column">
-        <div><span>Title</span><span class="important">*</span></div>
-        <input maxlength="22" id="title-todo" required type="text" placeholder="Enter a title">
-      </div>
-      <div class="description">
-        <div><span>Description</span></div>
-        <textarea required type="text" maxlength="45" id="description-todo" placeholder="Enter a Description"></textarea>
-      </div>
-      <div class="assigned-to">
-        <div><span>Assigned to</span></div>
-        <select required type="text" class="pointer" placeholder="Select contacts to assign">
-          <option value="" class="d-none">Select contacts to assign</option>
-          <option>1</option>
-          <option>2</option>
-          <option>3</option>
-        </select>
-      </div>
-    </div>
-    <div class="add-tasks-right-side-div">
-      <div class="duo-date">
-        <div><span>Due date</span><span class="important">*</span></div>
-        <input class="calendarPicker" type="date" maxlength="10" id="date-todo" required placeholder="dd/mm/yyyy">
-        
-      </div>
-      <div class="all-priorities">
-        <span>Prio</span>
-        <div class="priorities">
-          <div id="priority-urgent-todo" tabindex="1" class="prioprity-urgent pointer center">
-            <div>Urgent</div>
-            <div>
-              <img class="urgent1" src="../assets/icons/urgent3.svg" alt="">
-              <img class="urgent2 d-none" src="../assets/icons/urgent2.svg" alt="">
-            </div>
-          </div>
-          <div id="priority-medium-todo" tabindex="2" class="prioprity-medium pointer center">
-            <div>Medium</div>
-            <div>
-              <img class="medium1" src="../assets/icons/medium.svg" alt="">
-              <img class="medium2 d-none" src="../assets/icons/medium2.svg" alt="">
-            </div>
-          </div>
-          <div id="priority-low-todo" tabindex="3" class="prioprity-low pointer center">
-            <div>Low</div>
-            <div>
-              <img class="low1" src="../assets/icons/low.svg" alt="">
-              <img class="low2 d-none" src="../assets/icons/low2.svg" alt="">
-            </div>
+
+          <div class="assigned-to">
+          <label for="contactsDropdownTask"><span>Assigned to</span></label>
+          <div class="custom-dropdown" id="contactsDropdownContainer">
+            <select id="contactsDropdownTask">
+              <option value="" selected disabled>Select contacts to assign</option>
+              <!-- Options will be dynamically added here using JavaScript -->
+            </select>
           </div>
         </div>
+        <div class="contacts-container" id="contactsContainerTask"></div>
+
+
+          <div class="contacts-container" id="contactsContainerTask"></div>
+        </div>
+        <div class="add-tasks-right-side-div">
+          <div class="duo-date">
+            <div><span>Due date</span><span class="important">*</span></div>
+            <input class="calendarPicker" type="date" maxlength="10" id="date-todo" required placeholder="dd/mm/yyyy">
+          </div>
+          <div class="all-priorities">
+          <span>Prio</span>
+          <div class="priorities">
+            <div id="priority-urgent-todo" tabindex="1" class="prioprity-urgent pointer center">
+              <div>Urgent</div>
+              <div>
+                <img class="urgent1" src="../assets/icons/urgent3.svg" alt="">
+                <img class="urgent2 d-none" src="../assets/icons/urgent2.svg" alt="">
+              </div>
+            </div>
+            <div id="priority-medium-todo" tabindex="2" class="prioprity-medium pointer center">
+              <div>Medium</div>
+              <div>
+                <img class="medium1" src="../assets/icons/medium.svg" alt="">
+                <img class="medium2 d-none" src="../assets/icons/medium2.svg" alt="">
+              </div>
+            </div>
+            <div id="priority-low-todo" tabindex="3" class="prioprity-low pointer center">
+              <div>Low</div>
+              <div>
+                <img class="low1" src="../assets/icons/low.svg" alt="">
+                <img class="low2 d-none" src="../assets/icons/low2.svg" alt="">
+              </div>
+            </div>
+            </div>
+          </div>
+          <div class="bottom">
+          <div class="left-bottom">
+            <span class="important">*</span><span>This field is required</span>
+          </div>
+          <div class="absolute" id="added-subtasks"></div>
       </div>
       <div class="category">
         <div><span>Category</span><span class="important">*</span></div>
@@ -169,29 +226,23 @@ function addTask() {
       </div>
     </div>
         </div>
-        <div class="absolute" id="added-subtasks">
+        <div class="right-bottom">
+        <div class="clear-and-create-task center">
+          <button onclick="closeAddTodo()" class="clear pointer center">
+            <span>Clear</span>
+            <img class="cancel1" src="../assets/icons/cancel.svg" alt="">
+            <img class="cancel2 d-none" src="../assets/icons/cancel2.svg" alt="">
+          </button>
+          <button type="submit" class="create-task pointer center">
+            <span>Create Task</span>
+            <img src="../assets/icons/check.svg" alt="">
+          </button>
+        </div>
         
         </div>
-      </div>
-
-      <div class="bottom">
-        <div class="left-bottom">
-          <span class="important">*</span><span>This field is required</span>
-        </div>
-        <div class="right-bottom">
-          <div class="clear-and-create-task center">
-            <button onclick="closeAddTodo()" class="clear pointer center">
-              <span>Clear</span>
-              <img class="cancel1" src="../assets/icons/cancel.svg" alt="">
-              <img class="cancel2 d-none" src="../assets/icons/cancel2.svg" alt="">
-            </button>
-            <button type="submit" class="create-task pointer center">
-              <span>Create Task</span>
-              <img src="../assets/icons/check.svg" alt="">
-            </button>
+      
           </div>
-        </div>
-      </div>
+ 
     </form>
   `;
 
@@ -206,8 +257,6 @@ function displayAssignedContacts() {
   const userContacts = JSON.parse(contactsData) || [];
 
   const contactsContainer = document.getElementById("contactsContainerTask");
-
-  // Display assigned contacts
   userContacts.forEach((contact) => {
     const contactElement = createContactIcon(contact);
     contactsContainer.appendChild(contactElement);
@@ -216,6 +265,10 @@ function displayAssignedContacts() {
 
 function createContactIcon(contact) {
   const { name, color } = contact;
+
+  if (!name) {
+    return null;
+  }
 
   const contactElement = document.createElement("div");
   contactElement.className = "contact-icon";
@@ -710,6 +763,20 @@ function highlight(id) {
 function removeHighlight(id) {
   document.getElementById(id).classList.remove("drag-area-highlight");
 }
+
+function updateAssignedUserIcon(taskId, userIconPath) {
+  let assignedToDiv = document.getElementById(`assigned-to-icon-${taskId}`);
+
+  if (assignedToDiv && userIconPath) {
+    assignedToDiv.innerHTML = "";  // Clear existing content
+
+    let assignedUserIcon = document.createElement("img");
+    assignedUserIcon.src = userIconPath;
+    assignedUserIcon.alt = "Assigned User";
+    assignedToDiv.appendChild(assignedUserIcon);
+  }
+}
+
 
 /* function getDate() {
   let today = new Date();
