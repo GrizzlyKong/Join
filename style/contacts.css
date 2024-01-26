@@ -124,10 +124,13 @@ body {
 
 .addNewContactDiv {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
   align-items: center;
-  width: 1212px;
-  height: auto;
+  width: 70%;
+  height: 80vh;
+  background-color: #ffffff;
+  border-top-right-radius: 30px;
+  border-bottom-right-radius: 30px;
 }
 
 .background {
