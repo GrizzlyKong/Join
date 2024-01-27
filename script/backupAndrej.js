@@ -178,35 +178,29 @@ function addTask() {
           <div class="all-priorities">
           <span>Prio</span>
           <div class="priorities">
-            <div id="priority-urgent-todo" tabindex="1" class="prioprity-urgent pointer center">
+          <div id="priority-urgent-todo" tabindex="1" class="prioprity-urgent pointer center" onclick="setSelectedPriority('urgent')">
               <div>Urgent</div>
               <div>
                 <img class="urgent1" src="../assets/icons/urgent3.svg" alt="">
                 <img class="urgent2 d-none" src="../assets/icons/urgent2.svg" alt="">
               </div>
             </div>
-            <div id="priority-medium-todo" tabindex="2" class="prioprity-medium pointer center">
+            <div id="priority-medium-todo" tabindex="2" class="prioprity-medium pointer center" onclick="setSelectedPriority('medium')">
               <div>Medium</div>
               <div>
                 <img class="medium1" src="../assets/icons/medium.svg" alt="">
                 <img class="medium2 d-none" src="../assets/icons/medium2.svg" alt="">
               </div>
             </div>
-            <div id="priority-low-todo" tabindex="3" class="prioprity-low pointer center">
+            <div id="priority-low-todo" tabindex="3" class="prioprity-low pointer center" onclick="setSelectedPriority('low')">
               <div>Low</div>
               <div>
                 <img class="low1" src="../assets/icons/low.svg" alt="">
                 <img class="low2 d-none" src="../assets/icons/low2.svg" alt="">
               </div>
             </div>
-            </div>
           </div>
-          <div class="bottom">
-          <div class="left-bottom">
-            <span class="important">*</span><span>This field is required</span>
-          </div>
-          <div class="absolute" id="added-subtasks"></div>
-      </div>
+        </div>
       <div class="category">
         <div><span>Category</span><span class="important">*</span></div>
         <select type="text" id="category-todo" required class="pointer" placeholder="Select task category">
@@ -226,24 +220,30 @@ function addTask() {
       </div>
     </div>
         </div>
-        <div class="right-bottom">
-        <div class="clear-and-create-task center">
-          <button onclick="closeAddTodo()" class="clear pointer center">
-            <span>Clear</span>
-            <img class="cancel1" src="../assets/icons/cancel.svg" alt="">
-            <img class="cancel2 d-none" src="../assets/icons/cancel2.svg" alt="">
-          </button>
-          <button type="submit" class="create-task pointer center">
-            <span>Create Task</span>
-            <img src="../assets/icons/check.svg" alt="">
-          </button>
-        </div>
+        <div class="absolute" id="added-subtasks">
         
         </div>
-      
-          </div>
- 
-    </form>
+    </div>
+  </div>
+  <div class="bottom">
+    <div class="left-bottom">
+      <span class="important">*</span><span>This field is required</span>
+    </div>
+    <div class="right-bottom">
+      <div class="clear-and-create-task center">
+        <button onclick="closeAddTodo()" class="clear pointer center">
+          <span>Clear</span>
+          <img class="cancel1" src="../assets/icons/cancel.svg" alt="">
+          <img class="cancel2 d-none" src="../assets/icons/cancel2.svg" alt="">
+        </button>
+        <button type="submit" class="create-task pointer center">
+          <span>Create Task</span>
+          <img src="../assets/icons/check.svg" alt="">
+        </button>
+      </div>
+    </div>
+  </div>
+</form>
   `;
 
   populateContactsDropdown("contactsDropdownTask");
@@ -763,20 +763,6 @@ function highlight(id) {
 function removeHighlight(id) {
   document.getElementById(id).classList.remove("drag-area-highlight");
 }
-
-function updateAssignedUserIcon(taskId, userIconPath) {
-  let assignedToDiv = document.getElementById(`assigned-to-icon-${taskId}`);
-
-  if (assignedToDiv && userIconPath) {
-    assignedToDiv.innerHTML = "";  // Clear existing content
-
-    let assignedUserIcon = document.createElement("img");
-    assignedUserIcon.src = userIconPath;
-    assignedUserIcon.alt = "Assigned User";
-    assignedToDiv.appendChild(assignedUserIcon);
-  }
-}
-
 
 /* function getDate() {
   let today = new Date();
