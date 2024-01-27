@@ -60,9 +60,6 @@ async function populateContactsDropdown() {
 }
 
 
-
-
-
 function displayLoggedInUser() {
   const loggedInUserName = localStorage.getItem('loggedInUserName');
 
@@ -248,6 +245,17 @@ function addTask() {
 
   populateContactsDropdown("contactsDropdownTask");
   bindSubtaskEvents();
+  greyOverlay();
+}
+
+
+function greyOverlay() {
+  // Create overlay and prevent scrolling
+  const overlay = document.createElement('div');
+  overlay.className = 'overlay';
+  overlay.style.zIndex = '5';
+  document.body.appendChild(overlay);
+  document.body.classList.add('no-scroll');
 }
 
 
@@ -305,6 +313,16 @@ function bindSubtaskEvents() {
 
 function closeAddTodo() {
   document.getElementById("add-task").classList.add("d-none");
+    removeGreyOverlay();
+}
+
+function removeGreyOverlay() {
+    // Remove overlay and allow scrolling
+    const overlay = document.querySelector('.overlay');
+    if (overlay) {
+        document.body.removeChild(overlay);
+        document.body.classList.remove('no-scroll');
+    }
 }
 
 function addTodo() {
@@ -367,6 +385,7 @@ function addTodo() {
   // Formular und Modalfenster schließen
   document.getElementById("add-task").classList.add("d-none");
   document.getElementById("board-div").classList.remove("background");
+  removeGreyOverlay();
 }
 
 function updateProgressBar(taskId, totalSubtasks) {
