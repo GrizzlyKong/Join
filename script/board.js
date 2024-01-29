@@ -61,6 +61,9 @@ async function populateContactsDropdown() {
 }
 
 
+
+
+
 function displayLoggedInUser() {
   const loggedInUserName = localStorage.getItem('loggedInUserName');
 
@@ -100,19 +103,7 @@ async function getItem(key) {
   }
 } */
 
-async function includeHTML() {
-  let includeElements = document.querySelectorAll("[w3-include-html]");
-  for (let i = 0; i < includeElements.length; i++) {
-    const element = includeElements[i];
-    file = element.getAttribute("w3-include-html"); 
-    let resp = await fetch(file);
-    if (resp.ok) {
-      element.innerHTML = await resp.text();
-    } else {
-      element.innerHTML = "Page not found";
-    }
-  }
-}
+
 
 function findTask() {
   const inputValue = document.getElementById("findTask").value.toLowerCase();
@@ -136,127 +127,10 @@ function addTask() {
   document.getElementById("board-div").classList.add("background");
   document.getElementById("add-task").classList.remove("d-none");
   document.getElementById("add-task").classList.add("sign-up-animation");
-  addToTask.innerHTML = `
-  <form onsubmit="addTodo(); return false;" class="addTaskForm">
-  <div class="headline-div">
-    <h1>Add Task</h1>
-    <img onclick="closeAddTodo()" class="goBack pointer" src="../assets/icons/close.svg">
-      </div>
-      <div class="add-tasks-div center">
-        <div class="add-tasks-left-side-div">
-          <div class="title column">
-            <div><span>Title</span><span class="important">*</span></div>
-            <input maxlength="22" id="title-todo" required type="text" placeholder="Enter a title">
-          </div>
-          <div class="description">
-            <div><span>Description</span></div>
-            <textarea required type="text" maxlength="45" id="description-todo" placeholder="Enter a Description"></textarea>
-          </div>
-
-
-          <div class="assigned-to">
-          <label for="contactsDropdownTask"><span>Assigned to</span></label>
-          <div class="custom-dropdown" id="contactsDropdownContainer">
-            <select id="contactsDropdownTask">
-              <option value="" selected disabled>Select contacts to assign</option>
-              <!-- Options will be dynamically added here using JavaScript -->
-            </select>
-          </div>
-        </div>
-        <div class="contacts-container" id="contactsContainerTask"></div>
-
-
-          <div class="contacts-container" id="contactsContainerTask"></div>
-        </div>
-        <div class="add-tasks-right-side-div">
-          <div class="duo-date">
-            <div><span>Due date</span><span class="important">*</span></div>
-            <input class="calendarPicker" type="date" maxlength="10" id="date-todo" required placeholder="dd/mm/yyyy">
-          </div>
-          <div class="all-priorities">
-          <span>Prio</span>
-          <div class="priorities">
-          <div id="priority-urgent-todo" tabindex="1" class="prioprity-urgent pointer center" onclick="setSelectedPriority('urgent')">
-              <div>Urgent</div>
-              <div>
-                <img class="urgent1" src="../assets/icons/urgent3.svg" alt="">
-                <img class="urgent2 d-none" src="../assets/icons/urgent2.svg" alt="">
-              </div>
-            </div>
-            <div id="priority-medium-todo" tabindex="2" class="prioprity-medium pointer center" onclick="setSelectedPriority('medium')">
-              <div>Medium</div>
-              <div>
-                <img class="medium1" src="../assets/icons/medium.svg" alt="">
-                <img class="medium2 d-none" src="../assets/icons/medium2.svg" alt="">
-              </div>
-            </div>
-            <div id="priority-low-todo" tabindex="3" class="prioprity-low pointer center" onclick="setSelectedPriority('low')">
-              <div>Low</div>
-              <div>
-                <img class="low1" src="../assets/icons/low.svg" alt="">
-                <img class="low2 d-none" src="../assets/icons/low2.svg" alt="">
-              </div>
-            </div>
-          </div>
-        </div>
-      <div class="category">
-        <div><span>Category</span><span class="important">*</span></div>
-        <select type="text" id="category-todo" required class="pointer" placeholder="Select task category">
-          <option value="" class="d-none">Select task category</option>
-          <option>Technical Task</option>
-          <option>User Story</option>
-        </select>
-      </div>
-      <div class="subtasks">
-        <div><span>Subtasks</span><span class="important">*</span></div>
-      <div class="subtaskInput">
-        <input minlength="1" oninput="addSubtasks()" id="add-subtasks" type="text" placeholder="Add new subtask">
-        <img id="subtask-add" class="input-icon2 pointer" src="../assets/icons/add.svg">
-      <div class="oninput">
-        <img onclick="cancelSubtask()" id="subtask-cancel" class="input-icon3 d-none pointer center" src="../assets/icons/cancelX.svg">
-        <img onclick="correctSubtask()" id="subtask-correct" class="input-icon4 d-none pointer center" src="../assets/icons/correct.svg">
-      </div>
-    </div>
-        </div>
-        <div class="absolute" id="added-subtasks">
-        
-        </div>
-    </div>
-  </div>
-  <div class="bottom">
-    <div class="left-bottom">
-      <span class="important">*</span><span>This field is required</span>
-    </div>
-    <div class="right-bottom">
-      <div class="clear-and-create-task center">
-        <button onclick="closeAddTodo()" class="clear pointer center">
-          <span>Clear</span>
-          <img class="cancel1" src="../assets/icons/cancel.svg" alt="">
-          <img class="cancel2 d-none" src="../assets/icons/cancel2.svg" alt="">
-        </button>
-        <button type="submit" class="create-task pointer center">
-          <span>Create Task</span>
-          <img src="../assets/icons/check.svg" alt="">
-        </button>
-      </div>
-    </div>
-  </div>
-</form>
-  `;
+  addToTask.innerHTML = generateAddTaskForm();
 
   populateContactsDropdown("contactsDropdownTask");
   bindSubtaskEvents();
-  greyOverlay();
-}
-
-
-function greyOverlay() {
-  // Create overlay and prevent scrolling
-  const overlay = document.createElement('div');
-  overlay.className = 'overlay';
-  overlay.style.zIndex = '5';
-  document.body.appendChild(overlay);
-  document.body.classList.add('no-scroll');
 }
 
 
@@ -314,29 +188,23 @@ function bindSubtaskEvents() {
 
 function closeAddTodo() {
   document.getElementById("add-task").classList.add("d-none");
-    removeGreyOverlay();
 }
 
-function removeGreyOverlay() {
-    // Remove overlay and allow scrolling
-    const overlay = document.querySelector('.overlay');
-    if (overlay) {
-        document.body.removeChild(overlay);
-        document.body.classList.remove('no-scroll');
-    }
-}
-
-function addTodo() {
+function getValueFromInput(title, description, category, dueDate){
   let title = document.getElementById("title-todo").value;
   let description = document.getElementById("description-todo").value;
   let category = document.getElementById("category-todo").value;
   let dueDate = document.getElementById("date-todo").value;
+}
+
+function addTodo() {
+  getValueFromInput(title, description, category, dueDate);
 
   let subtasks = Array.from(
     document.querySelectorAll("#added-subtasks .added-subtask")
   ).map((subtask) => subtask.textContent.trim());
-  let totalSubtasks = subtasks.length; // Gesamtzahl der Subtasks
-  const taskId = `task-${taskIdCounter++}`; // Generiert eine einzigartige ID
+  let totalSubtasks = subtasks.length; 
+  const taskId = `task-${taskIdCounter++}`; 
 
   let priorityImage = "";
 let priorityName = "";
@@ -354,28 +222,8 @@ switch (selectedPriority) {
     priorityName = "Low";
     break;
 }
+  let taskHTML = generateTask(taskId,category,title,description,dueDate,selectedPriority,priorityImage);
 
-
-  let taskHTML = `
-  <div id="${taskId}" class="board-task-card pointer" ondragstart="startDragging(event)" draggable="true" onclick="openTaskInfos('${taskId}', '${title}', '${description}', '${category}', '${dueDate}', ${JSON.stringify(subtasks).split('"').join("&quot;")}, '${priorityName}', '${priorityImage}')">
-      <div class="board-task-card-title">${category}</div>
-      <div class="board-task-card-description">${title}</div>
-      <div class="board-task-card-task">${description}</div>
-      <div class="board-task-card-date d-none">${dueDate}</div>
-      <div class="board-task-card-subtasks">
-        <div class="board-task-card-subtasks-bar">
-          <div id="bar-fill-${taskId}" class="bar-fill" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
-        </div>
-        <div id="subtasks-amount-${taskId}" class="board-task-card-subtasks-amount">${totalSubtasks}/2 Subtasks</div>
-      </div>
-      <div class="board-task-card-users">
-        <div class="board-task-card-users-amount">M</div>
-        <div class="board-task-card-priority"data-priority-name="${selectedPriority}">
-        <img id="priority-img-${taskId}" src="${priorityImage}">
-    </div>
-      </div>
-    </div>
-  `;
  selectedPriority = null;
   document.getElementById("todo").insertAdjacentHTML("beforeend", taskHTML);
   updateProgressBar(taskId, totalSubtasks);
@@ -386,7 +234,6 @@ switch (selectedPriority) {
   // Formular und Modalfenster schließen
   document.getElementById("add-task").classList.add("d-none");
   document.getElementById("board-div").classList.remove("background");
-  removeGreyOverlay();
 }
 
 function updateProgressBar(taskId, totalSubtasks) {
@@ -414,95 +261,46 @@ function updateProgressBar(taskId, totalSubtasks) {
   }
 } */
 
-function openTaskInfos(
-  taskId,
-  title,
-  description,
-  category,
-  dueDate,
-  subtasks,
-  priorityName,
-  priorityImage
-) {
-  console.log(subtasks);
-  let priorityHtml = `
-  <div class="task-info-priority-name">${priorityName}</div>
-  <img src="${priorityImage}" class="task-info-priority-image">
-`;
-
-  let taskElement = document.getElementById(taskId);
-  if (!taskElement) {
-    console.error("Task-Element nicht gefunden:", taskId);
-    return;
-  }
-
-  document.getElementById("all-task-infos").classList.remove("d-none");
+function generateCurrentValueFromInput(currentTitle,currentDescription,currentCategory,currentDueDate){
   let currentTitle = taskElement.querySelector(
     ".board-task-card-description"
   ).textContent;
-  let currentDescription = taskElement.querySelector(
-    ".board-task-card-task"
-  ).textContent;
+  let currentDescription = taskElement.querySelector(".board-task-card-task").textContent;
   let currentCategory = taskElement.querySelector(
     ".board-task-card-title"
   ).textContent;
   let currentDueDate = taskElement.querySelector(
     ".board-task-card-date"
   ).textContent;
+}
+
+
+
+function openTaskInfos(taskId,title,description,category,dueDate,subtasks,priorityName,priorityImage
+) {
+  let priorityHtml = `
+  <div class="task-info-priority-name">${priorityName}</div>
+  <img src="${priorityImage}" class="task-info-priority-image">
+`;
+  let taskElement = document.getElementById(taskId);
+
+  document.getElementById("all-task-infos").classList.remove("d-none");
+  
+  generateCurrentValueFromInput(currentTitle,currentDescription,currentCategory,currentDueDate);
 
   let subtasksHtml = subtasks.map((subtask, index) =>
-    
         `<div class="hover-subtask column pointer" onmouseover="showIcons(${index})" onmouseout="hideIcons(${index})">
     ${subtask}
     <img id="edit-icon-${index}" onclick="editExistingSubtask(${index}, ${subtask})" src="../assets/icons/edit.svg" style="display:none;">
     <img id="delete-icon-${index}" onclick="deleteExistingSubtask(${index})" src="../assets/icons/delete.svg" style="display:none;">
   </div>`
-    
-  )
-    .join("");
+  ).join("");
   let encodedSubtasksHtml = encodeURIComponent(subtasksHtml);
   document.getElementById("all-task-infos").classList.remove("d-none");
   let allTaskInfos = document.getElementById("all-task-infos");
-  allTaskInfos.innerHTML = `
-  <div class="whole-task-infos absolute">
-  <div class="task-info-top">
-    <div class="task-info-category">${currentCategory}</div>
-    <div><img onclick="closeTaskInfos()" src="../assets/icons/Close2.svg"></div>
-  </div>
-  <div class="task-info-title">${currentTitle}</div>
-  <div class="task-info-description">${currentDescription}</div>
-  <div class="task-info-due-date">
-    <div class="headline3">Due date:</div>
-    <div class="variable">${currentDueDate}</div>
-  </div>
-  <div class="task-info-prio">
-    <div class="headline3">Priority:</div>
-    ${priorityHtml}
-  </div>
-  <div class="task-info-assigned-to">
-    <div class="headline3">Assigned To:</div>
-    <div class="variable">
-      <div class="task-info-contacts">Hier kommen die Kontakte</div>
-    </div>
-  </div>
-  <div class="task-info-subtasks">
-    <div class="headline3">Subtasks</div>
-    <div>${subtasksHtml}</div>
-  </div>
-  <div class="task-info-delete-edit center absolute">
-    <div onclick="deleteTaskInfos('${taskId}')" class="task-info-delete pointer center">
-      <img class="img1" src="../assets/icons/delete2.svg" alt="">
-      <img class="img2 d-none" src="../assets/icons/delete2.png" alt="">
-      <span><b>Delete</b></span>
-    </div>
-    <div onclick="editTaskInfos('${taskId}', '${encodedSubtasksHtml}','${priorityName}', '${priorityImage}')" class="task-info-edit pointer center"> 
-      <img class="img3" src="../assets/icons/edit2.svg" alt="">
-      <img class="img4 d-none" src="../assets/icons/edit2.png" alt="">
-      <span><b>Edit</b></span>
-    </div>
-  </div>
-</div>
-  `;
+
+  allTaskInfos.innerHTML = openTaskWithAllInfos(currentCategory,currentTitle,currentDescription,currentDueDate,priorityHtml,subtasksHtml,taskId,encodedSubtasksHtml,priorityName,priorityImage);
+
   if (!Array.isArray(subtasks)) {
     console.error("subtasks ist kein Array:", subtasks);
     return; // Beendet die Ausführung der Funktion, wenn 'subtasks' kein Array ist
@@ -511,12 +309,6 @@ function openTaskInfos(
 
 function editExistingSubtask(index, subtask) {
   let subtaskElement = document.getElementById(`subtask-${index}`);
-
-
-  if (!subtaskElement) {
-    console.error("Subtask-Element nicht gefunden:", index);
-    return;
-  }
 
   let editableSubtaskHtml = `
     <div>
@@ -552,12 +344,6 @@ function editTaskInfos(taskId, encodedSubtasksHtml, priorityName, priorityImage)
   let taskInfoContainer = document.querySelector(".whole-task-infos");
   let subtasksHtml = decodeURIComponent(encodedSubtasksHtml);
 
-  if (!taskInfoContainer) {
-    console.error("Task-Info-Container nicht gefunden");
-    return;
-  }
-
-  // Extrahiert die aktuellen Werte
   let title = taskInfoContainer.querySelector(".task-info-title").textContent;
   let description = taskInfoContainer.querySelector(
     ".task-info-description"
@@ -569,69 +355,7 @@ function editTaskInfos(taskId, encodedSubtasksHtml, priorityName, priorityImage)
     ".task-info-due-date .variable"
   ).textContent;
 
-  taskInfoContainer.innerHTML = `
-  <form onsubmit="saveEditedTaskInfo('${taskId}'); return false;">
-    <div class="edit-the-category">
-    <div>Category:</div>
-      <select value="${category}" type="text" id="edit-category-${taskId}" required class="edit-the-category-select pointer" placeholder="Select task category">
-        <option value="" class="d-none">Select task category</option>
-        <option>Technical Task</option>
-        <option>User Story</option>
-      </select>
-    </div>
-
-    <div class="edit-the-title">
-    <div>Title:</div>
-    <input maxlength="60" class="edit-the-title-input" required type="text" id="edit-title-${taskId}" value="${title}">
-    </div>
-    <div class="edit-the-description">
-    <div>Description:</div>
-    <textarea maxlength="75" class="edit-the-description-textarea" required id="edit-description-${taskId}">${description}</textarea>
-    </div>
-    <div class="edit-the-dueDate">
-    <div>Due Date:</div>
-    <input class="edit-the-dueDate-input" required type="date" id="edit-due-date-${taskId}" value="${dueDate}">
-    </div>
-
-    <div class="all-priorities">
-    <span>Prio</span>
-    <div class="priorities">
-    <div id="priority-urgent-todo" tabindex="1" class="prioprity-urgent pointer center" onclick="setSelectedPriority('urgent')">
-        <div>Urgent</div>
-        <div>
-          <img class="urgent1" src="../assets/icons/urgent3.svg" alt="">
-          <img class="urgent2 d-none" src="../assets/icons/urgent2.svg" alt="">
-        </div>
-      </div>
-      <div id="priority-medium-todo" tabindex="2" class="prioprity-medium pointer center" onclick="setSelectedPriority('medium')">
-        <div>Medium</div>
-        <div>
-          <img class="medium1" src="../assets/icons/medium.svg" alt="">
-          <img class="medium2 d-none" src="../assets/icons/medium2.svg" alt="">
-        </div>
-      </div>
-      <div id="priority-low-todo" tabindex="3" class="prioprity-low pointer center" onclick="setSelectedPriority('low')">
-        <div>Low</div>
-        <div>
-          <img class="low1" src="../assets/icons/low.svg" alt="">
-          <img class="low2 d-none" src="../assets/icons/low2.svg" alt="">
-        </div>
-      </div>
-    </div>
-  </div>
-    
-        <div id="edited-subtasks">
-            ${subtasksHtml}
-        </div>
-        
-    <div class="save-edited-task-button">
-    <button type="submit" class="save-edited-Task pointer center">
-      <span>OK</span>
-      <img src="../assets/icons/check.svg" alt="">
-    </button>
-    </div>
-  </form>
-  `;
+  taskInfoContainer.innerHTML = editTaskInfosForm(subtasksHtml,title,description,category,dueDate,priorityName,priorityImage);
 }
 
 function deleteExistingSubtask(index) {
@@ -652,10 +376,8 @@ function saveEditedTaskInfo(taskId) {
   let priorityElement = document.getElementById("edit-priority-" + taskId);
 if (priorityElement) {
     let selectedPriority = priorityElement.value;
-    // Weiterer Code zur Verarbeitung der geänderten Priorität...
 } else {
     console.error("Element nicht gefunden: edit-priority-" + taskId);
-    // Ggf. weiteren Fehlerbehandlungscode hinzufügen...
 }
 let priorityName, priorityImage;
 switch (selectedPriority) {

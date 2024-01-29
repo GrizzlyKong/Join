@@ -421,9 +421,7 @@ function openTaskInfos(
   let currentTitle = taskElement.querySelector(
     ".board-task-card-description"
   ).textContent;
-  let currentDescription = taskElement.querySelector(
-    ".board-task-card-task"
-  ).textContent;
+  let currentDescription = taskElement.querySelector(".board-task-card-task").textContent;
   let currentCategory = taskElement.querySelector(
     ".board-task-card-title"
   ).textContent;
