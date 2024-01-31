@@ -100,6 +100,7 @@ body {
 }
 
 .input-field {
+  border: 1px solid #ccc;
   width: 400px;
   height: 40px;
   border-radius: 10px;
@@ -894,6 +895,7 @@ display: none;
     }
     .calendarPicker::-webkit-calendar-picker-indicator{
         cursor: pointer;
+        margin-right: 8px;
     }
     .edit-the-category{
       display: flex;
@@ -1016,8 +1018,6 @@ display: none;
       height: 48px;
     }
 
-
-
     .custom-dropdown {
       position: relative;
       display: inline-block;
@@ -1059,9 +1059,48 @@ display: none;
     }
 
     .contacts-container {
-      display: flex;
+      position: relative;
+      bottom: 1.7vh;
+      right: 2.8%;
+      display: none;
       margin-top: 16px;
       margin-left: 16px;
+      flex-direction: column;
+      font-size: 20px;
+      padding: 8px;
+      box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.1);
+      transition: all 0.2s ease-in-out;
+      width: 424px;
+      background-color: white;
+    }
+
+    .contacts-container.hidden {
+      display: none;
+    }
+
+    .selected-contacts-container {
+      display: flex;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .find-contact-img {
+      cursor: pointer;
+      position: absolute;
+      top: 26px;
+      right: 1rem;
+      width: 32px;
+      height: 32px;
+    }
+
+    .find-contact-img:hover {
+      background-color: rgb(238, 238, 238);
+      border-radius: 50%;
+    }
+
+    .contact:hover {
+      background-color: #f0f0f0;
+      cursor: pointer;
     }
   
     .contact-name {
@@ -1073,33 +1112,123 @@ display: none;
     }
 
     .contact-icon {
-      width: 32px; /* Adjust the size as needed */
-      height: 32px; /* Adjust the size as needed */
+      width: 32px;
+      height: 32px;
       border-radius: 50%;
       overflow: hidden;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-right: 8px; /* Adjust the spacing as needed */
+      margin-right: 8px;
+      border: 2px solid white;
     }
 
     .contact-icon-name {
-      font-size: 14px; /* Adjust the font size as needed */
+      font-size: 14px;
       color: #ffffff;
       text-align: center;
     }
     
-    /* Add these styles to your board.css file */
 .overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5); /* Adjust the alpha (last value) for transparency */
+  background-color: rgba(0, 0, 0, 0.5);
   z-index: 5;
 }
 
 .no-scroll {
   overflow: hidden;
+}
+
+.select-to-assign {
+  margin-top: 16px;
+  width: 440px;
+  height: 50px;
+  border-radius: 10px;
+  border-width: 1px;
+  font-size: 20px;
+  text-indent: 8px;
+  color: black;
+  border: 1px solid #ccc;
+}
+
+.select-to-assign:hover {
+  cursor: pointer;
+}
+
+.select-to-assign::placeholder {
+  color: black;
+}
+
+.input-field:focus,
+.select-to-assign:focus {
+  border-color: #29abe2 !important;
+  outline: none;
+}
+
+.icon-container {
+  display: flex;
+}
+
+.here-comes-the-contact {
+  display: flex;
+  flex-direction: column;
+  margin-top: 8px;
+  gap: 8px;
+}
+
+.self-made-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 8px;
+  color: white;
+}
+
+.assigned-to-edit-contact {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.contact-checkbox {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 2px solid grey;
+  border-radius: 4px;
+  margin-right: 8px;
+  background-color: transparent;
+  outline: none;
+  cursor: pointer;
+  position: relative;
+}
+
+.contact-checkbox:checked {
+  background-color: rgb(42,54,71);
+  border-color: white;
+}
+
+.contact-checkbox::before {
+  content: '\2713';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 14px;
+  color: white;
+  display: none;
+}
+
+.contact-checkbox:checked::before {
+  display: block;
 }
