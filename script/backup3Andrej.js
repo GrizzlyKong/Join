@@ -192,10 +192,6 @@ function updateSelectedContactIcons() {
   console.log("Selected Contact Icons:", selectedContactIcons);
 }
 
-
-
-
-
 function displayLoggedInUser() {
   const loggedInUserName = localStorage.getItem('loggedInUserName');
 
