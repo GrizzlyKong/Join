@@ -1,11 +1,11 @@
+/* const STORAGE_TOKEN = 'UK3WMTJPY9HCOS9AB0PGAT5U9XL1Y2BKP4MIYIVD';
+const STORAGE_URL = 'https://remote-storage.developerakademie.org/item';
+ */
 let currentDraggedElement;
 let taskIdCounter = 0;
 let subtaskIdCounter = 0;
 let addCount = 0;
 let selectedPriority = null;
-let isContactsVisible = false;
-let selectedContactIcons = [];
-
 let selectedPriorityName = null;
 
 async function init() {
@@ -14,13 +14,13 @@ async function init() {
   updateHTML();
   AddPriorities();
   populateContactsDropdown();
+  /*   loadTasks(); */
 }
 
 
 async function populateContactsDropdown() {
   try {
     const loggedInUserName = localStorage.getItem("loggedInUserName");
-
     if (!loggedInUserName) {
       console.error("No logged-in user found. Contacts cannot be loaded.");
       return;
@@ -29,167 +29,35 @@ async function populateContactsDropdown() {
     const contactsData = await getItem(`contacts_${loggedInUserName}`);
     const userContacts = JSON.parse(contactsData) || [];
 
+    const selectedContact = document.getElementById("selectedContact");
+    const contactsDropdown = document.getElementById("contactsDropdownTask");
     const contactsContainer = document.getElementById("contactsContainerTask");
-    const selectToAssignInput = document.querySelector(".select-to-assign");
-    const arrowDrop = document.getElementById("arrowDropImage");
-    const selectedContactsContainer = document.getElementById("selectedContactsContainer");
-
-    let contactColors = {};
-
-    selectToAssignInput.addEventListener("click", toggleContactsVisibility);
+    contactsDropdown.innerHTML = '<option value="" selected disabled>Select contacts to assign</option>';
 
     contactsContainer.innerHTML = '';
-    renderContacts(userContacts, contactsContainer, selectedContactsContainer, contactColors);
 
+
+    userContacts.forEach((contact, index) => {
+      const { name, color } = contact;
+      if (!name) {
+        return;
+      }
+
+      const option = document.createElement("option");
+      option.value = name;
+      option.textContent = name;
+
+      contactsDropdown.appendChild(option);
+
+      const contactElement = createContactIcon(contact);
+      contactsContainer.appendChild(contactElement);
+    });
+    contactsDropdown.addEventListener("change", () => {
+      selectedContact.textContent = contactsDropdown.value;
+    });
   } catch (error) {
     console.error("Error loading contacts:", error);
   }
-}
-
-function toggleContactsVisibility() {
-  const contactsContainer = document.getElementById("contactsContainerTask");
-  const arrowDrop = document.getElementById("arrowDropImage");
-  const selectedContactsContainer = document.getElementById("selectedContactsContainer");
-
-  contactsContainer.style.display = (contactsContainer.style.display === "none") ? "flex" : "none";
-  arrowDrop.style.transform = (contactsContainer.style.display === "none") ? "rotate(0deg)" : "rotate(180deg)";
-
-  if (contactsContainer.style.display === "none") {
-    updateSelectedContactsContainer(selectedContactsContainer);
-    updateSelectedContactIcons();
-  }
-}
-
-
-function renderContacts(userContacts, contactsContainer, selectedContactsContainer, contactColors) {
-  userContacts.forEach((contact) => {
-    const { name, color } = contact;
-
-    if (!name) {
-      return;
-    }
-
-    const contactDiv = createContactDiv(name, color, contactColors);
-    contactsContainer.appendChild(contactDiv);
-  });
-}
-
-
-function createContactDiv(name, color, contactColors) {
-  const contactDiv = document.createElement("div");
-  contactDiv.classList.add("contact");
-  contactDiv.style.display = "flex";
-  contactDiv.style.marginBottom = "4px";
-  contactDiv.style.marginTop = "4px";
-  contactDiv.style.alignItems = "center";
-
-  const contactIcon = document.createElement("div");
-  contactIcon.classList.add("contact-icon");
-  contactIcon.textContent = name.charAt(0).toUpperCase();
-
-  // Generate and store color for each contact
-  contactColors[name] = color || getRandomColor();
-  contactIcon.style.backgroundColor = contactColors[name];
-  contactIcon.style.color = "white";
-
-  const contactName = document.createElement("span");
-  contactName.textContent = name;
-
-  const contactCheckbox = document.createElement("input");
-  contactCheckbox.type = "checkbox";
-  contactCheckbox.value = name;
-  contactCheckbox.dataset.color = contactColors[name];
-  contactCheckbox.classList.add("contact-checkbox");
-
-  const spacer = document.createElement("div");
-  spacer.style.flexGrow = 1;
-
-  contactDiv.appendChild(contactIcon);
-  contactDiv.appendChild(contactName);
-  contactDiv.appendChild(spacer);
-  contactDiv.appendChild(contactCheckbox);
-
-  contactDiv.addEventListener("mouseover", function () {
-    contactDiv.classList.add("hovered");
-  });
-
-  contactDiv.addEventListener("mouseout", function () {
-    contactDiv.classList.remove("hovered");
-  });
-
-  contactDiv.addEventListener("click", function (event) {
-    event.stopPropagation();
-
-    contactCheckbox.checked = !contactCheckbox.checked;
-
-    contactCheckbox.dispatchEvent(new Event("change"));
-  });
-
-  contactCheckbox.addEventListener("change", function () {
-    let contactName = contactCheckbox.value;
-  
-    if (contactCheckbox.checked) {
-      const contactDetails = {
-        name: contactName,
-        color: contactColors[contactName],
-        letter: contactName.charAt(0).toUpperCase(),
-      };
-  
-      selectedContactIcons.push(contactDetails);
-
-      contactDiv.style.backgroundColor = "rgb(42,54,71)";
-      contactDiv.style.color = "white";
-    } else {
-
-      selectedContactIcons = selectedContactIcons.filter((details) => details.name !== contactName);
-  
-      contactDiv.style.backgroundColor = "";
-      contactDiv.style.color = "";
-    }
-
-    selectedContactsContainer.innerHTML = '';
-  
-    selectedContactIcons.forEach((details) => {
-      const selectedContactIcon = document.createElement("div");
-      selectedContactIcon.classList.add("contact-icon");
-      selectedContactIcon.textContent = details.letter;
-      selectedContactIcon.style.backgroundColor = details.color;
-      selectedContactIcon.style.color = "white";
-  
-      selectedContactsContainer.appendChild(selectedContactIcon);
-    });
-  
-    console.log("Selected Contact Icons:", selectedContactIcons);
-  });
-
-  return contactDiv;
-}
-
-
-function updateSelectedContactsContainer(selectedContactsContainer) {
-  selectedContactsContainer.innerHTML = '';
-
-  selectedContacts.forEach((name) => {
-    const selectedContactIcon = document.createElement("div");
-    selectedContactIcon.classList.add("contact-icon");
-    selectedContactIcon.textContent = name.charAt(0).toUpperCase();
-    selectedContactIcon.style.backgroundColor = contactColors[name];
-    selectedContactIcon.style.color = "white";
-
-    selectedContactsContainer.appendChild(selectedContactIcon);
-  });
-}
-
-function updateSelectedContactIcons() {
-  selectedContactIcons = selectedContacts.map((name) => {
-    return {
-      name: name,
-      color: contactColors[name],
-      letter: name.charAt(0).toUpperCase(),
-    };
-  });
-
-  console.log("Selected Contact Icons:", selectedContactIcons);
 }
 
 
@@ -207,31 +75,35 @@ function displayLoggedInUser() {
 }
 
 
-function revealContacts() {
-  const contactsContainer = document.getElementById("contactsContainerTask");
-  const arrowDrop = document.getElementById("arrowDropImage");
-
-  isContactsVisible = !isContactsVisible;
-  contactsContainer.style.display = isContactsVisible ? "flex" : "none";
-
-  arrowDrop.style.transform = isContactsVisible ? "rotate(180deg)" : "rotate(0deg)";
+/* async function setItem(key, value) {
+  const payload = { key, value, token: STORAGE_TOKEN };
+  return fetch(STORAGE_URL, { method: 'POST', body: JSON.stringify(payload) })
+      .then(res => res.json());
 }
 
+async function getItem(key) {
+  const url = `${STORAGE_URL}?key=${key}&token=${STORAGE_TOKEN}`;
+  return fetch(url).then(res => res.json()).then(res => {
+      if (res.data) {
+          return res.data.value;
+      } else {
+          throw `Could not find data with key "${key}".`;
+      }
+  });
+} */
 
-
-async function includeHTML() {
-  let includeElements = document.querySelectorAll("[w3-include-html]");
-  for (let i = 0; i < includeElements.length; i++) {
-    const element = includeElements[i];
-    file = element.getAttribute("w3-include-html"); 
-    let resp = await fetch(file);
-    if (resp.ok) {
-      element.innerHTML = await resp.text();
-    } else {
-      element.innerHTML = "Page not found";
-    }
+/* async function loadTasks() {
+  try {
+    let tasks = await getItem('tasks');
+    tasks.forEach(task => {
+        addTaskToDOM(task);
+    });
+  } catch (error) {
+    console.error('Fehler beim Laden der Tasks:', error);
   }
-}
+} */
+
+
 
 function findTask() {
   const inputValue = document.getElementById("findTask").value.toLowerCase();
@@ -250,135 +122,7 @@ function findTask() {
   });
 }
 
-function addTask() {
-  let addToTask = document.getElementById("add-task");
-  document.getElementById("board-div").classList.add("background");
-  document.getElementById("add-task").classList.remove("d-none");
-  document.getElementById("add-task").classList.add("sign-up-animation");
-  addToTask.innerHTML = `
-  <form onsubmit="addTodo(); return false;" class="addTaskForm">
-  <div class="headline-div">
-    <h1>Add Task</h1>
-    <img onclick="closeAddTodo()" class="goBack pointer" src="../assets/icons/close.svg">
-      </div>
-      <div class="add-tasks-div center">
-        <div class="add-tasks-left-side-div">
-          <div class="title column">
-            <div><span>Title</span><span class="important">*</span></div>
-            <input maxlength="22" id="title-todo" required type="text" placeholder="Enter a title">
-          </div>
-          <div class="description">
-            <div><span>Description</span></div>
-            <textarea required type="text" maxlength="45" id="description-todo" placeholder="Enter a Description"></textarea>
-          </div>
 
-
-
-          <div class="assigned-to">
-          <label for="contactsDropdownTask"><span>Assigned to</span></label>
-          <div class="custom-dropdown" id="contactsDropdownContainer">
-        <div id="contactsDropdownTask">
-          <input class="select-to-assign" placeholder="Select contacts to assign">
-          <img id="arrowDropImage" class="find-contact-img" src="../assets/icons/arrowDrop.png" onclick="revealContacts()">
-        </div>
-          </div>
-          </div>
-        <div class="contacts-container" id="contactsContainerTask"></div>
-        <div class="selected-contacts-container "id="selectedContactsContainer"></div>
-
-
-          
-        </div>
-        <div class="add-tasks-right-side-div">
-          <div class="duo-date">
-            <div><span>Due date</span><span class="important">*</span></div>
-            <input class="calendarPicker" type="date" maxlength="10" id="date-todo" required placeholder="dd/mm/yyyy">
-          </div>
-          <div class="all-priorities">
-          <span>Prio</span>
-          <div class="priorities">
-          <div id="priority-urgent-todo" tabindex="1" class="prioprity-urgent pointer center" onclick="setSelectedPriority('urgent')">
-              <div>Urgent</div>
-              <div>
-                <img class="urgent1" src="../assets/icons/urgent3.svg" alt="">
-                <img class="urgent2 d-none" src="../assets/icons/urgent2.svg" alt="">
-              </div>
-            </div>
-            <div id="priority-medium-todo" tabindex="2" class="prioprity-medium pointer center" onclick="setSelectedPriority('medium')">
-              <div>Medium</div>
-              <div>
-                <img class="medium1" src="../assets/icons/medium.svg" alt="">
-                <img class="medium2 d-none" src="../assets/icons/medium2.svg" alt="">
-              </div>
-            </div>
-            <div id="priority-low-todo" tabindex="3" class="prioprity-low pointer center" onclick="setSelectedPriority('low')">
-              <div>Low</div>
-              <div>
-                <img class="low1" src="../assets/icons/low.svg" alt="">
-                <img class="low2 d-none" src="../assets/icons/low2.svg" alt="">
-              </div>
-            </div>
-          </div>
-        </div>
-      <div class="category">
-        <div><span>Category</span><span class="important">*</span></div>
-        <select type="text" id="category-todo" required class="pointer" placeholder="Select task category">
-          <option value="" class="d-none">Select task category</option>
-          <option>Technical Task</option>
-          <option>User Story</option>
-        </select>
-      </div>
-      <div class="subtasks">
-        <div><span>Subtasks</span><span class="important">*</span></div>
-      <div class="subtaskInput">
-        <input minlength="1" oninput="addSubtasks()" id="add-subtasks" type="text" placeholder="Add new subtask">
-        <img id="subtask-add" class="input-icon2 pointer" src="../assets/icons/add.svg">
-      <div class="oninput">
-        <img onclick="cancelSubtask()" id="subtask-cancel" class="input-icon3 d-none pointer center" src="../assets/icons/cancelX.svg">
-        <img onclick="correctSubtask()" id="subtask-correct" class="input-icon4 d-none pointer center" src="../assets/icons/correct.svg">
-      </div>
-    </div>
-        </div>
-        <div class="absolute" id="added-subtasks">
-        
-        </div>
-    </div>
-  </div>
-  <div class="bottom">
-    <div class="left-bottom">
-      <span class="important">*</span><span>This field is required</span>
-    </div>
-    <div class="right-bottom">
-      <div class="clear-and-create-task center">
-        <button onclick="closeAddTodo()" class="clear pointer center">
-          <span>Clear</span>
-          <img class="cancel1" src="../assets/icons/cancel.svg" alt="">
-          <img class="cancel2 d-none" src="../assets/icons/cancel2.svg" alt="">
-        </button>
-        <button type="submit" class="create-task pointer center">
-          <span>Create Task</span>
-          <img src="../assets/icons/check.svg" alt="">
-        </button>
-      </div>
-    </div>
-  </div>
-</form>
-  `;
-
-  populateContactsDropdown("contactsDropdownTask");
-  bindSubtaskEvents();
-  greyOverlay();
-}
-
-
-function greyOverlay() {
-  
-  const overlay = document.createElement('div');
-  overlay.className = 'overlay';
-  overlay.style.zIndex = '5';
-  document.body.appendChild(overlay);
-  document.body.classList.add('no-scroll');
-}
 
 
 function displayAssignedContacts() {
@@ -393,6 +137,37 @@ function displayAssignedContacts() {
   });
 }
 
+function createContactIcon(contact) {
+  const { name, color } = contact;
+
+  if (!name) {
+    return null;
+  }
+
+  const contactElement = document.createElement("div");
+  contactElement.className = "contact-icon";
+  contactElement.style.backgroundColor = color;
+
+  const nameElement = document.createElement("div");
+  nameElement.className = "contact-icon-name";
+  nameElement.textContent = name.charAt(0).toUpperCase();
+
+  contactElement.appendChild(nameElement);
+
+  return contactElement;
+}
+
+function addTask() {
+  console.log('Moin');
+  let addToTask = document.getElementById("add-task");
+  document.getElementById("board-div").classList.add("background");
+  document.getElementById("add-task").classList.remove("d-none");
+  document.getElementById("add-task").classList.add("sign-up-animation");
+  addToTask.innerHTML = generateAddTaskForm();
+
+  populateContactsDropdown("contactsDropdownTask");
+  bindSubtaskEvents();
+}
 
 function bindSubtaskEvents() {
   let addedSubtasksContainer = document.getElementById("added-subtasks");
@@ -414,82 +189,43 @@ function bindSubtaskEvents() {
 
 function closeAddTodo() {
   document.getElementById("add-task").classList.add("d-none");
-  selectedContacts = [];
-    removeGreyOverlay();
 }
 
-function removeGreyOverlay() {
-    const overlay = document.querySelector('.overlay');
-    if (overlay) {
-        document.body.removeChild(overlay);
-        document.body.classList.remove('no-scroll');
-    }
-}
-
-function addTodo() {
+function getValueFromInput(title, description, category, dueDate){
   let title = document.getElementById("title-todo").value;
   let description = document.getElementById("description-todo").value;
   let category = document.getElementById("category-todo").value;
   let dueDate = document.getElementById("date-todo").value;
+}
+
+function addTodo() {
+  getValueFromInput(title, description, category, dueDate);
 
   let subtasks = Array.from(
     document.querySelectorAll("#added-subtasks .added-subtask")
   ).map((subtask) => subtask.textContent.trim());
-  let totalSubtasks = subtasks.length; // Gesamtzahl der Subtasks
-  const taskId = `task-${taskIdCounter++}`; // Generiert eine einzigartige ID
+  let totalSubtasks = subtasks.length; 
+  const taskId = `task-${taskIdCounter++}`; 
 
   let priorityImage = "";
-  switch (selectedPriority) {
-    case "urgent":
-      priorityImage = "../assets/icons/urgent3.svg";
-      break;
-    case "medium":
-      priorityImage = "../assets/icons/medium.svg"
-      break;
-    case "low":
-      priorityImage = "../assets/icons/low.svg";
-      break;
-  }
+let priorityName = "";
+switch (selectedPriority) {
+  case "urgent":
+    priorityImage = "../assets/icons/urgent3.svg";
+    priorityName = "Urgent";
+    break;
+  case "medium":
+    priorityImage = "../assets/icons/medium.svg";
+    priorityName = "Medium";
+    break;
+  case "low":
+    priorityImage = "../assets/icons/low.svg";
+    priorityName = "Low";
+    break;
+}
+  let taskHTML = generateTask(taskId,category,title,description,dueDate,selectedPriority,priorityImage);
 
-  let selectedContactsContainer = document.getElementById("selectedContactsContainer");
-  let selectedContactsHtml = selectedContactsContainer.innerHTML;
-
-  let iconsWrapper = document.createElement('div');
-  iconsWrapper.className = 'icon-container task-icon-added';
-  iconsWrapper.innerHTML = selectedContactsHtml.replace(/class="/g, 'class="task-contact-icon ');
-
-  let selectedContacts = iconsWrapper.querySelectorAll('.task-contact-icon');
-  selectedContacts.forEach((icon, index) => {
-    icon.style.position = 'absolute';
-    icon.style.left = `${index * 20 + 20}px`;
-  });
-
-  let taskHTML = `
-    <div id="${taskId}" class="board-task-card pointer" ondragstart="startDragging(event)" draggable="true" onclick="openTaskInfos('${taskId}', '${title}', '${description}', '${category}', '${dueDate}', ${JSON.stringify(
-    subtasks
-  )
-    .split('"')
-    .join("&quot;")})">
-      <div class="board-task-card-title">${category}</div>
-      <div class="board-task-card-description">${title}</div>
-      <div class="board-task-card-task">${description}</div>
-      <div class="board-task-card-date d-none">${dueDate}</div>
-      <div class="board-task-card-subtasks">
-        <div class="board-task-card-subtasks-bar">
-          <div id="bar-fill-${taskId}" class="bar-fill" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
-        </div>
-        <div id="subtasks-amount-${taskId}" class="board-task-card-subtasks-amount">${totalSubtasks}/2 Subtasks</div>
-      </div>
-      <div class="board-task-card-users">
-        ${iconsWrapper.outerHTML}
-        <div class="board-task-card-priority">
-          <img id="priority-img-${taskId}" src="${priorityImage}">
-        </div>
-      </div>
-    </div>
-  `;
-
-  selectedPriority = null;
+ selectedPriority = null;
   document.getElementById("todo").insertAdjacentHTML("beforeend", taskHTML);
   updateProgressBar(taskId, totalSubtasks);
 
@@ -499,9 +235,7 @@ function addTodo() {
   // Formular und Modalfenster schließen
   document.getElementById("add-task").classList.add("d-none");
   document.getElementById("board-div").classList.remove("background");
-  removeGreyOverlay();
 }
-
 
 function updateProgressBar(taskId, totalSubtasks) {
   const maxSubtasks = 2; // Maximale Anzahl der Subtasks
@@ -518,112 +252,64 @@ function updateProgressBar(taskId, totalSubtasks) {
   }
 }
 
+/* async function saveTask(task) {
+  try {
+      let tasks = await getItem('tasks') || [];
+      tasks.push(task);
+      await setItem('tasks', tasks);
+  } catch (error) {
+      console.error('Fehler beim Speichern des Tasks:', error);
+  }
+} */
 
-// Function to map contacts for display
-function mapContactsForDisplay(contacts) {
-  return contacts.map((contact) => ({
-    icon: contact.profileImage,
-    name: contact.username,
-  }));
+function generateCurrentValueFromInput(currentTitle,currentDescription,currentCategory,currentDueDate){
+  let currentTitle = taskElement.querySelector(
+    ".board-task-card-description"
+  ).textContent;
+  let currentDescription = taskElement.querySelector(".board-task-card-task").textContent;
+  let currentCategory = taskElement.querySelector(
+    ".board-task-card-title"
+  ).textContent;
+  let currentDueDate = taskElement.querySelector(
+    ".board-task-card-date"
+  ).textContent;
 }
 
 
 
-function openTaskInfos(taskId, title, description, category, dueDate, subtasks) {
+function openTaskInfos(taskId,title,description,category,dueDate,subtasks,priorityName,priorityImage
+) {
+  let priorityHtml = `
+  <div class="task-info-priority-name">${priorityName}</div>
+  <img src="${priorityImage}" class="task-info-priority-image">
+`;
   let taskElement = document.getElementById(taskId);
-  if (!taskElement) {
-    console.error("Task-Element not found:", taskId);
-    return;
-  }
 
   document.getElementById("all-task-infos").classList.remove("d-none");
-  let currentTitle = taskElement.querySelector(".board-task-card-description").textContent;
-  let currentDescription = taskElement.querySelector(".board-task-card-task").textContent;
-  let currentCategory = taskElement.querySelector(".board-task-card-title").textContent;
-  let currentDueDate = taskElement.querySelector(".board-task-card-date").textContent;
+  
+  generateCurrentValueFromInput(currentTitle,currentDescription,currentCategory,currentDueDate);
 
-  let subtasksHtml = subtasks
-    .map(
-      (subtask, index) =>
+  let subtasksHtml = subtasks.map((subtask, index) =>
         `<div class="hover-subtask column pointer" onmouseover="showIcons(${index})" onmouseout="hideIcons(${index})">
-          ${subtask}
-          <img id="edit-icon-${index}" onclick="editExistingSubtask(${index}, ${subtask})" src="../assets/icons/edit.svg" style="display:none;">
-          <img id="delete-icon-${index}" onclick="deleteExistingSubtask(${index})" src="../assets/icons/delete.svg" style="display:none;">
-        </div>`
-    )
-    .join("");
+    ${subtask}
+    <img id="edit-icon-${index}" onclick="editExistingSubtask(${index}, ${subtask})" src="../assets/icons/edit.svg" style="display:none;">
+    <img id="delete-icon-${index}" onclick="deleteExistingSubtask(${index})" src="../assets/icons/delete.svg" style="display:none;">
+  </div>`
+  ).join("");
   let encodedSubtasksHtml = encodeURIComponent(subtasksHtml);
-
   document.getElementById("all-task-infos").classList.remove("d-none");
   let allTaskInfos = document.getElementById("all-task-infos");
-  allTaskInfos.innerHTML = `
-    <div class="whole-task-infos absolute">
-      <div class="task-info-top">
-        <div class="task-info-category">${currentCategory}</div>
-        <div><img onclick="closeTaskInfos()" src="../assets/icons/Close2.svg"></div>
-      </div>
-      <div class="task-info-title">${currentTitle}</div>
-      <div class="task-info-description">${currentDescription}</div>
-      <div class="task-info-due-date">
-        <div class="headline3">Due date:</div>
-        <div class="variable">${currentDueDate}</div>
-      </div>
-      <div class="task-info-prio">
-        <div class="headline3">Priority:</div>
-        <div class="task-info-current-prio">
-          <span>Urgent</span>
-          <img src="../assets/icons/urgent3.svg">
-        </div>
-      </div>
-      <div class="task-info-assigned-to">
-        <div class="headline3">Assigned To:</div>
-        <div class="here-comes-the-contact" id="selectedContactsPlaceholder">
-        </div>
-      </div>
-      <div class="task-info-subtasks">
-        <div class="headline3">Subtasks</div>
-        <div>${subtasksHtml}</div>
-      </div>
-      <div class="task-info-delete-edit center absolute">
-        <div onclick="deleteTaskInfos('${taskId}')" class="task-info-delete pointer center">
-          <img class="img1" src="../assets/icons/delete2.svg" alt="">
-          <img class="img2 d-none" src="../assets/icons/delete2.png" alt="">
-          <span><b>Delete</b></span>
-        </div>
-        <div onclick="editTaskInfos('${taskId}', '${encodedSubtasksHtml}')" class="task-info-edit pointer center">
-          <img class="img3" src="../assets/icons/edit2.svg" alt="">
-          <img class="img4 d-none" src="../assets/icons/edit2.png" alt="">
-          <span><b>Edit</b></span>
-        </div>
-      </div>
-    </div>
-  `;
 
-  let selectedContactsPlaceholder = document.getElementById("selectedContactsPlaceholder");
+  allTaskInfos.innerHTML = openTaskWithAllInfos(currentCategory,currentTitle,currentDescription,currentDueDate,priorityHtml,subtasksHtml,taskId,encodedSubtasksHtml,priorityName,priorityImage);
 
-  if (selectedContactsPlaceholder) {
-    selectedContactsPlaceholder.innerHTML = "";
-
-    for (let contact of selectedContactIcons) {
-      let contactElement = document.createElement("div");
-
-      let iconDiv = `<div class="self-made-icon" style="background-color: ${contact.color};">${contact.letter}</div>`;
-
-      contactElement.innerHTML = `<div class="assigned-to-edit-contact">${iconDiv} ${contact.name}</div>`;
-      selectedContactsPlaceholder.appendChild(contactElement);
-    }
+  if (!Array.isArray(subtasks)) {
+    console.error("subtasks ist kein Array:", subtasks);
+    return; // Beendet die Ausführung der Funktion, wenn 'subtasks' kein Array ist
   }
 }
-
 
 function editExistingSubtask(index, subtask) {
   let subtaskElement = document.getElementById(`subtask-${index}`);
-
-
-  if (!subtaskElement) {
-    console.error("Subtask-Element nicht gefunden:", index);
-    return;
-  }
 
   let editableSubtaskHtml = `
     <div>
@@ -635,18 +321,15 @@ function editExistingSubtask(index, subtask) {
   subtaskElement.innerHTML = editableSubtaskHtml;
 }
 
-
 function showIcons(index) {
   document.getElementById(`edit-icon-${index}`).style.display = "inline";
   document.getElementById(`delete-icon-${index}`).style.display = "inline";
 }
 
-
 function hideIcons(index) {
   document.getElementById(`edit-icon-${index}`).style.display = "none";
   document.getElementById(`delete-icon-${index}`).style.display = "none";
 }
-
 
 function deleteTaskInfos(taskId) {
   console.log("Löschversuch für Task mit ID:", taskId);
@@ -657,7 +340,6 @@ function deleteTaskInfos(taskId) {
   let wholeTaskInfos = document.querySelector(".whole-task-infos");
   wholeTaskInfos.classList.add("d-none");
 }
-
 
 function editTaskInfos(taskId, encodedSubtasksHtml, priorityName, priorityImage){
   let taskInfoContainer = document.querySelector(".whole-task-infos");
@@ -674,44 +356,8 @@ function editTaskInfos(taskId, encodedSubtasksHtml, priorityName, priorityImage)
     ".task-info-due-date .variable"
   ).textContent;
 
-  taskInfoContainer.innerHTML = `
-  <form onsubmit="saveEditedTaskInfo('${taskId}'); return false;">
-    <div class="edit-the-category">
-    <div>Category:</div>
-      <select value="${category}" type="text" id="edit-category-${taskId}" required class="edit-the-category-select pointer" placeholder="Select task category">
-        <option value="" class="d-none">Select task category</option>
-        <option>Technical Task</option>
-        <option>User Story</option>
-      </select>
-    </div>
-
-    <div class="edit-the-title">
-    <div>Title:</div>
-    <input maxlength="60" class="edit-the-title-input" required type="text" id="edit-title-${taskId}" value="${title}">
-    </div>
-    <div class="edit-the-description">
-    <div>Description:</div>
-    <textarea maxlength="75" class="edit-the-description-textarea" required id="edit-description-${taskId}">${description}</textarea>
-    </div>
-    <div class="edit-the-dueDate">
-    <div>Due Date:</div>
-    <input class="edit-the-dueDate-input" required type="date" id="edit-due-date-${taskId}" value="${dueDate}">
-    </div>
-    
-        <div id="edited-subtasks">
-            ${subtasksHtml}
-        </div>
-        
-    <div class="save-edited-task-button">
-    <button type="submit" class="save-edited-Task pointer center">
-      <span>OK</span>
-      <img src="../assets/icons/check.svg" alt="">
-    </button>
-    </div>
-  </form>
-  `;
+  taskInfoContainer.innerHTML = editTaskInfosForm(subtasksHtml,title,description,category,dueDate,priorityName,priorityImage);
 }
-
 
 function deleteExistingSubtask(index) {
   // Löscht eine bestehende Subtask
@@ -721,13 +367,10 @@ function deleteExistingSubtask(index) {
   }
 }
 
-
 function saveEditedTaskInfo(taskId) {
   // Extrahiert die bearbeiteten Werte
   let editedTitle = document.getElementById(`edit-title-${taskId}`).value;
-  let editedDescription = document.getElementById(
-    `edit-description-${taskId}`
-  ).value;
+  let editedDescription = document.getElementById(`edit-description-${taskId}`).value;
   let editedCategory = document.getElementById(`edit-category-${taskId}`).value;
   let editedDueDate = document.getElementById(`edit-due-date-${taskId}`).value;
 
@@ -764,7 +407,18 @@ switch (selectedPriority) {
     taskElement.querySelector(".board-task-card-date").textContent =
       editedDueDate;
   }
+  if (taskElement) {
+      let priorityElement = taskElement.querySelector(".board-task-card-priority");
+      priorityElement.dataset.priorityName = priorityName;
+      priorityElement.querySelector("img").src = priorityImage;
+  }
 
+  if (taskElement) {
+    let priorityImgElement = taskElement.querySelector(".board-task-card-priority img");
+    if (priorityImgElement) {
+      priorityImgElement.src = priorityImage;
+    }
+  }
 
   let taskInfoContainer = document.querySelector(".whole-task-infos");
   if (taskInfoContainer) {
@@ -780,8 +434,8 @@ switch (selectedPriority) {
         <div class="variable">${editedDueDate}</div>
       </div>
       <div class="task-info-prio">
-        <div>Priority:</div>
-        <div class="task-info-priority-name">${priorityName}</div>
+      <div>Priority:</div>
+      <div class="task-info-priority-name">${priorityName}</div>
       <img src="${priorityImage}" class="task-info-priority-image">
 
         </div>
@@ -812,15 +466,14 @@ switch (selectedPriority) {
   }
   openTaskInfos(
     taskId,
-    editedTitle,
-    editedDescription,
-    editedCategory,
-    editedDueDate,
-    priorityName,
-    priorityImage
+    editedTitle, // oder title, falls Sie den ursprünglichen Titel behalten
+    editedDescription, // oder description
+    editedCategory, // oder category
+    editedDueDate, // oder dueDate
+    priorityName, // Aktualisierter Wert
+    priorityImage // Aktualisierter Wert
   );
 }
-
 
 function correctSubtask(taskId) {
   // taskId hinzugefügt
@@ -857,11 +510,9 @@ function correctSubtask(taskId) {
   }
 }
 
-
 function closeTaskInfos() {
   document.getElementById("all-task-infos").classList.add("d-none");
 }
-
 
 function setSelectedPriority(priority) {
   selectedPriority = priority;
@@ -891,21 +542,17 @@ function setSelectedPriority(priority) {
   document.getElementById(`priorities-todo-${taskId}`).src = src;
 } */
 
-
 function bindDragEvents(element) {
   element.addEventListener("dragstart", (e) => startDragging(e, element));
 }
-
 
 function startDragging(event, element) {
   event.dataTransfer.setData("text", event.target.id);
 }
 
-
 function allowDrop(event) {
   event.preventDefault();
 }
-
 
 function drop(event, targetId) {
   event.preventDefault();
@@ -917,14 +564,12 @@ function drop(event, targetId) {
   }
 }
 
-
 function addTaskToDOM(task) {
 
   let newCard = document.getElementById(task.id);
   newCard.setAttribute("draggable", true);
   newCard.addEventListener("dragstart", (e) => startDragging(e, newCard));
 }
-
 
 function updateHTML() {
   let taskCards = document.querySelectorAll(".board-task-card");
@@ -935,11 +580,9 @@ function updateHTML() {
   });
 }
 
-
 function highlight(id) {
   document.getElementById(id).classList.add("drag-area-highlight");
 }
-
 
 function removeHighlight(id) {
   document.getElementById(id).classList.remove("drag-area-highlight");
@@ -958,8 +601,6 @@ function removeHighlight(id) {
 
   document.getElementById("date-todo").value = formattedToday;
 } */
-
-
 function addSubtasks() {
   let input = document.getElementById("add-subtasks");
   if (input.value.length > 0) {
@@ -974,7 +615,6 @@ function addSubtasks() {
   updateProgressBar();
 }
 
-
 function cancelSubtask() {
   let input = document.getElementById("add-subtasks");
   input.value = "";
@@ -982,8 +622,6 @@ function cancelSubtask() {
   document.getElementById("subtask-cancel").classList.add("d-none");
   document.getElementById("subtask-correct").classList.add("d-none");
 }
-
-
 function correctSubtask() {
   let input = document.getElementById("add-subtasks").value.trim();
   if (input !== "") {
@@ -1020,7 +658,6 @@ function correctSubtask() {
   }
 }
 
-
 function editSubtask(subtaskId) {
   let subtaskElement = document.getElementById(subtaskId);
   let subtaskContent = subtaskElement.querySelector("div").textContent;
@@ -1038,7 +675,6 @@ function editSubtask(subtaskId) {
   document.getElementById(subtaskId).classList.add("border-radius-unset");
 }
 
-
 function saveEdit(subtaskId) {
   let inputElement = document.getElementById(`edit-${subtaskId}`);
   let updatedText = inputElement.value;
@@ -1055,7 +691,6 @@ function saveEdit(subtaskId) {
   document.getElementById(subtaskId).classList.remove("added-subtask-unset");
   document.getElementById(subtaskId).classList.remove("border-radius-unset");
 }
-
 
 function deleteSubtask(taskId, subtaskId) {
   let currentSubtask = document.getElementById(subtaskId);
