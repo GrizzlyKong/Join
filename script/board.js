@@ -122,16 +122,7 @@ function findTask() {
   });
 }
 
-function addTask() {
-  let addToTask = document.getElementById("add-task");
-  document.getElementById("board-div").classList.add("background");
-  document.getElementById("add-task").classList.remove("d-none");
-  document.getElementById("add-task").classList.add("sign-up-animation");
-  addToTask.innerHTML = generateAddTaskForm();
 
-  populateContactsDropdown("contactsDropdownTask");
-  bindSubtaskEvents();
-}
 
 
 function displayAssignedContacts() {
@@ -166,7 +157,17 @@ function createContactIcon(contact) {
   return contactElement;
 }
 
+function addTask() {
+  console.log('Moin');
+  let addToTask = document.getElementById("add-task");
+  document.getElementById("board-div").classList.add("background");
+  document.getElementById("add-task").classList.remove("d-none");
+  document.getElementById("add-task").classList.add("sign-up-animation");
+  addToTask.innerHTML = generateAddTaskForm();
 
+  populateContactsDropdown("contactsDropdownTask");
+  bindSubtaskEvents();
+}
 
 function bindSubtaskEvents() {
   let addedSubtasksContainer = document.getElementById("added-subtasks");

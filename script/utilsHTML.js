@@ -1,5 +1,5 @@
 function generateAddTaskForm() {
-    return `
+  return`
     <form onsubmit="addTodo(); return false;" class="addTaskForm">
     <div class="headline-div">
       <h1>Add Task</h1>
