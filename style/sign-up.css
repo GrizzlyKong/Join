@@ -39,7 +39,26 @@
 }
 
 /* SIGN UP */
+.log-in-links2 {
+  color: rgb(168, 168, 168);
+  gap: 24px;
+  position: relative;
+  top: 90vh;
+  font-size: 20px;
+  opacity: 1.5s ease;
+}
 
+.log-in-privacy2,
+.log-in-legal2 {
+  text-decoration: none;
+  color: rgb(168, 168, 168);
+}
+
+.log-in-privacy2:hover,
+.log-in-legal2:hover {
+  font-weight: bold;
+  color: rgb(41, 171, 226);
+}
 .sign-up-sign-up {
   position: absolute;
   gap: 32px;
@@ -108,6 +127,7 @@
   width   : 85%;
   border-bottom: 3px solid #29abe2;
 }
+
 
 .sign-up-inputs {
   position: relative;
@@ -221,7 +241,13 @@
 }
 
 .sign-up-privacy-policy span {
+
+}
+
+.sign-up-privacy-policy-span{
+  text-decoration: none;
   color: rgb(41, 171, 226);
+  font-size: 16px;
 }
 
 .sign-up-privacy-policy-span:hover {

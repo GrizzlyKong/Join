@@ -411,8 +411,10 @@ body {
   padding-top: 8px;
   padding-left: 8px;
   font-size: 20px;
-  width: 440px;
-  height: 120px;
+  min-width: 440px;
+  min-height: 120px;
+  max-width: 440px;
+  max-height: 120px;
   border-radius: 10px;
   border: 1px solid #d1d1d1;
   margin-top: 12px !important;
@@ -458,6 +460,8 @@ body {
 }
 /*priorities*/
 
+
+
 .all-priorities {
   padding-top: 30px;
 }
@@ -482,23 +486,14 @@ body {
   font-size: 20px;
 }
 .prioprity-urgent:focus {
-  background: #ff3d00 !important;
-  color: white;
-  z-index: 1;
-  font-size: 21px;
+
 }
 
 .prioprity-urgent:hover {
   box-shadow: inset 0 -2px #ff3d00;
 }
 
-.prioprity-urgent:focus .urgent1 {
-  display: none;
-}
 
-.prioprity-urgent:focus .urgent2 {
-  display: inline;
-}
 
 .prioprity-medium {
   gap: 6px;
@@ -510,10 +505,7 @@ body {
   font-size: 20px;
 }
 .prioprity-medium:focus {
-  background: #ffa800 !important;
-  color: white;
-  z-index: 1;
-  font-size: 21px;
+
 }
 
 
@@ -521,13 +513,6 @@ body {
   box-shadow: inset 0 -2px #ffa800;
 }
 
-.prioprity-medium:focus .medium1 {
-  display: none;
-}
-
-.prioprity-medium:focus .medium2 {
-  display: inline;
-}
 
 
 
@@ -542,22 +527,23 @@ body {
   background-color: white;
 }
 .prioprity-low:focus {
-  background: #7ae229 !important;
-  color: white;
-  z-index: 1;
-  font-size: 21px;
+
 }
 
 .prioprity-low:hover {
   box-shadow: inset 0 -2px #7ae229;
 }
 
-.prioprity-low:focus .low1 {
-  display: none;
+
+
+
+
+.category-technical {
+  background-color: #1FD7C1 !important;
 }
 
-.prioprity-low:focus .low2 {
-  display: inline;
+.category-user-story {
+  background-color: #0038FF !important;
 }
 
 
@@ -707,7 +693,7 @@ width: 59px;
 }
 
 .clear-and-create-task {
-  bottom: 10vh;
+  bottom: 0;
   gap: 16px;
   position: relative;
   right: 20%;
@@ -777,7 +763,8 @@ width: 59px;
   padding-top: 35px;
   padding-bottom: 35px;
   z-index: 999;
-  height: 600px;
+  min-height:200px;
+  overflow-y: scroll;
   border-radius: 30px;
   background-color: #ffffff;
   top: 40%;
@@ -866,7 +853,6 @@ padding-left: 10px;
   margin-top: 16px;
 }
 .task-info-delete-edit{
-  bottom: 32px;
   right: 32px;
 
 }
