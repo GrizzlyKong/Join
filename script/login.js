@@ -157,6 +157,11 @@ function updatePasswordVisibility() {
   const eyeIcon = document.getElementById('eyeIcon');
   const eyeIconHidden = document.getElementById('eyeIconHidden');
 
+  // Check if elements exist
+  if (!passwordInput || !lockIcon || !eyeIcon || !eyeIconHidden) {
+    return; // Exit the function if any element is missing
+  }
+
   const passwordValue = passwordInput.value.trim();
 
   if (passwordInput.type === 'password') {
@@ -172,11 +177,10 @@ function updatePasswordVisibility() {
   }
 }
 
+
 // Call the function on page load
 document.addEventListener('DOMContentLoaded', () => {
   updatePasswordVisibility();
-  // Add an event listener to the password input to update the icons dynamically
-  document.getElementById('loginPassword').addEventListener('input', updatePasswordVisibility);
 });
 
 // Function to toggle password visibility
