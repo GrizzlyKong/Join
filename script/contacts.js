@@ -99,7 +99,6 @@ function addNewContact() {
 
 
 function greyOverlay () {
-    // Create overlay and prevent scrolling
     const overlay = document.createElement('div');
     overlay.className = 'overlay';
     overlay.style.zIndex = '5';
@@ -438,7 +437,6 @@ async function displayUserContacts() {
     const responseText = await response.text();
 
     console.log("Server response status:", response.status);
-    console.log("Server response body:", responseText);
 
     if (response.ok) {
       try {
@@ -512,11 +510,20 @@ function generateContactElementHTML(name, email, initialLetter, color) {
 
 function insertContactElement(newContactElement, initialLetter) {
   const contactsMenu = document.getElementById("contactsMenu");
+  if (!contactsMenu) {
+    return;
+  }
+
   const letterContacts = Array.from(contactsMenu.getElementsByClassName("letter-contacts"));
   let letterGroup = getOrCreateLetterGroup(letterContacts, initialLetter);
 
-  letterGroup.appendChild(newContactElement);
+  if (letterGroup) { // Ensure letterGroup is not null
+    letterGroup.appendChild(newContactElement);
+  } else {
+    console.error(`Failed to find or create letter group for initial letter: ${initialLetter}`);
+  }
 }
+
 
 
 function getOrCreateLetterGroup(letterContacts, initialLetter) {
