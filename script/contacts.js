@@ -119,47 +119,47 @@ function updateElementClass(elementId, className, action) {
 
 
 function generateNewContactHTML() {
-  return /* HTML */ `
+  return `
     <div id="add-new-contact-id" class="addNewContactDiv">
       <div class ="left-side-add-contact column">
         <div class="items-right">
-        <div><img src="../assets/icons/logo.svg"></div>
+        <div><img src="../assets/icons/logo.svg" alt"Join Logo"></div>
         <h1>Add contact</h1>
         <span>Tasks are better with a team!</span>
         <div class="line"></div>
       </div>
       </div>
       <div class = "right-side-add-contact">
-        <div class="close-div"><img onclick="closeAddContact()" class="close pointer" src="../assets/icons/close.svg"></div>
+        <div class="close-div"><img onclick="closeAddContact()" class="close pointer" src="../assets/icons/close.svg" alt"A picture of a X"></div>
         <div class = "account center">
-          <div class="adding-contact-icon"><img src="../assets/icons/person.png"></div>
+          <div class="adding-contact-icon"><img src="../assets/icons/person.png" alt"A picture of a person"></div>
         </div>
         <div>
           <form onsubmit="addingContact(); return false;">
             <div class="form-contacs">
               <div class="center">
                 <input id="contactNameInput" class="log-in-field column center pointer" required type="text" placeholder="Name">
-                <img class="log-in-mail-lock-icon" src="../assets/icons/person-small.png">
+                <img class="log-in-mail-lock-icon" src="../assets/icons/person-small.png" alt"A picture of a person">
               </div>
               <div class="center">
                 <input id="contactEmailInput" class="log-in-field column center pointer" required type="email" placeholder="Email">
-                <img class="log-in-mail-lock-icon" src="../assets/icons/mail.png">
+                <img class="log-in-mail-lock-icon" src="../assets/icons/mail.png" alt"A picture of a mail icon">
               </div>
               <div class="center">
                 <input id="contactPhoneInput" class="log-in-field column center pointer" required type="number" placeholder="Phone">
-                <img class="log-in-mail-lock-icon" src="../assets/icons/call.png">
+                <img class="log-in-mail-lock-icon" src="../assets/icons/call.png" alt"A picture of a phone">
               </div>
             </div>
             <div class="right-bottom">
               <div class="clear-and-create-task">
                 <div class="clear pointer center" onclick="clearInputAddingContact()">
                   <span>Clear</span>
-                  <img class="cancel1" src="../assets/icons/cancel.svg" alt="">
-                  <img class="cancel2 d-none" src="../assets/icons/cancel2.svg" alt="">
+                  <img class="cancel1" src="../assets/icons/cancel.svg" alt="A picture of a X">
+                  <img class="cancel2 d-none" src="../assets/icons/cancel2.svg" alt="A picture of a X">
                 </div>
                 <button class="create-task pointer center">
                   <span>Create contact</span>
-                  <img src="../assets/icons/check.svg" alt="">
+                  <img src="../assets/icons/check.svg" alt="A picture of a hook">
                 </button>
               </div>
             </div>
@@ -736,18 +736,18 @@ function generateEditContactFormHTML(contactToEdit, contactIndex) {
   const { name, email, phone, color } = contactToEdit;
   const initialLetter = name.charAt(0).toUpperCase();
 
-  return /* HTML */ `
+  return `
     <div id="edit-contact-id" class="addNewContactDiv">
       <div class="left-side-add-contact column">
         <div class="items-right">
-          <div><img src="../assets/icons/logo.svg"></div>
+          <div><img src="../assets/icons/logo.svg" alt"Join Logo"></div>
           <h1>Edit contact</h1>
           <span></span>
           <div class="line"></div>
         </div>
       </div>
       <div class="right-side-add-contact">
-        <div class="close-div"><img onclick="closeAddContact()" class="close pointer" src="../assets/icons/close.svg"></div>
+        <div class="close-div"><img onclick="closeAddContact()" class="close pointer" src="../assets/icons/close.svg" alt"A picture of a X"></div>
         <div class="account center">
           <div class="adding-contact-icon" style="background-color: ${color}">${initialLetter}</div>
         </div>
@@ -756,27 +756,27 @@ function generateEditContactFormHTML(contactToEdit, contactIndex) {
             <div class="form-contacs">
               <div class="center">
                 <input id="contactNameInput" class="log-in-field column center pointer" required type="text" placeholder="Name" value="${name}">
-                <img class="log-in-mail-lock-icon" src="../assets/icons/person-small.png">
+                <img class="log-in-mail-lock-icon" src="../assets/icons/person-small.png" alt"A picture of a person">
               </div>
               <div class="center">
                 <input id="contactEmailInput" class="log-in-field column center pointer" required type="email" placeholder="Email" value="${email}">
-                <img class="log-in-mail-lock-icon" src="../assets/icons/mail.png">
+                <img class="log-in-mail-lock-icon" src="../assets/icons/mail.png" alt"A picture of a mail icon">
               </div>
               <div class="center">
                 <input id="contactPhoneInput" class="log-in-field column center pointer" required type="number" placeholder="Phone" value="${phone}">
-                <img class="log-in-mail-lock-icon" src="../assets/icons/call.png">
+                <img class="log-in-mail-lock-icon" src="../assets/icons/call.png" alt"A picture of a phone icon">
               </div>
             </div>
             <div class="right-bottom">
               <div class="clear-and-update-contact">
                 <div class="clear pointer center" onclick="deleteContact()">
                   <span>Delete</span>
-                  <img class="cancel1" src="../assets/icons/cancel.svg" alt="">
-                  <img class="cancel2 d-none" src="../assets/icons/cancel2.svg" alt="">
+                  <img class="cancel1" src="../assets/icons/cancel.svg" alt="A picture of a X">
+                  <img class="cancel2 d-none" src="../assets/icons/cancel2.svg" alt="A picture of a X">
                 </div>
                 <div class="update-contact pointer center" onclick="updateContact(${contactIndex})">
                   <span>Save</span>
-                  <img src="../assets/icons/check.svg" alt="">
+                  <img src="../assets/icons/check.svg" alt="A picture of a hook">
                 </div>
               </div>
             </div>

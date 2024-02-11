@@ -283,7 +283,7 @@ function addTask() {
   <form onsubmit="addTodo(); return false;" class="addTaskForm">
   <div class="headline-div">
     <h1>Add Task</h1>
-    <img onclick="closeAddTodo()" class="goBack pointer" src="../assets/icons/close.svg">
+    <img onclick="closeAddTodo()" class="goBack pointer" src="../assets/icons/close.svg" alt"A picture of an X">
       </div>
       <div class="add-tasks-div center">
         <div class="add-tasks-left-side-div">
@@ -303,7 +303,7 @@ function addTask() {
           <div class="custom-dropdown" id="contactsDropdownContainer">
         <div id="contactsDropdownTask">
           <input class="select-to-assign" placeholder="Select contacts to assign">
-          <img id="arrowDropImage" class="find-contact-img" src="../assets/icons/arrowDrop.png" onclick="revealContacts()">
+          <img id="arrowDropImage" class="find-contact-img" src="../assets/icons/arrowDrop.png" onclick="revealContacts()" alt"A picture of an arrow pointing downwards">
         </div>
           </div>
           </div>
@@ -324,22 +324,22 @@ function addTask() {
           <div id="priority-urgent-todo" tabindex="1" class="prioprity-urgent pointer center" onclick="setSelectedPriority('urgent')">
               <div>Urgent</div>
               <div>
-                <img class="urgent1" src="../assets/icons/urgent3.svg" alt="">
-                <img class="urgent2 d-none" src="../assets/icons/urgent2.svg" alt="">
+                <img class="urgent1" src="../assets/icons/urgent3.svg" alt="A picture of urgency - urgent">
+                <img class="urgent2 d-none" src="../assets/icons/urgent2.svg" alt="A picture of urgency - urgent in white">
               </div>
             </div>
             <div id="priority-medium-todo" tabindex="2" class="prioprity-medium pointer center" onclick="setSelectedPriority('medium')">
               <div>Medium</div>
               <div>
-                <img class="medium1" src="../assets/icons/medium.svg" alt="">
-                <img class="medium2 d-none" src="../assets/icons/medium2.svg" alt="">
+                <img class="medium1" src="../assets/icons/medium.svg" alt="A picture of urgency - medium">
+                <img class="medium2 d-none" src="../assets/icons/medium2.svg" alt="A picture of urgency - medium in white">
               </div>
             </div>
             <div id="priority-low-todo" tabindex="3" class="prioprity-low pointer center" onclick="setSelectedPriority('low')">
               <div>Low</div>
               <div>
-                <img class="low1" src="../assets/icons/low.svg" alt="">
-                <img class="low2 d-none" src="../assets/icons/low2.svg" alt="">
+                <img class="low1" src="../assets/icons/low.svg" alt="A picture of urgency - low">
+                <img class="low2 d-none" src="../assets/icons/low2.svg" alt="A picture of urgency - low in white">
               </div>
             </div>
           </div>
@@ -356,10 +356,10 @@ function addTask() {
         <div><span>Subtasks</span><span class="important">*</span></div>
       <div class="subtaskInput">
         <input minlength="1" oninput="addSubtasks()" id="add-subtasks" type="text" placeholder="Add new subtask">
-        <img id="subtask-add" class="input-icon2 pointer" src="../assets/icons/add.svg">
+        <img id="subtask-add" class="input-icon2 pointer" src="../assets/icons/add.svg" alt"A picture of a plus">
       <div class="oninput">
-        <img onclick="cancelSubtask()" id="subtask-cancel" class="input-icon3 d-none pointer center" src="../assets/icons/cancelX.svg">
-        <img onclick="correctSubtask()" id="subtask-correct" class="input-icon4 d-none pointer center" src="../assets/icons/correct.svg">
+        <img onclick="cancelSubtask()" id="subtask-cancel" class="input-icon3 d-none pointer center" src="../assets/icons/cancelX.svg" alt"A picture of a X">
+        <img onclick="correctSubtask()" id="subtask-correct" class="input-icon4 d-none pointer center" src="../assets/icons/correct.svg" alt"A picture of a hook">
       </div>
     </div>
         </div>
@@ -376,12 +376,12 @@ function addTask() {
       <div class="clear-and-create-task center">
         <button onclick="closeAddTodo()" class="clear pointer center">
           <span>Clear</span>
-          <img class="cancel1" src="../assets/icons/cancel.svg" alt="">
-          <img class="cancel2 d-none" src="../assets/icons/cancel2.svg" alt="">
+          <img class="cancel1" src="../assets/icons/cancel.svg" alt="A picture of an X in black">
+          <img class="cancel2 d-none" src="../assets/icons/cancel2.svg" alt="A picture of an X in blue">
         </button>
         <button type="submit" class="create-task pointer center">
           <span>Create Task</span>
-          <img src="../assets/icons/check.svg" alt="">
+          <img src="../assets/icons/check.svg" alt="A picture of an hook">
         </button>
       </div>
     </div>
@@ -579,8 +579,8 @@ function openTaskInfos(taskId,title,description,category,dueDate,subtasks,priori
   let subtasksHtml = subtasks.map((subtask, index) =>
         `<div class="hover-subtask column pointer" onmouseover="showIcons(${index})" onmouseout="hideIcons(${index})">
     ${subtask}
-    <img id="edit-icon-${index}" onclick="editExistingSubtask(${index}, ${subtask})" src="../assets/icons/edit.svg" style="display:none;">
-    <img id="delete-icon-${index}" onclick="deleteExistingSubtask(${index})" src="../assets/icons/delete.svg" style="display:none;">
+    <img id="edit-icon-${index}" onclick="editExistingSubtask(${index}, ${subtask})" src="../assets/icons/edit.svg" style="display:none;" alt"A picture of a pen">
+    <img id="delete-icon-${index}" onclick="deleteExistingSubtask(${index})" src="../assets/icons/delete.svg" style="display:none;" alt"A picture of a garbage can">
   </div>`
   ).join("");
   let encodedSubtasksHtml = encodeURIComponent(subtasksHtml);
@@ -598,7 +598,7 @@ function openTaskInfos(taskId,title,description,category,dueDate,subtasks,priori
   <div class="whole-task-infos absolute">
   <div class="task-info-top">
   <div class="task-info-category ${categoryClass}">${currentCategory}</div>
-    <div><img onclick="closeTaskInfos()" src="../assets/icons/Close2.svg"></div>
+    <div><img onclick="closeTaskInfos()" src="../assets/icons/Close2.svg" alt"A picture of a X"></div>
   </div>
   <div class="task-info-title">${currentTitle}</div>
   <div class="task-info-description">${currentDescription}</div>
@@ -621,13 +621,13 @@ function openTaskInfos(taskId,title,description,category,dueDate,subtasks,priori
   </div>
   <div class="task-info-delete-edit center absolute">
     <div onclick="deleteTaskInfos('${taskId}')" class="task-info-delete pointer center">
-      <img class="img1" src="../assets/icons/delete2.svg" alt="">
-      <img class="img2 d-none" src="../assets/icons/delete2.png" alt="">
+      <img class="img1" src="../assets/icons/delete2.svg" alt="A picture of a garbage can">
+      <img class="img2 d-none" src="../assets/icons/delete2.png" alt="A picture of a garbage can">
       <span><b>Delete</b></span>
     </div>
     <div onclick="editTaskInfos('${taskId}', '${encodedSubtasksHtml}','${priorityName}', '${priorityImage}')" class="task-info-edit pointer center"> 
-      <img class="img3" src="../assets/icons/edit2.svg" alt="">
-      <img class="img4 d-none" src="../assets/icons/edit2.png" alt="">
+      <img class="img3" src="../assets/icons/edit2.svg" alt="A picture of a pen">
+      <img class="img4 d-none" src="../assets/icons/edit2.png" alt="A picture of a pen">
       <span><b>Edit</b></span>
     </div>
   </div>
@@ -656,8 +656,8 @@ function editExistingSubtask(index, subtask) {
   let editableSubtaskHtml = `
     <div>
       <input id="input-subtask-${index}" class="subtask-input" type="text" value="${subtask}">
-      <img id="save-icon-${index}" onclick="saveEditedSubtask()" src="../assets/icons/correct.svg" style="display:inline;"/>
-      <img id="cancel-icon-${index}" onclick="cancelEditSubtask()" src="../assets/icons/delete.svg" style="display:inline;"/>
+      <img id="save-icon-${index}" onclick="saveEditedSubtask()" src="../assets/icons/correct.svg" alt"A picture of a hook" style="display:inline;"/>
+      <img id="cancel-icon-${index}" onclick="cancelEditSubtask()" src="../assets/icons/delete.svg" alt"A picture of a garbage can" style="display:inline;"/>
     </div>`;
 
   subtaskElement.innerHTML = editableSubtaskHtml;
@@ -729,22 +729,22 @@ function editTaskInfos(taskId, encodedSubtasksHtml, priorityName, priorityImage)
     <div id="priority-urgent-todo" tabindex="1" class="prioprity-urgent pointer center" onclick="setSelectedPriority('urgent')">
         <div>Urgent</div>
         <div>
-          <img class="urgent1" src="../assets/icons/urgent3.svg" alt="">
-          <img class="urgent2 d-none" src="../assets/icons/urgent2.svg" alt="">
+          <img class="urgent1" src="../assets/icons/urgent3.svg" alt="A picture of an urgency - Urgent">
+          <img class="urgent2 d-none" src="../assets/icons/urgent2.svg" alt="A picture of an urgency - Urgent">
         </div>
       </div>
       <div id="priority-medium-todo" tabindex="2" class="prioprity-medium pointer center" onclick="setSelectedPriority('medium')">
         <div>Medium</div>
         <div>
-          <img class="medium1" src="../assets/icons/medium.svg" alt="">
-          <img class="medium2 d-none" src="../assets/icons/medium2.svg" alt="">
+          <img class="medium1" src="../assets/icons/medium.svg" alt="A picture of an urgency - medium">
+          <img class="medium2 d-none" src="../assets/icons/medium2.svg" alt="A picture of an urgency - medium">
         </div>
       </div>
       <div id="priority-low-todo" tabindex="3" class="prioprity-low pointer center" onclick="setSelectedPriority('low')">
         <div>Low</div>
         <div>
-          <img class="low1" src="../assets/icons/low.svg" alt="">
-          <img class="low2 d-none" src="../assets/icons/low2.svg" alt="">
+          <img class="low1" src="../assets/icons/low.svg" alt="A picture of an urgency - low">
+          <img class="low2 d-none" src="../assets/icons/low2.svg" alt="A picture of an urgency - low">
         </div>
       </div>
     </div>
@@ -757,7 +757,7 @@ function editTaskInfos(taskId, encodedSubtasksHtml, priorityName, priorityImage)
     <div class="save-edited-task-button">
     <button type="submit" class="save-edited-Task pointer center">
       <span>OK</span>
-      <img src="../assets/icons/check.svg" alt="">
+      <img src="../assets/icons/check.svg" alt="A picture of a hook">
     </button>
     </div>
   </form>
@@ -830,7 +830,7 @@ switch (selectedPriority) {
     taskInfoContainer.innerHTML = `
       <div class="task-info-top">
         <div class="task-info-category">${editedCategory}</div>
-        <div><img onclick="closeTaskInfos()" src="../assets/icons/Close2.svg"></div>
+        <div><img onclick="closeTaskInfos()" src="../assets/icons/Close2.svg" alt"A picture of a X"></div>
       </div>
       <div class="task-info-title">${editedTitle}</div>
       <div class="task-info-description">${editedDescription}</div>
@@ -857,13 +857,13 @@ switch (selectedPriority) {
       </div>
       <div class="task-info-delete-edit center absolute">
         <div onclick="deleteTaskInfos('${taskId}')" class="task-info-delete pointer center">
-          <img class="img1" src="../assets/icons/delete2.svg" alt="">
-          <img class="img2 d-none" src="../assets/icons/delete2.png" alt="">
+          <img class="img1" src="../assets/icons/delete2.svg" alt="A picture of a garbage can">
+          <img class="img2 d-none" src="../assets/icons/delete2.png" alt="A picture of a garbage can">
           <span><b>Delete</b></span>
         </div>
         <div onclick="editTaskInfos('${taskId}')" class="task-info-edit pointer center"> 
-          <img class="img3" src="../assets/icons/edit2.svg" alt="">
-          <img class="img4 d-none" src="../assets/icons/edit2.png" alt="">
+          <img class="img3" src="../assets/icons/edit2.svg" alt="A picture of a pen">
+          <img class="img4 d-none" src="../assets/icons/edit2.png" alt="A picture of a pen">
           <span><b>Edit</b></span>
         </div>
       </div>
@@ -894,8 +894,8 @@ function correctSubtask(taskId) {
         <div id="${subtaskId}" class="added-subtask pointer">
           <div> ${input}</div>
           <div class="subtask-both-img d-none">
-            <img onclick="editSubtask('${subtaskId}')" class="subtask-img1" src="../assets/icons/edit.svg">
-            <img onclick="deleteSubtask('${subtaskId}')" class="subtask-img2" src="../assets/icons/delete.svg">
+            <img onclick="editSubtask('${subtaskId}')" class="subtask-img1" src="../assets/icons/edit.svg" alt"A picture of a pen">
+            <img onclick="deleteSubtask('${subtaskId}')" class="subtask-img2" src="../assets/icons/delete.svg" alt"A picture of a garbage can">
           </div>
         </div>
       `;
@@ -1066,8 +1066,8 @@ function correctSubtask() {
         <div id="${subtaskId}" class="added-subtask pointer">
             <div>&bull; ${input}</div>
           <div class="subtask-both-img d-none">
-            <img onclick="editSubtask('${subtaskId}')" class="subtask-img1" src="../assets/icons/edit.svg">
-            <img onclick="deleteSubtask('${subtaskId}')" class="subtask-img2" src="../assets/icons/delete.svg">
+            <img onclick="editSubtask('${subtaskId}')" class="subtask-img1" src="../assets/icons/edit.svg" alt"A picture of a pen">
+            <img onclick="deleteSubtask('${subtaskId}')" class="subtask-img2" src="../assets/icons/delete.svg" alt"A picture of a garbage can">
           </div>
         </div>
       `;
@@ -1095,8 +1095,8 @@ function editSubtask(subtaskId) {
   subtaskElement.innerHTML = `
     <input type="text" id="edit-${subtaskId}" class="edit-input" value="${subtaskContent.trim()}">
     <div>
-      <img onclick="deleteSubtask('${taskId}', '${subtaskId}')" src="../assets/icons/delete.svg">
-      <img onclick="saveEdit('${subtaskId}')" src="../assets/icons/correct.svg">
+      <img onclick="deleteSubtask('${taskId}', '${subtaskId}')" src="../assets/icons/delete.svg" alt"A picture of a garbage can">
+      <img onclick="saveEdit('${subtaskId}')" src="../assets/icons/correct.svg" alt"A picture of a hook">
     </div>
   `;
   document.getElementById(subtaskId).classList.add("border-bottom-blue");
@@ -1112,8 +1112,8 @@ function saveEdit(subtaskId) {
   subtaskElement.innerHTML = `
     <div>&bull; ${updatedText}</div>
     <div class="subtask-both-img d-none">
-      <img onclick="editSubtask('${subtaskId}')" class="subtask-img1" src="../assets/icons/edit.svg">
-      <img onclick="deleteSubtask('${subtaskId}')" class="subtask-img2" src="../assets/icons/delete.svg">
+      <img onclick="editSubtask('${subtaskId}')" class="subtask-img1" src="../assets/icons/edit.svg" alt"A picture of a pen">
+      <img onclick="deleteSubtask('${subtaskId}')" class="subtask-img2" src="../assets/icons/delete.svg" alt"A picture of a garbage can">
     </div>
   `;
   document.getElementById(subtaskId).classList.remove("border-bottom-blue");
