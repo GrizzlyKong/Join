@@ -32,7 +32,7 @@ async function saveTasks() {
 async function loadTasks() {
   const url = `${STORAGE_URL}?key=allTasks&token=${STORAGE_TOKEN}`;
   allTasks = [];
-  
+  console.log(allTasks);
   try {
       const response = await fetch(url);
       const data = await response.json();
@@ -107,7 +107,7 @@ async function fetchAndFilterContacts() {
       return filteredContacts;
   } catch (error) {
       console.error("Error loading contacts:", error);
-      return []; // Return an empty array in case of an error
+      return [];
   }
 }
 
@@ -392,13 +392,12 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
 function findTask() {
   const inputValue = document.getElementById("findTask").value.trim().toLowerCase();
-  console.log(`Searching for: ${inputValue}`); // Debug log
   const allTasks = document.querySelectorAll(".board-task-card");
   let isAnyTaskVisible = false;
 
   allTasks.forEach((container) => {
-      const taskName = container.querySelector(".board-task-card-title").innerText.trim().toLowerCase();
-      console.log(`Task found: ${taskName}`); // Debug log
+      const taskName = container.querySelector(".board-task-card-description").innerText.trim().toLowerCase();
+      console.log(`Task found: ${taskName}`);
 
       if (taskName.includes(inputValue)) {
           container.style.display = "flex";
@@ -409,7 +408,7 @@ function findTask() {
   });
 
   if (!isAnyTaskVisible) {
-      console.log("No tasks match the search."); // Debug log
+      console.log("No tasks match the search.");
   }
 }
 
@@ -739,6 +738,7 @@ function mapContactsForDisplay(contacts) {
 }
 
 function openTaskInfos(taskId, title, description, category, dueDate, subtasks, priorityName, priorityImage) {
+  greyOverlay();
   let task = allTasks.find(task => task.id === taskId);
 
   if (task) {
@@ -1256,6 +1256,7 @@ function correctSubtask(taskId) {
 
 function closeTaskInfos() {
   document.getElementById("all-task-infos").classList.add("d-none");
+  removeGreyOverlay();
 }
 
 function setSelectedPriority(priority) {

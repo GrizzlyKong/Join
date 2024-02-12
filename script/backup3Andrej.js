@@ -392,13 +392,12 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
 function findTask() {
   const inputValue = document.getElementById("findTask").value.trim().toLowerCase();
-  console.log(`Searching for: ${inputValue}`); // Debug log
   const allTasks = document.querySelectorAll(".board-task-card");
   let isAnyTaskVisible = false;
 
   allTasks.forEach((container) => {
-      const taskName = container.querySelector(".board-task-card-title").innerText.trim().toLowerCase();
-      console.log(`Task found: ${taskName}`); // Debug log
+      const taskName = container.querySelector(".board-task-card-description").innerText.trim().toLowerCase();
+      console.log(`Task found: ${taskName}`);
 
       if (taskName.includes(inputValue)) {
           container.style.display = "flex";
@@ -409,7 +408,7 @@ function findTask() {
   });
 
   if (!isAnyTaskVisible) {
-      console.log("No tasks match the search."); // Debug log
+      console.log("No tasks match the search.");
   }
 }
 
