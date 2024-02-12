@@ -14,6 +14,7 @@ async function init() {
   await includeHTML();
   displayLoggedInUser();
   updateHTML();
+  await populateContactsDropdown();
   await loadTasks();
   await renderTasks();
 }
@@ -90,6 +91,25 @@ async function renderTasks() {
   });
 }
 
+async function fetchAndFilterContacts() {
+  try {
+      const loggedInUserName = localStorage.getItem("loggedInUserName");
+      if (!loggedInUserName) {
+          console.error("No logged-in user found. Contacts cannot be loaded.");
+          return [];
+      }
+
+      const contactsData = await getItem(`contacts_${loggedInUserName}`);
+      const parsedContacts = JSON.parse(contactsData) || [];
+      const filteredContacts = parsedContacts.filter(contact => contact.name || contact.email || contact.phone);
+
+      console.log("Fetched Contacts after filtering:", filteredContacts);
+      return filteredContacts;
+  } catch (error) {
+      console.error("Error loading contacts:", error);
+      return []; // Return an empty array in case of an error
+  }
+}
 
 
 function getPriorityImage(priorityName) {
@@ -136,34 +156,39 @@ function calculateSubtaskProgress(subtasks) {
 
 async function populateContactsDropdown() {
   try {
-    const loggedInUserName = localStorage.getItem("loggedInUserName");
+      taskContacts = await fetchAndFilterContacts();
+      if (taskContacts.length === 0) {
+          console.log("No contacts found or an error occurred while fetching contacts.");
+          return;
+      }
 
-    if (!loggedInUserName) {
-      console.error("No logged-in user found. Contacts cannot be loaded.");
-      return;
-    }
+      const contactsContainer = document.getElementById("contactsContainerTask");
+      const selectToAssignInput = document.querySelector(".select-to-assign");
+      const arrowDrop = document.getElementById("arrowDropImage");
+      const selectedContactsContainer = document.getElementById("selectedContactsContainer");
 
-    const contactsData = await getItem(`contacts_${loggedInUserName}`);
-    const parsedContacts = JSON.parse(contactsData) || [];
-    taskContacts = parsedContacts.filter(contact => contact.name || contact.email || contact.phone);
+      if (!selectToAssignInput) {
+          return;
+      }
 
-    console.log("Fetched Contacts after filtering:", taskContacts);
+      selectToAssignInput.removeEventListener("click", toggleContactsVisibility);
+      selectToAssignInput.addEventListener("click", toggleContactsVisibility);
 
-    const contactsContainer = document.getElementById("contactsContainerTask");
-    const selectToAssignInput = document.querySelector(".select-to-assign");
-    const arrowDrop = document.getElementById("arrowDropImage");
-    const selectedContactsContainer = document.getElementById("selectedContactsContainer");
+      if (!contactsContainer || !selectedContactsContainer || !arrowDrop) {
+          console.log("One or more required elements are missing.");
+          return;
+      }
 
-    let contactColors = {};
-
-    selectToAssignInput.addEventListener("click", toggleContactsVisibility);
-    contactsContainer.innerHTML = '';
-    renderContacts(taskContacts, contactsContainer, selectedContactsContainer, contactColors);
+      let contactColors = {};
+      contactsContainer.innerHTML = '';
+      renderContacts(taskContacts, contactsContainer, selectedContactsContainer, contactColors);
 
   } catch (error) {
-    console.error("Error loading contacts:", error);
+      console.error("Error in populateContactsDropdown:", error);
   }
 }
+
+
 
 function toggleContactsVisibility() {
   const contactsContainer = document.getElementById("contactsContainerTask");
@@ -762,8 +787,6 @@ function openTaskInfos(taskId, title, description, category, dueDate, subtasks, 
       </div>
     `;
 
-    // Populate contacts for the task
-    populateContactsPlaceholder(task.contacts);
   } else {
     console.error('Task not found with ID:', taskId);
   }
@@ -915,6 +938,7 @@ function updateContactElementStyle(contactElement, isChecked) {
   contactElement.style.color = isChecked ? "white" : "inherit";
 }
 
+
 function editTaskInfos(taskId, encodedSubtasksHtml, priorityName, priorityImage){
   let taskInfoContainer = document.querySelector(".whole-task-infos");
   let subtasksHtml = decodeURIComponent(encodedSubtasksHtml);
@@ -1022,6 +1046,7 @@ function editTaskInfos(taskId, encodedSubtasksHtml, priorityName, priorityImage)
   renderSelectedContacts('selectedContactsContainer2');
 }
 
+
 function deleteExistingSubtask(index) {
   // Löscht eine bestehende Subtask
   let subtaskElement = document.getElementById(`editable-subtask-${index}`);
@@ -1029,6 +1054,7 @@ function deleteExistingSubtask(index) {
     subtaskElement.remove();
   }
 }
+
 
 function saveEditedTaskInfo(taskId) {
   // Extrahiert die bearbeiteten Werte
