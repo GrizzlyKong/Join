@@ -32,7 +32,7 @@ async function saveTasks() {
 async function loadTasks() {
   const url = `${STORAGE_URL}?key=allTasks&token=${STORAGE_TOKEN}`;
   allTasks = [];
-  
+  console.log(allTasks);
   try {
       const response = await fetch(url);
       const data = await response.json();
@@ -107,7 +107,7 @@ async function fetchAndFilterContacts() {
       return filteredContacts;
   } catch (error) {
       console.error("Error loading contacts:", error);
-      return []; // Return an empty array in case of an error
+      return [];
   }
 }
 
@@ -738,6 +738,7 @@ function mapContactsForDisplay(contacts) {
 }
 
 function openTaskInfos(taskId, title, description, category, dueDate, subtasks, priorityName, priorityImage) {
+  greyOverlay();
   let task = allTasks.find(task => task.id === taskId);
 
   if (task) {
@@ -870,26 +871,23 @@ function hideIcons(index) {
 async function deleteTaskInfos(taskId) {
   console.log("Attempting to delete task with ID:", taskId);
   
-  // Find and remove the task from the allTasks array
   const taskIndex = allTasks.findIndex(task => task.id === taskId);
   if (taskIndex > -1) {
-    allTasks.splice(taskIndex, 1); // Remove the task from the array
+    allTasks.splice(taskIndex, 1);
     console.log(`Task ${taskId} removed successfully from allTasks.`);
   } else {
     console.error(`Task ${taskId} not found in allTasks.`);
-    return; // Exit the function if the task is not found
+    return;
   }
 
-  // Attempt to save the updated tasks array to the server
   try {
-    await saveTasks(); // Save the updated array to the server
+    await saveTasks();
     console.log('Updated tasks saved successfully to server.');
   } catch (error) {
     console.error('Error saving updated tasks to server:', error);
-    return; // Exit the function if saving to the server fails
+    return;
   }
 
-  // Remove the task element from the DOM if it exists
   let taskElement = document.getElementById(taskId);
   if (taskElement) {
     taskElement.remove();
@@ -897,14 +895,13 @@ async function deleteTaskInfos(taskId) {
     console.error(`DOM element for task ${taskId} not found.`);
   }
 
-  // Hide the task details UI if it's visible
   let wholeTaskInfos = document.querySelector(".whole-task-infos");
   if (wholeTaskInfos) {
     wholeTaskInfos.classList.add("d-none");
   }
 
-  // Update UI elements to reflect the deletion
   updateNoTaskDivs();
+  removeGreyOverlay();
 }
 
 
@@ -1204,6 +1201,7 @@ switch (selectedPriority) {
       </div>
     `;
   }
+  removeGreyOverlay();
   openTaskInfos(
     taskId,
     editedTitle, // oder title, falls Sie den ursprünglichen Titel behalten
@@ -1255,6 +1253,7 @@ function correctSubtask(taskId) {
 
 function closeTaskInfos() {
   document.getElementById("all-task-infos").classList.add("d-none");
+  removeGreyOverlay();
 }
 
 function setSelectedPriority(priority) {
