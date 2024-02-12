@@ -852,16 +852,46 @@ function hideIcons(index) {
   document.getElementById(`delete-icon-${index}`).style.display = "none";
 }
 
-function deleteTaskInfos(taskId) {
-  console.log("Löschversuch für Task mit ID:", taskId);
+async function deleteTaskInfos(taskId) {
+  console.log("Attempting to delete task with ID:", taskId);
+  
+  // Find and remove the task from the allTasks array
+  const taskIndex = allTasks.findIndex(task => task.id === taskId);
+  if (taskIndex > -1) {
+    allTasks.splice(taskIndex, 1); // Remove the task from the array
+    console.log(`Task ${taskId} removed successfully from allTasks.`);
+  } else {
+    console.error(`Task ${taskId} not found in allTasks.`);
+    return; // Exit the function if the task is not found
+  }
+
+  // Attempt to save the updated tasks array to the server
+  try {
+    await saveTasks(); // Save the updated array to the server
+    console.log('Updated tasks saved successfully to server.');
+  } catch (error) {
+    console.error('Error saving updated tasks to server:', error);
+    return; // Exit the function if saving to the server fails
+  }
+
+  // Remove the task element from the DOM if it exists
   let taskElement = document.getElementById(taskId);
   if (taskElement) {
-    taskElement.remove(); // Entfernt das Element aus dem DOM
+    taskElement.remove();
+  } else {
+    console.error(`DOM element for task ${taskId} not found.`);
   }
+
+  // Hide the task details UI if it's visible
   let wholeTaskInfos = document.querySelector(".whole-task-infos");
-  wholeTaskInfos.classList.add("d-none");
+  if (wholeTaskInfos) {
+    wholeTaskInfos.classList.add("d-none");
+  }
+
+  // Update UI elements to reflect the deletion
   updateNoTaskDivs();
 }
+
 
 function renderSelectedContacts(containerId) {
   const container = document.getElementById(containerId);
