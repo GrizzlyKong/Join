@@ -225,22 +225,38 @@ async function includeHTML() {
   }
 }
 
+document.addEventListener('DOMContentLoaded', (event) => {
+  const searchInput = document.getElementById('findTask');
+  if(searchInput) {
+      searchInput.addEventListener('input', findTask);
+  }
+});
+
+
 function findTask() {
-  const inputValue = document.getElementById("findTask").value.toLowerCase();
+  const inputValue = document.getElementById("findTask").value.trim().toLowerCase();
+  console.log(`Searching for: ${inputValue}`); // Debug log
   const allTasks = document.querySelectorAll(".board-task-card");
+  let isAnyTaskVisible = false;
 
   allTasks.forEach((container) => {
-    const taskName = container
-      .querySelector(".board-task-card-title")
-      .innerText.toLowerCase();
+      const taskName = container.querySelector(".board-task-card-title").innerText.trim().toLowerCase();
+      console.log(`Task found: ${taskName}`); // Debug log
 
-    if (taskName.includes(inputValue)) {
-      container.style.display = "flex";
-    } else {
-      container.style.display = "none";
-    }
+      if (taskName.includes(inputValue)) {
+          container.style.display = "flex";
+          isAnyTaskVisible = true;
+      } else {
+          container.style.display = "none";
+      }
   });
+
+  if (!isAnyTaskVisible) {
+      console.log("No tasks match the search."); // Debug log
+  }
 }
+
+
 
 function displayAssignedContacts() {
   const loggedInUserName = localStorage.getItem("loggedInUserName");
