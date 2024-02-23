@@ -1,6 +1,7 @@
 body {
   /*   overflow-y: hidden; */
   overflow-x: hidden;
+
 }
 
 .noHover {
@@ -738,14 +739,14 @@ body {
 }
 
 .whole-task-infos {
-  width: 400px;
+  min-width: 400px;
   padding-left: 25px;
   padding-right: 25px;
   padding-top: 35px;
   padding-bottom: 35px;
   z-index: 999;
   min-height: 200px;
-  overflow-y: scroll;
+
   border-radius: 30px;
   background-color: #ffffff;
   top: 40%;
