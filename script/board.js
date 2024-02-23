@@ -722,12 +722,6 @@ async function addTodo() {
   removeGreyOverlay();
 }
 
-function generateUniqueTaskId() {
-  const timestamp = new Date().getTime();
-  const randomComponent = Math.floor(Math.random() * 1000);
-  return `task-${timestamp}-${randomComponent}`;
-}
-
 
 function updateProgressBar(taskId, totalSubtasks) {
   const maxSubtasks = 2; // Maximale Anzahl der Subtasks
