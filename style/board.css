@@ -745,7 +745,6 @@ body {
   padding-bottom: 35px;
   z-index: 999;
   min-height: 200px;
-  overflow-y: scroll;
   border-radius: 30px;
   background-color: #ffffff;
 }
