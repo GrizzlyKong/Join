@@ -198,7 +198,6 @@ body {
 /* Task-Card */
 .position-relative {
   position: relative;
-
 }
 .open {
 }
@@ -746,12 +745,9 @@ body {
   padding-bottom: 35px;
   z-index: 999;
   min-height: 200px;
-
+  overflow-y: scroll;
   border-radius: 30px;
   background-color: #ffffff;
-  top: 40%;
-  left: 30%;
-  transform: translate(-50%, -50%);
 }
 
 .task-info-top {
@@ -1231,9 +1227,9 @@ body {
 }
 
 #selectedContactsContainer2 {
-  position: absolute;
-  bottom: 12.5vh;
-  left: 2%;
+  position: relative;
+  bottom: 2vh;
+  right: 4%;
   z-index: 10;
   display: none;
   margin-top: 16px;
@@ -1245,7 +1241,7 @@ body {
   transition: all 0.2s ease-in-out;
   width: 424px;
   background-color: white;
-  max-height: 82px;
+  max-height: 120px;
   overflow-y: scroll;
 }
 
