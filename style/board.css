@@ -737,7 +737,8 @@ body {
 }
 
 .whole-task-infos {
-  top: 50%;
+  position: fixed;
+  top: 25%;
   left: 50%;
   width: 400px;
   padding-left: 25px;
@@ -750,7 +751,6 @@ body {
   overflow-y: scroll;
   border-radius: 30px;
   background-color: #ffffff;
-  transform: translate(-50%, -50%);
 }
 
 .task-info-top {
