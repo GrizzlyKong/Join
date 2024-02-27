@@ -214,10 +214,6 @@ body {
   align-items: flex-start;
 }
 
-.drag-area-highlight {
-  background-color: rgba(0, 0, 0, 0.2);
-}
-
 .todo {
   background-color: white;
   border: 1px solid black;
@@ -738,6 +734,9 @@ body {
 }
 
 .whole-task-infos {
+  position: fixed;
+  left: 50%;
+  bottom: 3%;
   min-width: 400px;
   padding-left: 25px;
   padding-right: 25px;
@@ -966,10 +965,20 @@ body {
 }
 
 .hover-subtask {
+  display: flex;
+  margin-top: 24px;
+  margin-bottom: 24px;
+  max-width: 440px;
+  font-size: 24px;
+  justify-content: space-between;
 }
 
 .hover-subtask:hover {
   background-color: #d1d1d1;
+}
+
+.edit-subtask-images {
+display: flex;
 }
 
 .add-input-Subtasks {
