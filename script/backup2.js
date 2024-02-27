@@ -12,7 +12,6 @@ async function init() {
   await includeHTML();
   displayLoggedInUser();
   updateHTML();
-  AddPriorities();
   populateContactsDropdown();
 }
 
