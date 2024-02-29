@@ -578,7 +578,7 @@ function addTask() {
 function greyOverlay() {
   const overlay = document.createElement('div');
   overlay.className = 'overlay';
-  overlay.style.zIndex = '5';
+  overlay.style.zIndex = '7';
   document.body.appendChild(overlay);
   document.body.classList.add('no-scroll');
 }
@@ -761,27 +761,23 @@ function mapContactsForDisplay(contacts) {
 function openTaskInfos(taskId, title, description, category, dueDate, subtasks, priorityName, priorityImage) {
   let task = allTasks.find(task => task.id === taskId);
   currentEditingTaskId = taskId;
+
   if (task) {
     let priorityHtml = `
       <div class="task-info-priority-name">${priorityName}</div>
       <img src="${priorityImage}" class="task-info-priority-image">
     `;
 
-    let allTaskInfos = document.getElementById("all-task-infos");
-    allTaskInfos.classList.remove("d-none");
- 
-    let categoryClass = "";
-    if (category === "Technical Task") {
-      categoryClass = "category-technical";
-    } else if (category === "User Story") {
-      categoryClass = "category-user-story";
-    }
-
-    let subtasksHtml = subtasks.map((subtask, index) =>
+    let subtasksHtml = task.subtasks.map((subtask, index) =>
       `<div class="column">
         ${subtask}
       </div>`
     ).join("");
+
+    let allTaskInfos = document.getElementById("all-task-infos");
+    allTaskInfos.classList.remove("d-none");
+
+    let categoryClass = getCategoryClass(category);
 
     allTaskInfos.innerHTML = `
       <div class="whole-task-infos">
@@ -809,18 +805,17 @@ function openTaskInfos(taskId, title, description, category, dueDate, subtasks, 
             <img class="img1" src="../assets/icons/delete2.svg" alt="">
             <span><b>Delete</b></span>
           </div>
-          <div onclick="editTaskInfos('${taskId}', '${encodeURIComponent(JSON.stringify(subtasks))}', '${priorityName}', '${priorityImage}')" class="task-info-edit pointer center"> 
+          <div onclick="editTaskInfos('${taskId}', '${encodeURIComponent(JSON.stringify(subtasks))}', '${priorityName}', '${priorityImage}')" class="task-info-edit pointer center">
             <img class="img3" src="../assets/icons/edit2.svg" alt="">
             <span><b>Edit</b></span>
           </div>
         </div>
       </div>
     `;
-  } else {
-    console.error('Task not found with ID:', taskId);
-  }
-  greyOverlay();
+    greyOverlay();
+  } 
 }
+
 
 
 function populateContactsPlaceholder(contacts) {
@@ -988,7 +983,7 @@ function editTaskInfos(taskId, encodedSubtasksJson, priorityName, priorityImage)
   let description = taskInfoContainer.querySelector(".task-info-description").textContent;
   let category = taskInfoContainer.querySelector(".task-info-category").textContent;
   let dueDate = taskInfoContainer.querySelector(".task-info-due-date .variable").textContent;
-
+  console.log(subtasks);
   let subtasksHtml = subtasks.map((subtask, index) =>
     `<div id="hoverSubtask" class="hover-subtask pointer" onmouseover="showIcons(${index})" onmouseout="hideIcons(${index})">
       ${subtask}
@@ -1088,7 +1083,6 @@ function editTaskInfos(taskId, encodedSubtasksJson, priorityName, priorityImage)
       arrowDropImage2.style.transform = "rotate(0deg)";
     }
   });
-  greyOverlay();
   renderSelectedContacts('selectedContactsContainer2');
 }
 
@@ -1159,10 +1153,6 @@ function editExistingSubtask(index, subtask) {
 }
 
 
-
-
-
-
 function showIcons(index) {
   document.getElementById(`edit-icon-${index}`).style.display = "flex";
   document.getElementById(`delete-icon-${index}`).style.display = "flex";
@@ -1212,6 +1202,18 @@ async function saveEditedTaskInfo(taskId) {
     task.dueDate = editedDueDate;
     task.priority = priorityName;
     task.priorityImage = priorityImage;
+
+
+    const editedSubtasksDiv = document.getElementById('edited-subtasks');
+    const subtaskElements = editedSubtasksDiv.getElementsByClassName('hover-subtask');
+    let updatedSubtasks = [];
+    for (const element of subtaskElements) {
+      updatedSubtasks.push(element.textContent.trim());
+    }
+
+    // Update the task.subtasks array with the new values
+    task.subtasks = updatedSubtasks;
+
 
     let subtasksHtml = task.subtasks.map((subtask, index) =>
     `<div class="hover-subtask column pointer">
@@ -1311,7 +1313,6 @@ async function saveEditedTaskInfo(taskId) {
   } catch (error) {
     console.error("Failed to save task updates:", error);
   }
-
   removeGreyOverlay();
   openTaskInfos(
     taskId,
@@ -1319,6 +1320,7 @@ async function saveEditedTaskInfo(taskId) {
     editedDescription,
     editedCategory,
     editedDueDate,
+    task.subtasks, // Corrected to pass updated subtasks
     priorityName,
     priorityImage
   );
