@@ -844,7 +844,6 @@ function openTaskInfos(taskId, title, description, category, dueDate, subtasks, 
 }
 
 
-
 function populateContactsPlaceholder(contacts) {
   let selectedContactsPlaceholder = document.getElementById("selectedContactsPlaceholder");
   selectedContactsPlaceholder.innerHTML = contacts.map(contact => {
@@ -1238,7 +1237,6 @@ async function saveEditedTaskInfo(taskId) {
       updatedSubtasks.push(element.textContent.trim());
     }
 
-    // Update the task.subtasks array with the new values
     task.subtasks = updatedSubtasks;
 
 
@@ -1347,7 +1345,7 @@ async function saveEditedTaskInfo(taskId) {
     editedDescription,
     editedCategory,
     editedDueDate,
-    task.subtasks, // Corrected to pass updated subtasks
+    task.subtasks,
     priorityName,
     priorityImage
   );
