@@ -18,35 +18,62 @@ async function init() {
   await populateContactsDropdown();
   await loadTasks();
   await renderTasks();
+  updateNoTaskDivs();
+}
+
+
+function guestUsesLocalStorage() {
+  const loggedInUserName = localStorage.getItem('loggedInUserName');
+  return !loggedInUserName;
 }
 
 
 async function saveTasks() {
-  try {
-    await setItem('allTasks', JSON.stringify(allTasks));
-    console.log('Tasks saved successfully to server');
-  } catch (error) {
-    console.error('Error saving tasks to server:', error);
+  if (guestUsesLocalStorage()) {
+    try {
+      localStorage.setItem('allTasks', JSON.stringify(allTasks));
+      console.log('Tasks saved successfully to localStorage');
+    } catch (error) {
+      console.error('Error saving tasks to localStorage:', error);
+    }
+  } else {
+    try {
+      await setItem('allTasks', JSON.stringify(allTasks));
+      console.log('Tasks saved successfully to server');
+    } catch (error) {
+      console.error('Error saving tasks to server:', error);
+    }
   }
 }
 
 
 async function loadTasks() {
-  const url = `${STORAGE_URL}?key=allTasks&token=${STORAGE_TOKEN}`;
   allTasks = [];
-  console.log(allTasks);
-  try {
+  if (guestUsesLocalStorage()) {
+    try {
+      const tasks = localStorage.getItem('allTasks');
+      allTasks = tasks ? JSON.parse(tasks) : [];
+      console.log('Tasks loaded successfully from localStorage');
+    } catch (error) {
+      console.error('Error loading tasks from localStorage:', error);
+    }
+  } else {
+    const url = `${STORAGE_URL}?key=allTasks&token=${STORAGE_TOKEN}`;
+    console.log(allTasks);
+    try {
       const response = await fetch(url);
       const data = await response.json();
       if (data && data.data.value) {
-          allTasks = JSON.parse(data.data.value);
+        allTasks = JSON.parse(data.data.value);
       } else {
-          console.log('No tasks found or empty dataset returned from server.');
+        console.log('No tasks found or empty dataset returned from server.');
       }
-  } catch (error) {
+    } catch (error) {
       console.error('Error fetching tasks:', error);
+    }
   }
 }
+
 
 
 async function renderTasks() {

@@ -1,7 +1,6 @@
 body {
   /*   overflow-y: hidden; */
   overflow-x: hidden;
-
 }
 
 .noHover {
@@ -336,7 +335,12 @@ body {
 
 .board-task-card-priority img {
   width: 24px;
-  height: 10px;
+  height: 24px;
+}
+
+.task-info-priority-image {
+  width: 24px;
+  height: 24px;
 }
 
 .add-tasks-whole-div {
@@ -978,7 +982,7 @@ body {
 }
 
 .edit-subtask-images {
-display: flex;
+  display: flex;
 }
 
 .add-input-Subtasks {
@@ -1283,7 +1287,17 @@ display: flex;
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-right: -10px; /* Overlap effect */
+  margin-right: -10px;
   position: relative;
-  z-index: 1; /* Make sure this is correctly stacked */
+  z-index: 1;
 }
+
+/*
+#todo,
+#inprogress,
+#awaitingfeedback,
+#done {
+  position: relative;
+  top: 13px;
+}
+*/
