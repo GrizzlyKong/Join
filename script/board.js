@@ -886,7 +886,7 @@ async function deleteTaskInfos(taskId) {
   console.log("Received task ID to delete:", taskId);
   
   const taskIndex = allTasks.findIndex(task => task.id === taskId);
-  console.log("Task IDs before deletion:", allTasks.map(task => task.id)); // Debugging output
+  console.log("Task IDs before deletion:", allTasks.map(task => task.id));
   if (taskIndex > -1) {
     allTasks.splice(taskIndex, 1);
     console.log(`Task ${taskId} removed successfully from allTasks.`);
@@ -894,7 +894,7 @@ async function deleteTaskInfos(taskId) {
     console.error(`Task ${taskId} not found in allTasks.`);
     return;
   }
-  console.log("Task IDs after deletion:", allTasks.map(task => task.id)); // Debugging output
+  console.log("Task IDs after deletion:", allTasks.map(task => task.id));
 
   try {
     await saveTasks();
@@ -1192,10 +1192,14 @@ function hideIcons(index) {
 
 
 function deleteExistingSubtask(index) {
-  // Löscht eine bestehende Subtask
-  let subtaskElement = document.getElementById(`editable-subtask-${index}`);
-  if (subtaskElement) {
-    subtaskElement.remove();
+  let editedSubtasksDiv = document.getElementById('edited-subtasks');
+  let subtasks = editedSubtasksDiv.querySelectorAll('.hover-subtask');
+
+  if (subtasks.length > index && index >= 0) {
+    let subtaskToRemove = subtasks[index];
+    subtaskToRemove.remove();
+  } else {
+    console.error(`Subtask element with index ${index} not found.`);
   }
 }
 
@@ -1347,6 +1351,7 @@ async function saveEditedTaskInfo(taskId) {
     editedDueDate,
     task.subtasks,
     priorityName,
+    contactsIconHtml,
     priorityImage
   );
 }

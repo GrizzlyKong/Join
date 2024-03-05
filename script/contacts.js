@@ -13,25 +13,36 @@ async function init() {
 }
 
 
+async function loadContacts() {
+  try {
+    const loggedInUserName = localStorage.getItem("loggedInUserName");
+    if (!loggedInUserName) {
+      console.error("No logged-in user found. Contacts cannot be loaded.");
+      return;
+    }
+
+    contacts = JSON.parse(await getItem(`contacts_${loggedInUserName}`)) || [];
+  } catch (e) {
+    console.error("Loading error:", e);
+  }
+}
+
+
 function displayContactsFromLocalStorage() {
   const loggedInUserName = localStorage.getItem("loggedInUserName");
 
   if (!loggedInUserName) {
     displayGuestContacts();
   } else {
-    try {
-      loadAndDisplayUserContacts();
-    } catch (error) {
-      handleDisplayError(error);
-    }
-  }
+    loadContacts();
+    displayUserContacts();
+    } 
 }
 
 
 function displayGuestContacts() {
   const guestContactsKey = "guestContacts";
   const guestContacts = JSON.parse(localStorage.getItem(guestContactsKey)) || [];
-
   guestContacts.forEach(displayGuestContact);
 }
 
@@ -41,31 +52,6 @@ function displayGuestContact(contact) {
   const initialLetter = name.charAt(0).toUpperCase();
   const newContactElement = createContactElement(name, email, initialLetter, phone, color);
   insertContactElement(newContactElement, initialLetter);
-}
-
-
-function loadAndDisplayUserContacts() {
-  loadContacts();
-  displayUserContacts();
-}
-
-
-function handleDisplayError(error) {
-  console.error("Error displaying contacts:", error);
-}
-
-
-async function loadContacts() {
-  try {
-    const loggedInUserName = localStorage.getItem("loggedInUserName");
-    if (!loggedInUserName) {
-      return;
-    }
-
-    contacts = JSON.parse(await getItem(`contacts_${loggedInUserName}`)) || [];
-  } catch (e) {
-    console.error("Loading error:", e);
-  }
 }
 
 
@@ -90,9 +76,7 @@ function addNewContact() {
   updateElementClass("add-new-contact", "sign-up-animation", "add");
   updateElementClass("add-new-contact", "d-none", "remove");
   greyOverlay ();
-
   newContact.innerHTML = generateNewContactHTML();
-
   const newContactElement = createNewContactElement();
   newContactElement.onclick = showContact;
 }
@@ -118,47 +102,47 @@ function updateElementClass(elementId, className, action) {
 
 
 function generateNewContactHTML() {
-  return `
+  return /* HTML */ `
     <div id="add-new-contact-id" class="addNewContactDiv">
       <div class ="left-side-add-contact column">
         <div class="items-right">
-        <div><img src="../assets/icons/logo.svg" alt"Join Logo"></div>
+        <div><img src="../assets/icons/logo.svg"></div>
         <h1>Add contact</h1>
         <span>Tasks are better with a team!</span>
         <div class="line"></div>
       </div>
       </div>
       <div class = "right-side-add-contact">
-        <div class="close-div"><img onclick="closeAddContact()" class="close pointer" src="../assets/icons/close.svg" alt"A picture of a X"></div>
+        <div class="close-div"><img onclick="closeAddContact()" class="close pointer" src="../assets/icons/close.svg"></div>
         <div class = "account center">
-          <div class="adding-contact-icon"><img src="../assets/icons/person.png" alt"A picture of a person"></div>
+          <div class="adding-contact-icon"><img src="../assets/icons/person.png"></div>
         </div>
         <div>
           <form onsubmit="addingContact(); return false;">
             <div class="form-contacs">
               <div class="center">
                 <input id="contactNameInput" class="log-in-field column center pointer" required type="text" placeholder="Name">
-                <img class="log-in-mail-lock-icon" src="../assets/icons/person-small.png" alt"A picture of a person">
+                <img class="log-in-mail-lock-icon" src="../assets/icons/person-small.png">
               </div>
               <div class="center">
                 <input id="contactEmailInput" class="log-in-field column center pointer" required type="email" placeholder="Email">
-                <img class="log-in-mail-lock-icon" src="../assets/icons/mail.png" alt"A picture of a mail icon">
+                <img class="log-in-mail-lock-icon" src="../assets/icons/mail.png">
               </div>
               <div class="center">
                 <input id="contactPhoneInput" class="log-in-field column center pointer" required type="number" placeholder="Phone">
-                <img class="log-in-mail-lock-icon" src="../assets/icons/call.png" alt"A picture of a phone">
+                <img class="log-in-mail-lock-icon" src="../assets/icons/call.png">
               </div>
             </div>
             <div class="right-bottom">
               <div class="clear-and-create-task">
                 <div class="clear pointer center" onclick="clearInputAddingContact()">
                   <span>Clear</span>
-                  <img class="cancel1" src="../assets/icons/cancel.svg" alt="A picture of a X">
-                  <img class="cancel2 d-none" src="../assets/icons/cancel2.svg" alt="A picture of a X">
+                  <img class="cancel1" src="../assets/icons/cancel.svg" alt="">
+                  <img class="cancel2 d-none" src="../assets/icons/cancel2.svg" alt="">
                 </div>
                 <button class="create-task pointer center">
                   <span>Create contact</span>
-                  <img src="../assets/icons/check.svg" alt="A picture of a hook">
+                  <img src="../assets/icons/check.svg" alt="">
                 </button>
               </div>
             </div>
@@ -201,48 +185,32 @@ async function addingContact() {
   const { name, email, phone } = getInputValues();
   const initialLetter = getInitialLetter(name);
   const newContactElement = createNewContactElement(name, email, initialLetter);
-
   insertNewContactElement(newContactElement);
   updateLetterContacts(initialLetter);
   clearInputAddingContact();
-
   const loggedInUserName = localStorage.getItem("loggedInUserName");
   if (!loggedInUserName) {
-    handleGuestUserContact({ name, email, phone });
+    const guestContactsKey = "guestContacts";
+    let guestContacts = JSON.parse(localStorage.getItem(guestContactsKey)) || [];
+    const newContact = { name, email, phone, color: getRandomColor() };
+    guestContacts.push(newContact);
+    localStorage.setItem(guestContactsKey, JSON.stringify(guestContacts));
   } else {
-    await handleLoggedInUserContact({ name, email, phone, loggedInUserName });
+    try {
+      const contactsKey = `contacts_${loggedInUserName}`;
+      let contacts = JSON.parse(await getItem(contactsKey)) || [];
+      const newContact = { name, email, phone, color: getRandomColor() };
+      contacts.push(newContact);
+      await setItem(contactsKey, JSON.stringify(contacts));
+    } catch (error) {
+      console.error("Error saving contact to the server:", error);
+    }
   }
-
   closeAddContact();
   successfullyCreatedContact();
   reloadPage();
 }
 
-
-function handleGuestUserContact({ name, email, phone }) {
-  const guestContactsKey = "guestContacts";
-  let guestContacts = JSON.parse(localStorage.getItem(guestContactsKey)) || [];
-
-  const newContact = { name, email, phone, color: getRandomColor() };
-  guestContacts.push(newContact);
-
-  localStorage.setItem(guestContactsKey, JSON.stringify(guestContacts));
-}
-
-
-async function handleLoggedInUserContact({ name, email, phone, loggedInUserName }) {
-  try {
-    const contactsKey = `contacts_${loggedInUserName}`;
-    let contacts = JSON.parse(await getItem(contactsKey)) || [];
-
-    const newContact = { name, email, phone, color: getRandomColor() };
-    contacts.push(newContact);
-
-    await setItem(contactsKey, JSON.stringify(contacts));
-  } catch (error) {
-    console.error("Error saving contact to the server:", error);
-  }
-}
 
 
 function getInputValues() {
@@ -431,49 +399,22 @@ async function displayUserContacts() {
   if (!loggedInUserName) {
     return;
   }
-
-  try {
     const response = await fetch(`${STORAGE_URL}?user=${loggedInUserName}&token=${STORAGE_TOKEN}&key=contacts_${loggedInUserName}`);
     const responseText = await response.text();
-
-    console.log("Server response status:", response.status);
-
     if (response.ok) {
-      try {
         const serverResponse = JSON.parse(responseText);
-
         if (serverResponse && serverResponse.status === "success" && serverResponse.data && serverResponse.data.value) {
           const savedContacts = JSON.parse(serverResponse.data.value);
-
           if (Array.isArray(savedContacts)) {
             savedContacts.forEach((contact) => {
               const { name, email, phone, color } = contact;
-
-              // Skip contacts with empty names, emails, and phones
               if (name.trim() !== "" || email.trim() !== "" || phone.trim() !== "") {
                 const initialLetter = name.charAt(0).toUpperCase();
                 const newContactElement = createContactElement(name, email, initialLetter, phone, color);
                 insertContactElement(newContactElement, initialLetter);
               }
             });
-          } else {
-            console.error("Invalid contacts format received from the server. Expected an array.");
-          }
-        } else {
-          console.error("Invalid server response. Missing 'status' or 'data' properties.");
-          console.error("Server response:", serverResponse);
-        }
-      } catch (error) {
-        console.error("Error parsing JSON:", error);
-        console.error("Invalid contacts format received from the server.");
-      }
-    } else {
-      console.error("Invalid server response:", response.status);
-    }
-  } catch (error) {
-    console.error("Error fetching contacts from the server:", error);
-  }
-}
+          }}}}
 
 
 
@@ -510,20 +451,11 @@ function generateContactElementHTML(name, email, initialLetter, color) {
 
 function insertContactElement(newContactElement, initialLetter) {
   const contactsMenu = document.getElementById("contactsMenu");
-  if (!contactsMenu) {
-    return;
-  }
-
   const letterContacts = Array.from(contactsMenu.getElementsByClassName("letter-contacts"));
   let letterGroup = getOrCreateLetterGroup(letterContacts, initialLetter);
 
-  if (letterGroup) { // Ensure letterGroup is not null
-    letterGroup.appendChild(newContactElement);
-  } else {
-    console.error(`Failed to find or create letter group for initial letter: ${initialLetter}`);
-  }
+  letterGroup.appendChild(newContactElement);
 }
-
 
 
 function getOrCreateLetterGroup(letterContacts, initialLetter) {
@@ -563,17 +495,13 @@ async function deleteContact() {
   const contactInfoDiv = document.getElementById("contact-info");
   const contactName = getContactName();
   const contactsLayout = document.getElementById("contactsLayout");
-
-  // Remove contact from UI
   const contactToDelete = findContactToDelete(contactsLayout, contactName);
   removeContactFromLayout(contactsLayout, contactToDelete);
 
-  // If logged in, delete contact from the server
   const loggedInUserName = getLoggedInUserName();
   if (loggedInUserName) {
     await deleteContactFromServer(contactName);
   } else {
-    // If not logged in, delete contact from local storage
     const guestContactsKey = "guestContacts";
     const guestContacts = JSON.parse(localStorage.getItem(guestContactsKey)) || [];
     const guestContactIndex = guestContacts.findIndex(contact => contact.name === contactName);
@@ -583,11 +511,9 @@ async function deleteContact() {
       localStorage.setItem(guestContactsKey, JSON.stringify(guestContacts));
     }
   }
-
   hideContactInfo(contactInfoDiv);
   reloadPage();
 }
-
 
 
 
@@ -611,9 +537,7 @@ function removeContactFromLayout(contactsLayout, contactToDelete) {
 
 async function deleteContactFromServer(contactName) {
   const loggedInUserName = getLoggedInUserName();
-
   if (!loggedInUserName) {
-    logError("No logged-in user found. Contact cannot be deleted from the server.");
     return;
   }
 
@@ -622,8 +546,6 @@ async function deleteContactFromServer(contactName) {
   try {
     const contactsData = await getItem(key);
     const contacts = JSON.parse(contactsData);
-
-    // Find the index of the contact to delete
     const contactIndex = contacts.findIndex(contact => contact.name === contactName);
 
     if (contactIndex !== -1) {
@@ -685,8 +607,6 @@ function reloadPage() {
 
 async function editContact() {
   const contactName = document.querySelector(".contact-info-name").innerText;
-
-  // If logged in, fetch contacts from the server
   const loggedInUserName = localStorage.getItem("loggedInUserName");
   if (loggedInUserName) {
     const key = `contacts_${loggedInUserName}`;
@@ -694,20 +614,17 @@ async function editContact() {
     try {
       const contactsData = await getItem(key);
       const existingContacts = JSON.parse(contactsData) || [];
-
       const contactToEdit = existingContacts.find(contact => contact.name === contactName);
 
       if (!contactToEdit) {
         console.error("Contact not found on the server.");
         return;
       }
-
       openEditContactForm(contactToEdit, existingContacts.indexOf(contactToEdit));
     } catch (error) {
       console.error("Error fetching contacts from the server:", error);
     }
   } else {
-    // If not logged in, fetch contacts from local storage
     const guestContactsKey = "guestContacts";
     const guestContacts = JSON.parse(localStorage.getItem(guestContactsKey)) || [];
     const guestContactToEdit = guestContacts.find(contact => contact.name === contactName);
@@ -716,7 +633,6 @@ async function editContact() {
       console.error("Contact not found in local storage.");
       return;
     }
-
     openEditContactForm(guestContactToEdit, guestContacts.indexOf(guestContactToEdit));
   }
 }
@@ -733,28 +649,22 @@ function openEditContactForm(contactToEdit, contactIndex) {
 
   greyOverlay();
 
-  editContactDiv.innerHTML = generateEditContactFormHTML(contactToEdit, contactIndex);
+  editContactDiv.innerHTML = generateEditContactFormHTML(contactToEdit, contactIndex, initialLetter, email, phone, color);
 }
 
 
 
-
-function generateEditContactFormHTML(contactToEdit, contactIndex) {
-  const { name, email, phone, color } = contactToEdit;
-  const initialLetter = name.charAt(0).toUpperCase();
-
-  return `
+function generateEditContactFormHTML(contactToEdit, contactIndex, initialLetter, email, phone, color) {
+  return /* HTML */ `
     <div id="edit-contact-id" class="addNewContactDiv">
       <div class="left-side-add-contact column">
-        <div class="items-right">
-          <div><img src="../assets/icons/logo.svg" alt"Join Logo"></div>
-          <h1>Edit contact</h1>
-          <span></span>
-          <div class="line"></div>
-        </div>
+        <div><img src="../assets/icons/logo.svg"></div>
+        <h1>Edit contact</h1>
+        <span></span>
+        <div class="line"></div>
       </div>
       <div class="right-side-add-contact">
-        <div class="close-div"><img onclick="closeAddContact()" class="close pointer" src="../assets/icons/close.svg" alt"A picture of a X"></div>
+        <img onclick="closeAddContact()" class="close absolute pointer" src="../assets/icons/close.svg">
         <div class="account center">
           <div class="adding-contact-icon" style="background-color: ${color}">${initialLetter}</div>
         </div>
@@ -762,28 +672,28 @@ function generateEditContactFormHTML(contactToEdit, contactIndex) {
           <form onsubmit="return false;">
             <div class="form-contacs">
               <div class="center">
-                <input id="contactNameInput" class="log-in-field column center pointer" required type="text" placeholder="Name" value="${name}">
-                <img class="log-in-mail-lock-icon" src="../assets/icons/person-small.png" alt"A picture of a person">
+                <input id="contactNameInput" class="log-in-field column center pointer" required type="text" placeholder="Name" value="${contactToEdit.name}">
+                <img class="log-in-mail-lock-icon" src="../assets/icons/person-small.png">
               </div>
               <div class="center">
-                <input id="contactEmailInput" class="log-in-field column center pointer" required type="email" placeholder="Email" value="${email}">
-                <img class="log-in-mail-lock-icon" src="../assets/icons/mail.png" alt"A picture of a mail icon">
+                <input id="contactEmailInput" class="log-in-field column center pointer" required type="email" placeholder="Email" value="${contactToEdit.email}">
+                <img class="log-in-mail-lock-icon" src="../assets/icons/mail.png">
               </div>
               <div class="center">
-                <input id="contactPhoneInput" class="log-in-field column center pointer" required type="number" placeholder="Phone" value="${phone}">
-                <img class="log-in-mail-lock-icon" src="../assets/icons/call.png" alt"A picture of a phone icon">
+                <input id="contactPhoneInput" class="log-in-field column center pointer" required type="number" placeholder="Phone" value="${contactToEdit.phone}">
+                <img class="log-in-mail-lock-icon" src="../assets/icons/call.png">
               </div>
             </div>
             <div class="right-bottom">
               <div class="clear-and-update-contact">
                 <div class="clear pointer center" onclick="deleteContact()">
                   <span>Delete</span>
-                  <img class="cancel1" src="../assets/icons/cancel.svg" alt="A picture of a X">
-                  <img class="cancel2 d-none" src="../assets/icons/cancel2.svg" alt="A picture of a X">
+                  <img class="cancel1" src="../assets/icons/cancel.svg" alt="">
+                  <img class="cancel2 d-none" src="../assets/icons/cancel2.svg" alt="">
                 </div>
                 <div class="update-contact pointer center" onclick="updateContact(${contactIndex})">
                   <span>Save</span>
-                  <img src="../assets/icons/check.svg" alt="A picture of a hook">
+                  <img src="../assets/icons/check.svg" alt="">
                 </div>
               </div>
             </div>
@@ -795,57 +705,43 @@ function generateEditContactFormHTML(contactToEdit, contactIndex) {
 }
 
 
+
 async function updateContact(index) {
   const [name, email, phone] = ["contactNameInput", "contactEmailInput", "contactPhoneInput"].map(getValueById);
   if (!validateInputFields(name, email, phone)) return console.error("Please fill in all fields.");
-
   const loggedInUserName = localStorage.getItem("loggedInUserName");
 
-  // If logged in, update the contact on the server
   if (loggedInUserName) {
     const key = `contacts_${loggedInUserName}`;
 
     try {
       const contactsData = await getItem(key);
       const contacts = JSON.parse(contactsData) || [];
-
       const contact = contacts[index];
 
       if (!contact) {
         console.error("Contact not found.");
         return;
       }
-
       const updatedContact = { ...contact, name, email, phone };
-
-      // Update the contact on the server
       contacts[index] = updatedContact;
       await setItem(key, JSON.stringify(contacts));
     } catch (error) {
       console.error("Error updating contact on the server:", error);
     }
   } else {
-    // If not logged in, update the contact in local storage
     const guestContactsKey = "guestContacts";
     let guestContacts = JSON.parse(localStorage.getItem(guestContactsKey)) || [];
-
     const guestContact = guestContacts[index];
-
     if (!guestContact) {
       console.error("Contact not found in local storage.");
       return;
     }
-
     const updatedGuestContact = { ...guestContact, name, email, phone };
-
     guestContacts[index] = updatedGuestContact;
     localStorage.setItem(guestContactsKey, JSON.stringify(guestContacts));
   }
-
-  // Close the edit-contact div
   closeAddContact();
-
-  // Reload the page or update the UI as needed
   reloadPage();
 }
 
