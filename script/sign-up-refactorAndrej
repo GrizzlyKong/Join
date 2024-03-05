@@ -1,6 +1,12 @@
 async function init() {
   loadUsers();
   privacyPolicyHoverCheckbox();
+  checkboxCheck();
+  passwordLenghtCheck();
+  eventTogglePasswordVisibility();
+  updatePasswordVisibilityForPassword();
+  updatePasswordVisibilityForConfirmPassword();
+  updateVisibilities();
 }
 
 
@@ -18,25 +24,44 @@ async function register() {
   const privacyPolicy = document.querySelector(".sign-up-privacy-policy");
   const privacyPolicySpan = document.querySelector(".sign-up-privacy-policy-span");
 
-  privacyCheckbox.addEventListener("change", function() {
-    if (this.checked) {
-      privacyPolicy.classList.remove("error");
-      privacyPolicySpan.classList.remove("error2");
-    }
-  });
-
+  addPrivacyCheckboxListener(privacyCheckbox, privacyPolicy, privacyPolicySpan);
   if (!privacyCheckbox.checked) {
-    privacyPolicy.classList.add("error");
-    privacyPolicySpan.classList.add("error2");
+    showError(privacyPolicy, privacyPolicySpan);
     return;
   } else {
-    privacyPolicy.classList.remove("error");
-    privacyPolicySpan.classList.remove("error2");
-    pushUsers();
-    await setItem("users", JSON.stringify(users));
-    resetForm();
-    SignedUpSuccessfully();
+    removeError(privacyPolicy, privacyPolicySpan);
+    handleSuccessfulRegistration();
   }
+}
+
+
+function addPrivacyCheckboxListener(checkbox, policyElement, spanElement) {
+  checkbox.addEventListener("change", function() {
+    if (this.checked) {
+      policyElement.classList.remove("error");
+      spanElement.classList.remove("error2");
+    }
+  });
+}
+
+
+function showError(policyElement, spanElement) {
+  policyElement.classList.add("error");
+  spanElement.classList.add("error2");
+}
+
+
+function removeError(policyElement, spanElement) {
+  policyElement.classList.remove("error");
+  spanElement.classList.remove("error2");
+}
+
+
+async function handleSuccessfulRegistration() {
+  pushUsers();
+  await setItem("users", JSON.stringify(users));
+  resetForm();
+  SignedUpSuccessfully();
 }
 
 
@@ -72,11 +97,28 @@ function resetForm() {
 }
 
 
+function checkboxCheck() {
 document.getElementById("privacyCheckbox").addEventListener("change", function() {
   if (this.checked) {
     document.querySelector(".sign-up-privacy-policy").classList.remove("error");
   }
 });
+}
+
+
+function passwordLenghtCheck() {
+const passwordInput = document.getElementById("password");
+passwordInput.addEventListener("input", function() {
+  const passwordValue = this.value;
+  const passwordLengthError = document.getElementById("passwordLengthError");
+
+  if (passwordValue.length < 6) {
+    passwordLengthError.innerText = "Password must be at least 6 characters";
+  } else {
+    passwordLengthError.innerText = "";
+  }
+});
+}
 
 
 function privacyPolicyHoverCheckbox() {
@@ -93,37 +135,40 @@ function privacyPolicyHoverCheckbox() {
 }
 
 
-function updatePasswordVisibility(field) {
+ function updatePasswordVisibility(field) {
   const passwordInput = document.getElementById(field === 'password' ? 'password' : 'passwordConfirm');
   const lockIcon = document.getElementById(`lockIcon${field === 'password' ? 'Password' : 'Confirm'}`);
   const eyeIcon = document.getElementById(`eyeIcon${field === 'password' ? 'Password' : 'Confirm'}`);
   const eyeIconHidden = document.getElementById(`eyeIconHidden${field === 'password' ? 'Password' : 'Confirm'}`);
-
   const passwordValue = passwordInput.value.trim();
 
   if (passwordInput.type === 'password') {
-    // Password is hidden
-    lockIcon.style.display = passwordValue === '' ? 'inline-block' : 'none';
-    eyeIcon.style.display = passwordValue === '' ? 'none' : 'inline-block';
-    eyeIconHidden.style.display = 'none';
+    passwordIsHidden(lockIcon, eyeIcon, eyeIconHidden,passwordValue);
   } else {
-    // Password is visible
-    lockIcon.style.display = passwordValue === '' ? 'inline-block' : 'none';
-    eyeIcon.style.display = 'none';
-    eyeIconHidden.style.display = passwordValue === '' ? 'none' : 'inline-block';
+     passwordIsVisible(lockIcon, eyeIcon, eyeIconHidden,passwordValue);
   }
 }
 
-// Add event listeners to the eye icons to toggle password visibility
+
+function passwordIsHidden(lockIcon, eyeIcon, eyeIconHidden,passwordValue) {
+lockIcon.style.display = passwordValue === '' ? 'inline-block' : 'none';
+eyeIcon.style.display = passwordValue === '' ? 'none' : 'inline-block';
+eyeIconHidden.style.display = 'none';
+}
+
+
+function passwordIsVisible(lockIcon, eyeIcon, eyeIconHidden,passwordValue) {
+lockIcon.style.display = passwordValue === '' ? 'inline-block' : 'none';
+eyeIcon.style.display = 'none';
+eyeIconHidden.style.display = passwordValue === '' ? 'none' : 'inline-block';
+}
+
+
+function eventTogglePasswordVisibility() {
 document.getElementById('eyeIconPassword').addEventListener('click', () => togglePasswordVisibility('password'));
+document.getElementById('password').addEventListener('input', updatePasswordVisibilityForPassword);
+}
 
-// Call the function on page load
-document.addEventListener('DOMContentLoaded', () => {
-  updatePasswordVisibilityForPassword();
-
-  // Add an event listener to the password input to update the icons dynamically
-  document.getElementById('password').addEventListener('input', updatePasswordVisibilityForPassword);
-});
 
 function togglePasswordVisibility(field) {
   const passwordInput = document.getElementById(field === 'password' ? 'password' : 'passwordConfirm');
@@ -131,32 +176,29 @@ function togglePasswordVisibility(field) {
 
   if (passwordInput.type === 'password') {
     passwordInput.type = 'text';
-    eyeIcon.src = '../assets/icons/eyeNO.png'; // Change to eyeNO.png when password is visible
+    eyeIcon.src = '../assets/icons/eyeNO.png';
   } else {
     passwordInput.type = 'password';
-    eyeIcon.src = '../assets/icons/eyeYES.png'; // Change to eyeYES.png when password is hidden
+    eyeIcon.src = '../assets/icons/eyeYES.png';
   }
 }
+
 
 function updatePasswordVisibilityForPassword() {
   updatePasswordVisibility('password');
 }
 
+
 function updatePasswordVisibilityForConfirmPassword() {
   updatePasswordVisibility('passwordConfirm');
 }
 
-// Call the functions on page load
-document.addEventListener('DOMContentLoaded', () => {
-  updatePasswordVisibilityForPassword();
-  updatePasswordVisibilityForConfirmPassword();
 
-  // Add event listeners to the password inputs to update the icons dynamically
+function updateVisibilities() {
   document.getElementById('password').addEventListener('input', updatePasswordVisibilityForPassword);
   document.getElementById('passwordConfirm').addEventListener('input', updatePasswordVisibilityForConfirmPassword);
-});
+}
 
-// Add event listeners to the eye icons to toggle password visibility
 document.getElementById('eyeIconPassword').addEventListener('click', () => togglePasswordVisibility('password'));
 try {
   document.getElementById('eyeIconConfirmPassword').addEventListener('click', () => togglePasswordVisibility('passwordConfirm'));

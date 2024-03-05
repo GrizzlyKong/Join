@@ -8,11 +8,12 @@ async function init() {
   setLoggedInUserName();
 }
 
+
 async function includeHTML() {
   let includeElements = document.querySelectorAll("[w3-include-html]");
   for (let i = 0; i < includeElements.length; i++) {
     const element = includeElements[i];
-    file = element.getAttribute("w3-include-html"); // "includes/header.html"
+    file = element.getAttribute("w3-include-html");
     let resp = await fetch(file);
     if (resp.ok) {
       element.innerHTML = await resp.text();
@@ -21,6 +22,7 @@ async function includeHTML() {
     }
   }
 }
+
 
 async function loadTasks() {
   try {
@@ -38,9 +40,6 @@ async function loadTasks() {
 }
 
 
-
-
-
 function setLoggedInUserName() {
   const loggedInUserName = localStorage.getItem('loggedInUserName');
 
@@ -49,60 +48,55 @@ function setLoggedInUserName() {
     userName.textContent = loggedInUserName;
   }
 }
+
+
 async function loadAndDisplayTaskCounts() {
-  // Laden der Tasks
-  let allTasks = await loadTasks();  // Speichern der geladenen Tasks in einer Variablen
-
-  // Zählen der Tasks in jeder Kategorie
-  let counts = countTasksInColumns(allTasks); // Übergeben der geladenen Tasks
-
-  // Aktualisieren der Anzeige
+  let allTasks = await loadTasks();
+  let counts = countTasksInColumns(allTasks);
   updateSummaryDisplay(counts);
 }
 
+
 function countTasksInColumns(tasks) {
   const counts = {
-      todo: 0,
-      inProgress: 0,
-      done: 0,
-      awaitingFeedback: 0
+    todo: 0,
+    inProgress: 0,
+    done: 0,
+    awaitingFeedback: 0
   };
 
   tasks.forEach(task => {
-    console.log(task.id, task.container);
-      if(task.container === 'todo') counts.todo++;
-      if(task.container === 'inprogress') counts.inProgress++;
-      if(task.container === 'done') counts.done++;
-      if(task.container === 'awaitingfeedback') counts.awaitingFeedback++;
+    const container = normalizeContainer(task.container);
+    counts[container]++;
   });
-
   return counts;
 }
 
 
-
-function updateSummaryDisplay(counts) {
-  console.log('Aktualisiere Zusammenfassung:', counts);
-  const todoElement = document.getElementById('summary-todo-number');
-  if (todoElement) {
-      todoElement.textContent = counts.todo;
-  }
-  const doneElement = document.getElementById('tasks-done-number'); // Stellen Sie sicher, dass diese ID korrekt ist
-  if (doneElement) {
-      doneElement.textContent = counts.done;
-  }
-  const awaitingfeedbackElement = document.getElementById('summary-awaitingfeedback-number'); // Stellen Sie sicher, dass diese ID korrekt ist
-  if (awaitingfeedbackElement) {
-    awaitingfeedbackElement.textContent = counts.awaitingFeedback;
-  }
-  const inProgressElement = document.getElementById('tasks-progress-number'); // Stellen Sie sicher, dass diese ID korrekt ist
-  if (inProgressElement) {
-    inProgressElement.textContent = counts.inProgress;
-  }
-
+function normalizeContainer(container) {
+  const containerMap = {
+    todo: 'todo',
+    inprogress: 'inProgress',
+    done: 'done',
+    awaitingfeedback: 'awaitingFeedback'
+  };
+  return containerMap[container.toLowerCase()] || container.toLowerCase();
 }
 
 
+function updateSummaryDisplay(counts) {
+  updateElementText('summary-todo-number', counts.todo);
+  updateElementText('tasks-done-number', counts.done);
+  updateElementText('summary-awaitingfeedback-number', counts.awaitingFeedback);
+  updateElementText('tasks-progress-number', counts.inProgress);
+}
+
+function updateElementText(id, text) {
+  const element = document.getElementById(id);
+  if (element) {
+    element.textContent = text;
+  }
+}
 
 
 function showSummary() {
