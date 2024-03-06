@@ -20,6 +20,7 @@ async function loadContacts() {
       console.error("No logged-in user found. Contacts cannot be loaded.");
       return;
     }
+
     contacts = JSON.parse(await getItem(`contacts_${loggedInUserName}`)) || [];
   } catch (e) {
     console.error("Loading error:", e);
@@ -29,6 +30,7 @@ async function loadContacts() {
 
 function displayContactsFromLocalStorage() {
   const loggedInUserName = localStorage.getItem("loggedInUserName");
+
   if (!loggedInUserName) {
     displayGuestContacts();
   } else {
@@ -160,7 +162,7 @@ function clearInputAddingContact() {
 
 
 function insertAfter(newNode, referenceNode) {
-  let nextSibling = referenceNode.nextSibling;
+  var nextSibling = referenceNode.nextSibling;
   if (nextSibling) {
       referenceNode.parentNode.insertBefore(newNode, nextSibling);
   } else {
@@ -186,45 +188,29 @@ async function addingContact() {
   insertNewContactElement(newContactElement);
   updateLetterContacts(initialLetter);
   clearInputAddingContact();
-  const newContact = { name, email, phone, color: getRandomColor() };
-  contacts.push(newContact);
-  try {
-    await handleContactStorage(newContact);
-    handleCloseAndReload();
-  } catch (error) {
-    console.error("Error adding contact:", error);
-  }
-}
-
-
-async function handleContactStorage(newContact) {
   const loggedInUserName = localStorage.getItem("loggedInUserName");
   if (!loggedInUserName) {
-    await handleGuestContactStorage(newContact);
+    const guestContactsKey = "guestContacts";
+    let guestContacts = JSON.parse(localStorage.getItem(guestContactsKey)) || [];
+    const newContact = { name, email, phone, color: getRandomColor() };
+    guestContacts.push(newContact);
+    localStorage.setItem(guestContactsKey, JSON.stringify(guestContacts));
   } else {
-    await handleUserContactStorage(newContact, loggedInUserName);
+    try {
+      const contactsKey = `contacts_${loggedInUserName}`;
+      let contacts = JSON.parse(await getItem(contactsKey)) || [];
+      const newContact = { name, email, phone, color: getRandomColor() };
+      contacts.push(newContact);
+      await setItem(contactsKey, JSON.stringify(contacts));
+    } catch (error) {
+      console.error("Error saving contact to the server:", error);
+    }
   }
-}
-
-
-async function handleGuestContactStorage(newContact) {
-  const guestContactsKey = "guestContacts";
-  let guestContacts = JSON.parse(localStorage.getItem(guestContactsKey)) || [];
-  guestContacts.push(newContact);
-  localStorage.setItem(guestContactsKey, JSON.stringify(guestContacts));
-}
-
-
-async function handleUserContactStorage(newContact, loggedInUserName) {
-  await setItem(`contacts_${loggedInUserName}`, JSON.stringify(contacts));
-}
-
-
-function handleCloseAndReload() {
   closeAddContact();
   successfullyCreatedContact();
   reloadPage();
 }
+
 
 
 function getInputValues() {
@@ -246,6 +232,7 @@ function createNewContactElement(name, email, initialLetter) {
   newContactElement.className = "added-contact pointer";
   newContactElement.onclick = showContact;
   const randomColor = getRandomColor();
+
   newContactElement.innerHTML = generateNewContactElementHTML(initialLetter, name, email, randomColor);
   return newContactElement;
 }
@@ -300,9 +287,12 @@ function generateNewContactElementHTML(initialLetter, name, email, randomColor) 
 function updateLetterContacts(firstLetter) {
   const contactsMenu = document.getElementById("contactsMenu");
   const letterContacts = getLetterContactsArray(contactsMenu);
+
   const existingLetterContacts = findExistingLetterContacts(letterContacts, firstLetter);
+
   if (!existingLetterContacts) {
     const newLetterContacts = createNewLetterContacts(firstLetter);
+
     const insertIndex = getInsertIndex(letterContacts, firstLetter);
     insertNewLetterContacts(contactsMenu, newLetterContacts, letterContacts, insertIndex);
   }
@@ -364,7 +354,9 @@ function showContact() {
   const contactInfoIcon = document.querySelector(".contact-info-icon");
   const contactInfoLink = document.querySelector(".contact-link");
   const contactInfoDetails = document.querySelector(".contact-information-details span");
+
   const { name, email, initialLetter, color, phoneNumber } = getContactInfo(this);
+
   updateContactInfo(contactInfoName, contactInfoIcon, contactInfoLink, contactInfoDetails, name, email, initialLetter, color, phoneNumber);
   displayContactInfo(contactInfoDiv);
   generateEditContactFormHTML(name, email, phoneNumber, initialLetter, color);
@@ -402,67 +394,35 @@ function updateContactInfo(contactInfoName, contactInfoIcon, contactInfoLink, co
 
 
 async function displayUserContacts() {
-  const loggedInUserName = getLoggedInUserName();
-  const contactsMenu = getContactsMenu();
-  if (!loggedInUserName || !contactsMenu) return;
-  const responseText = await fetchContactsResponseText(loggedInUserName);
-  if (!responseText) return;
-  const savedContacts = getSavedContacts(responseText);
-  if (!savedContacts) return;
-  savedContacts.forEach((contact) => {
-    displayContact(contact);
-  });
-}
+  const loggedInUserName = localStorage.getItem("loggedInUserName");
 
-
-function getLoggedInUserName() {
-  return localStorage.getItem("loggedInUserName");
-}
-
-
-function getContactsMenu() {
-  return document.getElementById("contactsMenu");
-}
-
-
-async function fetchContactsResponseText(loggedInUserName) {
-  const response = await fetch(`${STORAGE_URL}?user=${loggedInUserName}&token=${STORAGE_TOKEN}&key=contacts_${loggedInUserName}`);
-  if (response.ok) {
-    return await response.text();
+  if (!loggedInUserName) {
+    return;
   }
-}
+    const response = await fetch(`${STORAGE_URL}?user=${loggedInUserName}&token=${STORAGE_TOKEN}&key=contacts_${loggedInUserName}`);
+    const responseText = await response.text();
+    if (response.ok) {
+        const serverResponse = JSON.parse(responseText);
+        if (serverResponse && serverResponse.status === "success" && serverResponse.data && serverResponse.data.value) {
+          const savedContacts = JSON.parse(serverResponse.data.value);
+          if (Array.isArray(savedContacts)) {
+            savedContacts.forEach((contact) => {
+              const { name, email, phone, color } = contact;
+              if (name.trim() !== "" || email.trim() !== "" || phone.trim() !== "") {
+                const initialLetter = name.charAt(0).toUpperCase();
+                const newContactElement = createContactElement(name, email, initialLetter, phone, color);
+                insertContactElement(newContactElement, initialLetter);
+              }
+            });
+          }}}}
 
-
-function getSavedContacts(responseText) {
-  const serverResponse = JSON.parse(responseText);
-  if (serverResponse && serverResponse.status === "success" && serverResponse.data && serverResponse.data.value) {
-    const savedContacts = JSON.parse(serverResponse.data.value);
-    if (Array.isArray(savedContacts)) {
-      return savedContacts;
-    }
-  }
-}
-
-
-function displayContact(contact) {
-  const { name, email, phone, color } = contact;
-  if (isValidContact(name, email, phone)) {
-    const initialLetter = getInitialLetter(name);
-    const newContactElement = createContactElement(name, email, initialLetter, phone, color);
-    insertContactElement(newContactElement, initialLetter);
-  }
-}
-
-
-function isValidContact(name, email, phone) {
-  return (name.trim() !== "" || email.trim() !== "" || phone.trim() !== "");
-}
 
 
 function getSortedContacts(loggedInUserName) {
   const userContactsKey = `contacts_${loggedInUserName}`;
   const savedContacts = JSON.parse(localStorage.getItem(userContactsKey)) || [];
-  return savedContacts.sort((a, b) => a.name.localeCompare(b.name));
+
+  return savedContacts.sort((a, b) => a.name.localeCompare(b.name)); // Sort contacts alphabetically by name
 }
 
 
@@ -493,16 +453,19 @@ function insertContactElement(newContactElement, initialLetter) {
   const contactsMenu = document.getElementById("contactsMenu");
   const letterContacts = Array.from(contactsMenu.getElementsByClassName("letter-contacts"));
   let letterGroup = getOrCreateLetterGroup(letterContacts, initialLetter);
+
   letterGroup.appendChild(newContactElement);
 }
 
 
 function getOrCreateLetterGroup(letterContacts, initialLetter) {
   let letterGroup = letterContacts.find((element) => element.getAttribute("data-letter") === initialLetter);
+
   if (!letterGroup) {
     letterGroup = createLetterGroup(initialLetter);
     insertLetterGroup(letterGroup, letterContacts, initialLetter);
   }
+
   return letterGroup;
 }
 
@@ -519,6 +482,7 @@ function createLetterGroup(initialLetter) {
 function insertLetterGroup(letterGroup, letterContacts, initialLetter) {
   const contactsMenu = document.getElementById("contactsMenu");
   const insertIndex = letterContacts.findIndex((element) => element.getAttribute("data-letter") > initialLetter);
+
   if (insertIndex !== -1) {
     contactsMenu.insertBefore(letterGroup, letterContacts[insertIndex]);
   } else {
@@ -533,47 +497,28 @@ async function deleteContact() {
   const contactsLayout = document.getElementById("contactsLayout");
   const contactToDelete = findContactToDelete(contactsLayout, contactName);
   removeContactFromLayout(contactsLayout, contactToDelete);
+
   const loggedInUserName = getLoggedInUserName();
   if (loggedInUserName) {
     await deleteContactFromServer(contactName);
   } else {
-    deleteGuestContactFromLocalStorage(contactName);
+    const guestContactsKey = "guestContacts";
+    const guestContacts = JSON.parse(localStorage.getItem(guestContactsKey)) || [];
+    const guestContactIndex = guestContacts.findIndex(contact => contact.name === contactName);
+
+    if (guestContactIndex !== -1) {
+      guestContacts.splice(guestContactIndex, 1);
+      localStorage.setItem(guestContactsKey, JSON.stringify(guestContacts));
+    }
   }
   hideContactInfo(contactInfoDiv);
   reloadPage();
 }
 
 
+
 function getContactName() {
-  return document.getElementById("contact-info").innerText;
-}
-
-
-function findContactToDelete(contactsLayout, contactName) {
-  return contactsLayout.querySelector(`[data-name="${contactName}"]`);
-}
-
-
-function removeContactFromLayout(contactsLayout, contactToDelete) {
-  if (contactToDelete) {
-    contactsLayout.removeChild(contactToDelete);
-  }
-}
-
-
-function deleteGuestContactFromLocalStorage(contactName) {
-  const guestContactsKey = "guestContacts";
-  const guestContacts = JSON.parse(localStorage.getItem(guestContactsKey)) || [];
-  const guestContactIndex = guestContacts.findIndex(contact => contact.name === contactName);
-  if (guestContactIndex !== -1) {
-    guestContacts.splice(guestContactIndex, 1);
-    localStorage.setItem(guestContactsKey, JSON.stringify(guestContacts));
-  }
-}
-
-
-function hideContactInfo(contactInfoDiv) {
-  contactInfoDiv.style.display = "none";
+  return document.querySelector(".contact-info-name").innerText;
 }
 
 
@@ -592,14 +537,21 @@ function removeContactFromLayout(contactsLayout, contactToDelete) {
 
 async function deleteContactFromServer(contactName) {
   const loggedInUserName = getLoggedInUserName();
-  if (!loggedInUserName) return;
+  if (!loggedInUserName) {
+    return;
+  }
+
   const key = `contacts_${loggedInUserName}`;
+
   try {
-    let contacts = JSON.parse(await getItem(key));
+    const contactsData = await getItem(key);
+    const contacts = JSON.parse(contactsData);
     const contactIndex = contacts.findIndex(contact => contact.name === contactName);
+
     if (contactIndex !== -1) {
       contacts.splice(contactIndex, 1);
       await setItem(key, JSON.stringify(contacts));
+
       console.log(`Contact ${contactName} deleted successfully from the server.`);
     } else {
       console.error(`Error deleting contact ${contactName} from the server. Contact not found.`);
@@ -608,6 +560,7 @@ async function deleteContactFromServer(contactName) {
     console.error("Error deleting contact from the server:", error);
   }
 }
+
 
 
 function getLoggedInUserName() {
@@ -653,74 +606,52 @@ function reloadPage() {
 
 
 async function editContact() {
-  const contactName = getContactName();
-  const loggedInUserName = getLoggedInUserName();
+  const contactName = document.querySelector(".contact-info-name").innerText;
+  const loggedInUserName = localStorage.getItem("loggedInUserName");
   if (loggedInUserName) {
-    await editUserContact(contactName);
+    const key = `contacts_${loggedInUserName}`;
+
+    try {
+      const contactsData = await getItem(key);
+      const existingContacts = JSON.parse(contactsData) || [];
+      const contactToEdit = existingContacts.find(contact => contact.name === contactName);
+
+      if (!contactToEdit) {
+        console.error("Contact not found on the server.");
+        return;
+      }
+      openEditContactForm(contactToEdit, existingContacts.indexOf(contactToEdit));
+    } catch (error) {
+      console.error("Error fetching contacts from the server:", error);
+    }
   } else {
-    editGuestContact(contactName);
-  }
-}
+    const guestContactsKey = "guestContacts";
+    const guestContacts = JSON.parse(localStorage.getItem(guestContactsKey)) || [];
+    const guestContactToEdit = guestContacts.find(contact => contact.name === contactName);
 
-
-function getContactName() {
-  return document.querySelector(".contact-info-name").innerText;
-}
-
-
-function getLoggedInUserName() {
-  return localStorage.getItem("loggedInUserName");
-}
-
-
-async function editUserContact(contactName) {
-  const key = `contacts_${getLoggedInUserName()}`;
-  try {
-    const existingContacts = await getExistingContacts(key);
-    const contactToEdit = findContactByName(existingContacts, contactName);
-    if (!contactToEdit) {
-      console.error("Contact not found on the server.");
+    if (!guestContactToEdit) {
+      console.error("Contact not found in local storage.");
       return;
     }
-    openEditContactForm(contactToEdit, existingContacts.indexOf(contactToEdit));
-  } catch (error) {
-    console.error("Error fetching contacts from the server:", error);
+    openEditContactForm(guestContactToEdit, guestContacts.indexOf(guestContactToEdit));
   }
 }
-
-
-async function getExistingContacts(key) {
-  const contactsData = await getItem(key);
-  return JSON.parse(contactsData) || [];
-}
-
-
-function findContactByName(contacts, contactName) {
-  return contacts.find(contact => contact.name === contactName);
-}
-
-
-function editGuestContact(contactName) {
-  const guestContacts = JSON.parse(localStorage.getItem("guestContacts")) || [];
-  const guestContactToEdit = guestContacts.find(contact => contact.name === contactName);
-  if (!guestContactToEdit) {
-    console.error("Contact not found in local storage.");
-    return;
-  }
-  openEditContactForm(guestContactToEdit, guestContacts.indexOf(guestContactToEdit));
-}
-
 
 function openEditContactForm(contactToEdit, contactIndex) {
   const { name, email, phone, color } = contactToEdit;
   const initialLetter = name.charAt(0).toUpperCase();
+
   const editContactDiv = document.getElementById("add-new-contact");
   const addNewContactDiv = document.getElementById("add-new-contact");
+
   [editContactDiv, addNewContactDiv].forEach(elem => elem.classList.add("sign-up-animation"));
   addNewContactDiv.classList.remove("d-none");
+
   greyOverlay();
+
   editContactDiv.innerHTML = generateEditContactFormHTML(contactToEdit, contactIndex, initialLetter, email, phone, color);
 }
+
 
 
 function generateEditContactFormHTML(contactToEdit, contactIndex, initialLetter, email, phone, color) {
@@ -774,64 +705,46 @@ function generateEditContactFormHTML(contactToEdit, contactIndex, initialLetter,
 }
 
 
+
 async function updateContact(index) {
-  const [name, email, phone] = getContactValues();
-  if (!validateInputFields(name, email, phone)) {
-    console.error("Please fill in all fields.");
-    return;
-  }
-  const loggedInUserName = getLoggedInUserName();
+  const [name, email, phone] = ["contactNameInput", "contactEmailInput", "contactPhoneInput"].map(getValueById);
+  if (!validateInputFields(name, email, phone)) return console.error("Please fill in all fields.");
+  const loggedInUserName = localStorage.getItem("loggedInUserName");
+
   if (loggedInUserName) {
-    await updateLoggedInUserContact(index, name, email, phone);
+    const key = `contacts_${loggedInUserName}`;
+
+    try {
+      const contactsData = await getItem(key);
+      const contacts = JSON.parse(contactsData) || [];
+      const contact = contacts[index];
+
+      if (!contact) {
+        console.error("Contact not found.");
+        return;
+      }
+      const updatedContact = { ...contact, name, email, phone };
+      contacts[index] = updatedContact;
+      await setItem(key, JSON.stringify(contacts));
+    } catch (error) {
+      console.error("Error updating contact on the server:", error);
+    }
   } else {
-    updateGuestContact(index, name, email, phone);
+    const guestContactsKey = "guestContacts";
+    let guestContacts = JSON.parse(localStorage.getItem(guestContactsKey)) || [];
+    const guestContact = guestContacts[index];
+    if (!guestContact) {
+      console.error("Contact not found in local storage.");
+      return;
+    }
+    const updatedGuestContact = { ...guestContact, name, email, phone };
+    guestContacts[index] = updatedGuestContact;
+    localStorage.setItem(guestContactsKey, JSON.stringify(guestContacts));
   }
   closeAddContact();
   reloadPage();
 }
 
-
-function getContactValues() {
-  return ["contactNameInput", "contactEmailInput", "contactPhoneInput"].map(getValueById);
-}
-
-
-function getLoggedInUserName() {
-  return localStorage.getItem("loggedInUserName");
-}
-
-
-async function updateLoggedInUserContact(index, name, email, phone) {
-  const key = `contacts_${getLoggedInUserName()}`;
-  try {
-    const contactsData = await getItem(key);
-    const contacts = JSON.parse(contactsData) || [];
-    const contact = contacts[index];
-    if (!contact) {
-      console.error("Contact not found.");
-      return;
-    }
-    const updatedContact = { ...contact, name, email, phone };
-    contacts[index] = updatedContact;
-    await setItem(key, JSON.stringify(contacts));
-  } catch (error) {
-    console.error("Error updating contact on the server:", error);
-  }
-}
-
-
-function updateGuestContact(index, name, email, phone) {
-  const guestContactsKey = "guestContacts";
-  let guestContacts = JSON.parse(localStorage.getItem(guestContactsKey)) || [];
-  const guestContact = guestContacts[index];
-  if (!guestContact) {
-    console.error("Contact not found in local storage.");
-    return;
-  }
-  const updatedGuestContact = { ...guestContact, name, email, phone };
-  guestContacts[index] = updatedGuestContact;
-  localStorage.setItem(guestContactsKey, JSON.stringify(guestContacts));
-}
 
 
 function getValueById(id) {
