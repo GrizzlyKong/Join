@@ -188,29 +188,28 @@ async function addingContact() {
   insertNewContactElement(newContactElement);
   updateLetterContacts(initialLetter);
   clearInputAddingContact();
-  const loggedInUserName = localStorage.getItem("loggedInUserName");
-  if (!loggedInUserName) {
-    const guestContactsKey = "guestContacts";
-    let guestContacts = JSON.parse(localStorage.getItem(guestContactsKey)) || [];
-    const newContact = { name, email, phone, color: getRandomColor() };
-    guestContacts.push(newContact);
-    localStorage.setItem(guestContactsKey, JSON.stringify(guestContacts));
-  } else {
-    try {
-      const contactsKey = `contacts_${loggedInUserName}`;
-      let contacts = JSON.parse(await getItem(contactsKey)) || [];
-      const newContact = { name, email, phone, color: getRandomColor() };
-      contacts.push(newContact);
-      await setItem(contactsKey, JSON.stringify(contacts));
-    } catch (error) {
-      console.error("Error saving contact to the server:", error);
+  const newContact = { name, email, phone, color: getRandomColor() };
+  contacts.push(newContact);
+  try {
+    const loggedInUserName = localStorage.getItem("loggedInUserName");
+    if (!loggedInUserName) {
+      const guestContactsKey = "guestContacts";
+      let guestContacts = JSON.parse(localStorage.getItem(guestContactsKey)) || [];
+      guestContacts.push(newContact);
+      localStorage.setItem(guestContactsKey, JSON.stringify(guestContacts));
+      closeAddContact();
+      successfullyCreatedContact();
+      reloadPage();
+      return;
     }
+    await setItem(`contacts_${loggedInUserName}`, JSON.stringify(contacts));
+    closeAddContact();
+    successfullyCreatedContact();
+    reloadPage();
+  } catch (error) {
+    console.error("Error adding contact:", error);
   }
-  closeAddContact();
-  successfullyCreatedContact();
-  reloadPage();
 }
-
 
 
 function getInputValues() {
