@@ -20,7 +20,6 @@ async function loadContacts() {
       console.error("No logged-in user found. Contacts cannot be loaded.");
       return;
     }
-
     contacts = JSON.parse(await getItem(`contacts_${loggedInUserName}`)) || [];
   } catch (e) {
     console.error("Loading error:", e);
@@ -30,7 +29,6 @@ async function loadContacts() {
 
 function displayContactsFromLocalStorage() {
   const loggedInUserName = localStorage.getItem("loggedInUserName");
-
   if (!loggedInUserName) {
     displayGuestContacts();
   } else {
@@ -162,7 +160,7 @@ function clearInputAddingContact() {
 
 
 function insertAfter(newNode, referenceNode) {
-  var nextSibling = referenceNode.nextSibling;
+  let nextSibling = referenceNode.nextSibling;
   if (nextSibling) {
       referenceNode.parentNode.insertBefore(newNode, nextSibling);
   } else {
@@ -231,7 +229,6 @@ function createNewContactElement(name, email, initialLetter) {
   newContactElement.className = "added-contact pointer";
   newContactElement.onclick = showContact;
   const randomColor = getRandomColor();
-
   newContactElement.innerHTML = generateNewContactElementHTML(initialLetter, name, email, randomColor);
   return newContactElement;
 }
@@ -286,12 +283,10 @@ function generateNewContactElementHTML(initialLetter, name, email, randomColor) 
 function updateLetterContacts(firstLetter) {
   const contactsMenu = document.getElementById("contactsMenu");
   const letterContacts = getLetterContactsArray(contactsMenu);
-
   const existingLetterContacts = findExistingLetterContacts(letterContacts, firstLetter);
 
   if (!existingLetterContacts) {
     const newLetterContacts = createNewLetterContacts(firstLetter);
-
     const insertIndex = getInsertIndex(letterContacts, firstLetter);
     insertNewLetterContacts(contactsMenu, newLetterContacts, letterContacts, insertIndex);
   }
@@ -353,7 +348,6 @@ function showContact() {
   const contactInfoIcon = document.querySelector(".contact-info-icon");
   const contactInfoLink = document.querySelector(".contact-link");
   const contactInfoDetails = document.querySelector(".contact-information-details span");
-
   const { name, email, initialLetter, color, phoneNumber } = getContactInfo(this);
 
   updateContactInfo(contactInfoName, contactInfoIcon, contactInfoLink, contactInfoDetails, name, email, initialLetter, color, phoneNumber);
@@ -394,34 +388,40 @@ function updateContactInfo(contactInfoName, contactInfoIcon, contactInfoLink, co
 
 async function displayUserContacts() {
   const loggedInUserName = localStorage.getItem("loggedInUserName");
-
   if (!loggedInUserName) {
     return;
   }
-    const response = await fetch(`${STORAGE_URL}?user=${loggedInUserName}&token=${STORAGE_TOKEN}&key=contacts_${loggedInUserName}`);
-    const responseText = await response.text();
-    if (response.ok) {
-        const serverResponse = JSON.parse(responseText);
-        if (serverResponse && serverResponse.status === "success" && serverResponse.data && serverResponse.data.value) {
-          const savedContacts = JSON.parse(serverResponse.data.value);
-          if (Array.isArray(savedContacts)) {
-            savedContacts.forEach((contact) => {
-              const { name, email, phone, color } = contact;
-              if (name.trim() !== "" || email.trim() !== "" || phone.trim() !== "") {
-                const initialLetter = name.charAt(0).toUpperCase();
-                const newContactElement = createContactElement(name, email, initialLetter, phone, color);
-                insertContactElement(newContactElement, initialLetter);
-              }
-            });
-          }}}}
+  const contactsMenu = document.getElementById("contactsMenu");
+  if (!contactsMenu) {
+    return;
+  }
+  const response = await fetch(`${STORAGE_URL}?user=${loggedInUserName}&token=${STORAGE_TOKEN}&key=contacts_${loggedInUserName}`);
+  const responseText = await response.text();
+  if (response.ok) {
+    const serverResponse = JSON.parse(responseText);
+    if (serverResponse && serverResponse.status === "success" && serverResponse.data && serverResponse.data.value) {
+      const savedContacts = JSON.parse(serverResponse.data.value);
+      if (Array.isArray(savedContacts)) {
+        savedContacts.forEach((contact) => {
+          const { name, email, phone, color } = contact;
+          if (name.trim() !== "" || email.trim() !== "" || phone.trim() !== "") {
+            const initialLetter = name.charAt(0).toUpperCase();
+            const newContactElement = createContactElement(name, email, initialLetter, phone, color);
+            insertContactElement(newContactElement, initialLetter);
+          }
+        });
+      }
+    }
+  }
+}
+
 
 
 
 function getSortedContacts(loggedInUserName) {
   const userContactsKey = `contacts_${loggedInUserName}`;
   const savedContacts = JSON.parse(localStorage.getItem(userContactsKey)) || [];
-
-  return savedContacts.sort((a, b) => a.name.localeCompare(b.name)); // Sort contacts alphabetically by name
+  return savedContacts.sort((a, b) => a.name.localeCompare(b.name));
 }
 
 
@@ -452,19 +452,16 @@ function insertContactElement(newContactElement, initialLetter) {
   const contactsMenu = document.getElementById("contactsMenu");
   const letterContacts = Array.from(contactsMenu.getElementsByClassName("letter-contacts"));
   let letterGroup = getOrCreateLetterGroup(letterContacts, initialLetter);
-
   letterGroup.appendChild(newContactElement);
 }
 
 
 function getOrCreateLetterGroup(letterContacts, initialLetter) {
   let letterGroup = letterContacts.find((element) => element.getAttribute("data-letter") === initialLetter);
-
   if (!letterGroup) {
     letterGroup = createLetterGroup(initialLetter);
     insertLetterGroup(letterGroup, letterContacts, initialLetter);
   }
-
   return letterGroup;
 }
 
@@ -481,7 +478,6 @@ function createLetterGroup(initialLetter) {
 function insertLetterGroup(letterGroup, letterContacts, initialLetter) {
   const contactsMenu = document.getElementById("contactsMenu");
   const insertIndex = letterContacts.findIndex((element) => element.getAttribute("data-letter") > initialLetter);
-
   if (insertIndex !== -1) {
     contactsMenu.insertBefore(letterGroup, letterContacts[insertIndex]);
   } else {
@@ -496,7 +492,6 @@ async function deleteContact() {
   const contactsLayout = document.getElementById("contactsLayout");
   const contactToDelete = findContactToDelete(contactsLayout, contactName);
   removeContactFromLayout(contactsLayout, contactToDelete);
-
   const loggedInUserName = getLoggedInUserName();
   if (loggedInUserName) {
     await deleteContactFromServer(contactName);
@@ -504,7 +499,6 @@ async function deleteContact() {
     const guestContactsKey = "guestContacts";
     const guestContacts = JSON.parse(localStorage.getItem(guestContactsKey)) || [];
     const guestContactIndex = guestContacts.findIndex(contact => contact.name === contactName);
-
     if (guestContactIndex !== -1) {
       guestContacts.splice(guestContactIndex, 1);
       localStorage.setItem(guestContactsKey, JSON.stringify(guestContacts));
@@ -539,18 +533,14 @@ async function deleteContactFromServer(contactName) {
   if (!loggedInUserName) {
     return;
   }
-
   const key = `contacts_${loggedInUserName}`;
-
   try {
     const contactsData = await getItem(key);
     const contacts = JSON.parse(contactsData);
     const contactIndex = contacts.findIndex(contact => contact.name === contactName);
-
     if (contactIndex !== -1) {
       contacts.splice(contactIndex, 1);
       await setItem(key, JSON.stringify(contacts));
-
       console.log(`Contact ${contactName} deleted successfully from the server.`);
     } else {
       console.error(`Error deleting contact ${contactName} from the server. Contact not found.`);
@@ -609,12 +599,10 @@ async function editContact() {
   const loggedInUserName = localStorage.getItem("loggedInUserName");
   if (loggedInUserName) {
     const key = `contacts_${loggedInUserName}`;
-
     try {
       const contactsData = await getItem(key);
       const existingContacts = JSON.parse(contactsData) || [];
       const contactToEdit = existingContacts.find(contact => contact.name === contactName);
-
       if (!contactToEdit) {
         console.error("Contact not found on the server.");
         return;
@@ -627,7 +615,6 @@ async function editContact() {
     const guestContactsKey = "guestContacts";
     const guestContacts = JSON.parse(localStorage.getItem(guestContactsKey)) || [];
     const guestContactToEdit = guestContacts.find(contact => contact.name === contactName);
-
     if (!guestContactToEdit) {
       console.error("Contact not found in local storage.");
       return;
@@ -636,21 +623,17 @@ async function editContact() {
   }
 }
 
+
 function openEditContactForm(contactToEdit, contactIndex) {
   const { name, email, phone, color } = contactToEdit;
   const initialLetter = name.charAt(0).toUpperCase();
-
   const editContactDiv = document.getElementById("add-new-contact");
   const addNewContactDiv = document.getElementById("add-new-contact");
-
   [editContactDiv, addNewContactDiv].forEach(elem => elem.classList.add("sign-up-animation"));
   addNewContactDiv.classList.remove("d-none");
-
   greyOverlay();
-
   editContactDiv.innerHTML = generateEditContactFormHTML(contactToEdit, contactIndex, initialLetter, email, phone, color);
 }
-
 
 
 function generateEditContactFormHTML(contactToEdit, contactIndex, initialLetter, email, phone, color) {
@@ -704,20 +687,16 @@ function generateEditContactFormHTML(contactToEdit, contactIndex, initialLetter,
 }
 
 
-
 async function updateContact(index) {
   const [name, email, phone] = ["contactNameInput", "contactEmailInput", "contactPhoneInput"].map(getValueById);
   if (!validateInputFields(name, email, phone)) return console.error("Please fill in all fields.");
   const loggedInUserName = localStorage.getItem("loggedInUserName");
-
   if (loggedInUserName) {
     const key = `contacts_${loggedInUserName}`;
-
     try {
       const contactsData = await getItem(key);
       const contacts = JSON.parse(contactsData) || [];
       const contact = contacts[index];
-
       if (!contact) {
         console.error("Contact not found.");
         return;
@@ -743,7 +722,6 @@ async function updateContact(index) {
   closeAddContact();
   reloadPage();
 }
-
 
 
 function getValueById(id) {
