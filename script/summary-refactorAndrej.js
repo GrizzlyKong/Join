@@ -1,10 +1,9 @@
 async function init() {
   await includeHTML();
   showSummary();
-  // Eine kurze Verzögerung könnte notwendig sein, um sicherzustellen, dass das HTML geladen wird
   setTimeout(async () => {
       await loadAndDisplayTaskCounts();
-  }, 100); // Verzögerung von 100 ms
+  }, 100);
   setLoggedInUserName();
 }
 
@@ -42,7 +41,6 @@ async function loadTasks() {
 
 function setLoggedInUserName() {
   const loggedInUserName = localStorage.getItem('loggedInUserName');
-
   if (loggedInUserName) {
     const userName = document.getElementById('loginName');
     userName.textContent = loggedInUserName;
