@@ -1,3 +1,5 @@
+
+
 async function init() {
   await includeHTML();
   showSummary();
@@ -25,6 +27,7 @@ async function includeHTML() {
 async function loadTasks() {
   try {
       let tasks = await getItem('allTasks');
+      console.log("Geladene Tasks:", tasks); // Hinzugefügte Konsolenausgabe
       if (tasks) {
           return JSON.parse(tasks);
       } else {
@@ -50,13 +53,9 @@ function setLoggedInUserName() {
   }
 }
 async function loadAndDisplayTaskCounts() {
-  // Laden der Tasks
-  let allTasks = await loadTasks();  // Speichern der geladenen Tasks in einer Variablen
-
-  // Zählen der Tasks in jeder Kategorie
-  let counts = countTasksInColumns(allTasks); // Übergeben der geladenen Tasks
-
-  // Aktualisieren der Anzeige
+  let allTasks = await loadTasks();
+  console.log("Geladene Aufgaben: ", allTasks); // Zum Debuggen
+  let counts = countTasksInColumns(allTasks);
   updateSummaryDisplay(counts);
 }
 
@@ -65,7 +64,9 @@ function countTasksInColumns(tasks) {
       todo: 0,
       inProgress: 0,
       done: 0,
-      awaitingFeedback: 0
+      awaitingFeedback: 0,
+      total: 0,
+      urgent: tasks.filter(task => task.priority === 'Urgent').length
   };
 
   tasks.forEach(task => {
@@ -73,7 +74,9 @@ function countTasksInColumns(tasks) {
       if(task.container === 'todo') counts.todo++;
       if(task.container === 'inprogress') counts.inProgress++;
       if(task.container === 'done') counts.done++;
-      if(task.container === 'awaitingfeedback') counts.awaitingFeedback++;
+      if (task.container === 'awaitingfeedback') counts.awaitingFeedback++;
+      if(task.category === 'urgent') counts.urgent++;
+      counts.total++;
   });
 
   return counts;
@@ -99,10 +102,19 @@ function updateSummaryDisplay(counts) {
   if (inProgressElement) {
     inProgressElement.textContent = counts.inProgress;
   }
-
+  const totalTasksElement = document.getElementById('total-tasks-number');
+  if (totalTasksElement) {
+      totalTasksElement.textContent = counts.total;
+  }
+  const urgentElement = document.getElementById('summary-urgent-number'); 
+  if (urgentElement) {
+      urgentElement.textContent = counts.urgent;
+  }
 }
 
-
+function countUrgentTasks() {
+  return allTasks.filter(task => task.category === 'urgent').length;
+}
 
 
 function showSummary() {
@@ -139,15 +151,15 @@ function showSummary() {
     </div>
 
     <div class="summary-urgent-div pointer center">
-      <div class="summary-urgent center">
-        <div class="summary-urgent-icon-whitout-change">
-          <img class="urgent1" src="../assets/icons/urgent.svg" alt="an image that describes the urgency - urgent">
-        </div>
-        <div class="center column">
-          <span class="summary-urgent-number text-center">0</span>
-          <span class="summary-urgent-span">To-do</span>
-        </div>
-      </div>
+    <div class="summary-urgent center">
+    <div class="summary-urgent-icon-without-change">
+        <img class="urgent1" src="../assets/icons/urgent.svg" alt="an image that describes urgency - urgent">
+    </div>
+    <div class="center column">
+        <span id="summary-urgent-number" class="summary-urgent-number text-center">0</span>
+        <span class="summary-urgent-span">Urgent Tasks</span>
+    </div>
+</div>
       <div class="date-deadline center column">
         <span class="summmary-date">October 16, 2022</span>
         <span class="summmary-deadline">Upcoming Deadline</span>
@@ -156,7 +168,7 @@ function showSummary() {
 
     <div class="all-tasks center">
       <div class="tasks-in-board pointer text-center center column">
-        <span class="tasks-in-board-number text-center">0</span>
+        <span class="tasks-in-board-number text-center" id="total-tasks-number">0</span>
         <span class="tasks-in-board-name">Tasks in <br> Board</span>
       </div>
       <div class="tasks-in-progress pointer text-center center column">
@@ -176,6 +188,14 @@ function showSummary() {
   </div>
 </div>
   `;
+}
+
+function updateUrgentTasksDisplay() {
+  const urgentTasksCount = countUrgentTasks();
+  const urgentTasksElement = document.querySelector('.summary-urgent-number');
+  if (urgentTasksElement) {
+    urgentTasksElement.textContent = urgentTasksCount;
+  }
 }
 
 
