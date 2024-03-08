@@ -1,4 +1,5 @@
 let currentDraggedElement;
+let currentEditingTaskId = null;
 let taskIdCounter = 0;
 let subtaskIdCounter = 0;
 let addCount = 0;
@@ -21,21 +22,17 @@ async function init() {
 
 async function saveTasks() {
   try {
-    localStorage.setItem('allTasks', JSON.stringify(allTasks));
-    console.log('Tasks saved successfully');
+    await setItem('allTasks', JSON.stringify(allTasks));
+    console.log('Tasks saved successfully to server');
   } catch (error) {
-    console.error('Error saving tasks:', error);
+    console.error('Error saving tasks to server:', error);
   }
-}
-
-function isTaskUnique(newTask) {
-  return !allTasks.some(task => task.id === newTask.id);
 }
 
 async function loadTasks() {
   const url = `${STORAGE_URL}?key=allTasks&token=${STORAGE_TOKEN}`;
-  allTasks.length = 0;
-
+  allTasks = [];
+  console.log(allTasks);
   try {
       const response = await fetch(url);
       const data = await response.json();
@@ -622,26 +619,36 @@ async function addTodo() {
   let subtasks = Array.from(
     document.querySelectorAll("#added-subtasks .added-subtask")
   ).map((subtask) => subtask.textContent.trim());
-  let totalSubtasks = subtasks.length; 
-  const taskId = `task-${taskIdCounter++}`; 
+  let totalSubtasks = subtasks.length;
+
+  let uniqueIdFound = false;
+  let taskId;
+  while (!uniqueIdFound) {
+    taskId = `task-${taskIdCounter}`;
+    if (!allTasks.some(task => task.id === taskId)) {
+      uniqueIdFound = true;
+    } else {
+      taskIdCounter++;
+    }
+  }
 
   let priorityImage = "";
-let priorityName = "";
-switch (selectedPriority) {
-  case "urgent":
-    priorityImage = "../assets/icons/urgent3.svg";
-    priorityName = "Urgent";
-    break;
-  case "medium":
-    priorityImage = "../assets/icons/medium.svg";
-    priorityName = "Medium";
-    break;
-  case "low":
-    priorityImage = "../assets/icons/low.svg";
-    priorityName = "Low";
-    break;
+  let priorityName = "";
+  switch (selectedPriority) {
+    case "urgent":
+      priorityImage = "../assets/icons/urgent3.svg";
+      priorityName = "Urgent";
+      break;
+    case "medium":
+      priorityImage = "../assets/icons/medium.svg";
+      priorityName = "Medium";
+      break;
+    case "low":
+      priorityImage = "../assets/icons/low.svg";
+      priorityName = "Low";
+      break;
   }
-  
+
   let selectedContactsContainer = document.getElementById("selectedContactsContainer");
   let selectedContactsHtml = selectedContactsContainer.innerHTML;
 
@@ -690,20 +697,18 @@ switch (selectedPriority) {
   </div>
   `;
   selectedContactIcons = [];
- selectedPriority = null;
+  selectedPriority = null;
   document.getElementById("todo").insertAdjacentHTML("beforeend", taskHTML);
   updateProgressBar(taskId, totalSubtasks);
 
   let newTaskElement = document.getElementById(taskId);
   bindDragEvents(newTaskElement);
 
-  // Formular und Modalfenster schließen
   document.getElementById("add-task").classList.add("d-none");
   document.getElementById("board-div").classList.remove("background");
-  allTasks.push(task); // Assuming this is where you add a task
+
   await saveTasks();
   removeGreyOverlay();
-  
 }
 
 function updateProgressBar(taskId, totalSubtasks) {
@@ -729,7 +734,7 @@ function mapContactsForDisplay(contacts) {
 
 function openTaskInfos(taskId, title, description, category, dueDate, subtasks, priorityName, priorityImage) {
   let task = allTasks.find(task => task.id === taskId);
-
+  currentEditingTaskId = taskId;
   if (task) {
     // Construct the HTML for priority using the parameters directly
     let priorityHtml = `
@@ -858,28 +863,27 @@ function hideIcons(index) {
 }
 
 async function deleteTaskInfos(taskId) {
-  console.log("Attempting to delete task with ID:", taskId);
+  console.log("Received task ID to delete:", taskId);
   
-  // Find and remove the task from the allTasks array
   const taskIndex = allTasks.findIndex(task => task.id === taskId);
+  console.log("Task IDs before deletion:", allTasks.map(task => task.id)); // Debugging output
   if (taskIndex > -1) {
-    allTasks.splice(taskIndex, 1); // Remove the task from the array
+    allTasks.splice(taskIndex, 1);
     console.log(`Task ${taskId} removed successfully from allTasks.`);
   } else {
     console.error(`Task ${taskId} not found in allTasks.`);
-    return; // Exit the function if the task is not found
+    return;
   }
+  console.log("Task IDs after deletion:", allTasks.map(task => task.id)); // Debugging output
 
-  // Attempt to save the updated tasks array to the server
   try {
-    await saveTasks(); // Save the updated array to the server
+    await saveTasks();
     console.log('Updated tasks saved successfully to server.');
   } catch (error) {
     console.error('Error saving updated tasks to server:', error);
-    return; // Exit the function if saving to the server fails
+    return;
   }
 
-  // Remove the task element from the DOM if it exists
   let taskElement = document.getElementById(taskId);
   if (taskElement) {
     taskElement.remove();
@@ -887,82 +891,85 @@ async function deleteTaskInfos(taskId) {
     console.error(`DOM element for task ${taskId} not found.`);
   }
 
-  // Hide the task details UI if it's visible
   let wholeTaskInfos = document.querySelector(".whole-task-infos");
   if (wholeTaskInfos) {
     wholeTaskInfos.classList.add("d-none");
   }
 
-  // Update UI elements to reflect the deletion
   updateNoTaskDivs();
+  removeGreyOverlay();
 }
 
 function renderSelectedContacts(containerId) {
+  if (!currentEditingTaskId) {
+      console.error("No task selected for editing/viewing.");
+      return;
+  }
+
   const container = document.getElementById(containerId);
   container.innerHTML = '';
 
+  const task = allTasks.find(task => task.id === currentEditingTaskId);
+  if (!task) {
+      console.error("Task not found with ID:", currentEditingTaskId);
+      return;
+  }
+
   taskContacts.forEach(contact => {
-    const contactElement = document.createElement('div');
-    contactElement.classList.add('contact-display');
-    contactElement.style.display = 'flex';
-    contactElement.style.alignItems = 'center';
-    contactElement.style.justifyContent = 'space-between';
-    contactElement.style.cursor = 'pointer';
-    contactElement.style.marginBottom = '8px';
-    contactElement.style.padding = '10px';
-    contactElement.style.borderRadius = '5px';
+      const contactElement = document.createElement('div');
+      contactElement.classList.add('contact-display');
+      contactElement.style.display = 'flex';
+      contactElement.style.alignItems = 'center';
+      contactElement.style.justifyContent = 'space-between';
+      contactElement.style.cursor = 'pointer';
+      contactElement.style.marginBottom = '8px';
+      contactElement.style.padding = '10px';
+      contactElement.style.borderRadius = '5px';
 
-    const iconDiv = document.createElement('div');
-    iconDiv.classList.add('contact-icon');
-    iconDiv.style.backgroundColor = contact.color;
-    iconDiv.textContent = contact.name.charAt(0).toUpperCase();
-    iconDiv.style.color = 'white';
-    iconDiv.style.width = '32px';
-    iconDiv.style.height = '32px';
-    iconDiv.style.display = 'flex';
-    iconDiv.style.justifyContent = 'center';
-    iconDiv.style.alignItems = 'center';
-    iconDiv.style.borderRadius = '50%';
+      const iconDiv = document.createElement('div');
+      iconDiv.classList.add('contact-icon');
+      iconDiv.style.backgroundColor = contact.color || '#ddd';
+      iconDiv.textContent = contact.name.charAt(0).toUpperCase();
+      iconDiv.style.color = 'white';
+      iconDiv.style.width = '32px';
+      iconDiv.style.height = '32px';
+      iconDiv.style.display = 'flex';
+      iconDiv.style.justifyContent = 'center';
+      iconDiv.style.alignItems = 'center';
+      iconDiv.style.borderRadius = '50%';
 
-    const nameSpan = document.createElement('span');
-    nameSpan.textContent = contact.name;
-    nameSpan.classList.add('contact-name');
-    nameSpan.style.flexGrow = '1';
+      const nameSpan = document.createElement('span');
+      nameSpan.textContent = contact.name;
+      nameSpan.classList.add('contact-name');
+      nameSpan.style.flexGrow = '1';
 
-    const checkbox = document.createElement('input');
-    checkbox.type = 'checkbox';
-    checkbox.classList.add('contact-checkbox');
+      const checkbox = document.createElement('input');
+      checkbox.type = 'checkbox';
+      checkbox.classList.add('contact-checkbox');
 
-    const isSelected = allTasks.some(task => task.contacts.some(taskContact => taskContact.name === contact.name));
-    checkbox.checked = isSelected;
-    updateContactElementStyle(contactElement, isSelected);
+      const isSelected = task.contacts.some(taskContact => taskContact.name === contact.name);
+      checkbox.checked = isSelected;
 
-    checkbox.addEventListener('change', () => {
-      updateContactElementStyle(contactElement, checkbox.checked);
-    
-      if (checkbox.checked) {
-        allTasks.forEach(task => {
-          if (!task.contacts.some(taskContact => taskContact.name === contact.name)) {
-            task.contacts.push({
-              name: contact.name,
-              color: contact.color,
-              letter: contact.name.charAt(0).toUpperCase(),
-            });
+      checkbox.addEventListener('change', () => {
+          if (checkbox.checked) {
+              if (!task.contacts.some(taskContact => taskContact.name === contact.name)) {
+                  task.contacts.push({
+                      name: contact.name,
+                      color: contact.color,
+                      letter: contact.name.charAt(0).toUpperCase(),
+                  });
+              }
+          } else {
+              task.contacts = task.contacts.filter(taskContact => taskContact.name !== contact.name);
           }
-        });
-        console.log('Updated allTasks array after adding contact:', allTasks);
-      } else {
-        allTasks.forEach(task => {
-          task.contacts = task.contacts.filter(taskContact => taskContact.name !== contact.name);
-        });
-        console.log('Updated allTasks array after removing contact:', allTasks);
-      }
-    });
 
-    contactElement.appendChild(iconDiv);
-    contactElement.appendChild(nameSpan);
-    contactElement.appendChild(checkbox);
-    container.appendChild(contactElement);
+          console.log(`Updated contacts for task ${task.id}:`, task.contacts);
+      });
+
+      contactElement.appendChild(iconDiv);
+      contactElement.appendChild(nameSpan);
+      contactElement.appendChild(checkbox);
+      container.appendChild(contactElement);
   });
 }
 
@@ -1087,121 +1094,149 @@ function deleteExistingSubtask(index) {
   }
 }
 
-function saveEditedTaskInfo(taskId) {
-  // Extrahiert die bearbeiteten Werte
+function deleteExistingSubtask(index) {
+  // Löscht eine bestehende Subtask
+  let subtaskElement = document.getElementById(`editable-subtask-${index}`);
+  if (subtaskElement) {
+    subtaskElement.remove();
+  }
+}
+
+
+async function saveEditedTaskInfo(taskId) {
   let editedTitle = document.getElementById(`edit-title-${taskId}`).value;
   let editedDescription = document.getElementById(`edit-description-${taskId}`).value;
   let editedCategory = document.getElementById(`edit-category-${taskId}`).value;
   let editedDueDate = document.getElementById(`edit-due-date-${taskId}`).value;
 
-  let priorityElement = document.getElementById("edit-priority-" + taskId);
-if (priorityElement) {
-    let selectedPriority = priorityElement.value;
-} else {
-    console.error("Element nicht gefunden: edit-priority-" + taskId);
-}
-let priorityName, priorityImage;
-switch (selectedPriority) {
-  case 'urgent':
-    priorityName = 'Urgent';
-    priorityImage = "../assets/icons/urgent3.svg";
-    break;
-    case 'medium':
-      priorityName = 'Medium';
-      priorityImage = "../assets/icons/medium.svg";
-      break;
-    case 'low':
-      priorityName = 'Low';
-      priorityImage = "../assets/icons/low.svg";
-      break;
+  let priorityName = selectedPriorityName;
+  let priorityImage;
+  switch (selectedPriority) {
+      case 'urgent':
+          priorityImage = "../assets/icons/urgent.svg";
+          break;
+      case 'medium':
+          priorityImage = "../assets/icons/medium.svg";
+          break;
+      case 'low':
+          priorityImage = "../assets/icons/low.svg";
+          break;
+      default:
+          console.error("Invalid priority selected");
+          return;
   }
 
   let task = allTasks.find(task => task.id === taskId);
   if (task) {
-    let contactsHtml = task.contacts.map(contact => `
-      <div class="assigned-contact-display">
-        <div class="contact-icon" style="background-color: ${contact.color};">${contact.letter}</div>
-        <span class="contact-name">${contact.name}</span>
+      task.title = editedTitle;
+      task.description = editedDescription;
+      task.category = editedCategory;
+      task.dueDate = editedDueDate;
+      task.priority = priorityName;
+      task.priorityImage = priorityImage;
+
+    let contactsHtml = task.contacts.map(contact => {
+      return `<div class="assigned-contact-display">
+                <div class="contact-icon" style="background-color: ${contact.color};">${contact.letter}</div>
+                <span class="contact-name">${contact.name}</span>
+              </div>`;
+    }).join('');
+
+    let contactsIconHtml = task.contacts.map(contact => `
+      <div style="
+        display: inline-block; 
+        margin-right: 5px; 
+        background-color: ${contact.color}; 
+        border-radius: 50%; 
+        width: 32px; 
+        height: 32px; 
+        color: white; 
+        display: flex; 
+        justify-content: center; 
+        align-items: center; 
+        margin-right: -10px; 
+        position: relative; 
+        z-index: 1;
+        border: 2px solid white;">
+          ${contact.letter}
       </div>
     `).join('');
-  let taskElement = document.getElementById(taskId);
-  if (taskElement) {
-    taskElement.querySelector(".board-task-card-description").textContent =
-      editedTitle;
-    taskElement.querySelector(".board-task-card-task").textContent =
-      editedDescription;
-    taskElement.querySelector(".board-task-card-title").textContent =
-      editedCategory;
-    taskElement.querySelector(".board-task-card-date").textContent =
-      editedDueDate;
-  }
-  if (taskElement) {
-      let priorityElement = taskElement.querySelector(".board-task-card-priority");
-      priorityElement.dataset.priorityName = priorityName;
-      priorityElement.querySelector("img").src = priorityImage;
-  }
 
-  if (taskElement) {
-    let priorityImgElement = taskElement.querySelector(".board-task-card-priority img");
-    if (priorityImgElement) {
-      priorityImgElement.src = priorityImage;
+    let taskElement = document.getElementById(taskId);
+    if (taskElement) {
+      taskElement.querySelector(".board-task-card-description").textContent = editedTitle;
+      taskElement.querySelector(".board-task-card-title").textContent = editedCategory;
+      taskElement.querySelector(".board-task-card-date").textContent = editedDueDate;
+
+      let priorityElement = taskElement.querySelector(".board-task-card-priority img");
+      if (priorityElement) {
+        priorityElement.src = priorityImage;
+      }
+
+      let iconContainer = taskElement.querySelector(".icon-container.task-icon-added");
+      if (iconContainer) {
+        iconContainer.innerHTML = contactsIconHtml;
+      }
     }
-  }
 
-  let taskInfoContainer = document.querySelector(".whole-task-infos");
-  if (taskInfoContainer) {
-    taskInfoContainer.innerHTML = `
-      <div class="task-info-top">
-        <div class="task-info-category">${editedCategory}</div>
-        <div><img onclick="closeTaskInfos()" src="../assets/icons/Close2.svg" alt"an image of a X"></div>
-      </div>
-      <div class="task-info-title">${editedTitle}</div>
-      <div class="task-info-description">${editedDescription}</div>
-      <div class="task-info-due-date">
-        <div class="headline3">Due date:</div>
-        <div class="variable">${editedDueDate}</div>
-      </div>
-      <div class="task-info-prio">
-      <div>Priority:</div>
-      <div class="task-info-priority-name">${priorityName}</div>
-      <img src="${priorityImage}" class="task-info-priority-image">
-
+    let taskInfoContainer = document.querySelector(".whole-task-infos");
+    if (taskInfoContainer) {
+      taskInfoContainer.innerHTML = `
+        <div class="task-info-top">
+          <div class="task-info-category">${editedCategory}</div>
+          <div><img onclick="closeTaskInfos()" src="../assets/icons/Close2.svg"></div>
         </div>
-      </div>
-      <div class="task-info-assigned-to">
+        <div class="task-info-title">${editedTitle}</div>
+        <div class="task-info-description">${editedDescription}</div>
+        <div class="task-info-due-date">
+          <div class="headline3">Due date:</div>
+          <div class="variable">${editedDueDate}</div>
+        </div>
+        <div class="task-info-prio">
+          <div>Priority:</div>
+          <div class="task-info-priority-name">${priorityName}</div>
+          <img src="${priorityImage}" class="task-info-priority-image">
+        </div>
+        <div class="task-info-assigned-to">
           <div class="headline3">Assigned To:</div>
           <div class="saved-edited-contact-icons">${contactsHtml}</div>
         </div>
-      <div class="task-info-subtasks">
-        <div class="headline3">Subtasks</div>
-
-      </div>
-      <div class="task-info-delete-edit center absolute">
-        <div onclick="deleteTaskInfos('${taskId}')" class="task-info-delete pointer center">
-          <img class="img1" src="../assets/icons/delete2.svg" alt="a picture of a trash can">
-          <img class="img2 d-none" src="../assets/icons/delete2.png" alt="a picture of a trash can">
-          <span><b>Delete</b></span>
+        <div class="task-info-subtasks">
+          <div class="headline3">Subtasks</div>
         </div>
-        <div onclick="editTaskInfos('${taskId}')" class="task-info-edit pointer center"> 
-          <img class="img3" src="../assets/icons/edit2.svg" alt="a picture of a pen">
-          <img class="img4 d-none" src="../assets/icons/edit2.png" alt="a picture of a pen">
-          <span><b>Edit</b></span>
+        <div class="task-info-delete-edit center absolute">
+          <div onclick="deleteTaskInfos('${taskId}')" class="task-info-delete pointer center">
+            <img class="img1" src="../assets/icons/delete2.svg" alt="">
+            <img class="img2 d-none" src="../assets/icons/delete2.png" alt="">
+            <span><b>Delete</b></span>
+          </div>
+          <div onclick="editTaskInfos('${taskId}')" class="task-info-edit pointer center"> 
+            <img class="img3" src="../assets/icons/edit2.svg" alt="">
+            <img class="img4 d-none" src="../assets/icons/edit2.png" alt="">
+            <span><b>Edit</b></span>
+          </div>
         </div>
-      </div>
-    `;
+      `;
+    }
   }
+
+  try {
+    await saveTasks();
+    console.log("Task updates saved successfully.");
+  } catch (error) {
+    console.error("Failed to save task updates:", error);
+  }
+
+  removeGreyOverlay();
   openTaskInfos(
     taskId,
-    editedTitle, // oder title, falls Sie den ursprünglichen Titel behalten
-    editedDescription, // oder description
-    editedCategory, // oder category
-    editedDueDate, // oder dueDate
-    priorityName, // Aktualisierter Wert
-    priorityImage // Aktualisierter Wert
-    );
-  } else {
-    console.error('Task not found with ID:', taskId);
-  }
+    editedTitle,
+    editedDescription,
+    editedCategory,
+    editedDueDate,
+    priorityName,
+    priorityImage
+  );
 }
 
 function correctSubtask(taskId) {

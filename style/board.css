@@ -215,7 +215,7 @@ body {
 }
 
 .drag-area-highlight {
-  background-color: rgba(0, 0, 0, 0.2);
+
 }
 
 .todo {
@@ -233,7 +233,7 @@ body {
   gap: 15px;
   width: 234px;
   min-height: 200px;
-  max-height: 300px;
+  max-height: 600px;
   padding: 24px;
   border-radius: 30px;
   border-width: 0;
@@ -738,6 +738,8 @@ body {
 }
 
 .whole-task-infos {
+  position: fixed;
+
   min-width: 400px;
   padding-left: 25px;
   padding-right: 25px;
@@ -844,7 +846,7 @@ body {
   display: none;
 }
 .task-info-delete:hover .img2 {
-  display: inline;
+  display: inline-block !important;
 }
 
 .task-info-edit:hover {
@@ -854,7 +856,7 @@ body {
   display: none;
 }
 .task-info-edit:hover .img4 {
-  display: inline;
+  display: inline-block !important;
 }
 .calendarPicker::-webkit-calendar-picker-indicator {
   cursor: pointer;
