@@ -228,7 +228,7 @@ body {
   gap: 15px;
   width: 234px;
   min-height: 200px;
-  max-height: 300px;
+  max-height: 600px;
   padding: 24px;
   border-radius: 30px;
   border-width: 0;
@@ -847,7 +847,7 @@ body {
   display: none;
 }
 .task-info-delete:hover .img2 {
-  display: inline;
+  display: inline-block !important;
 }
 
 .task-info-edit:hover {
@@ -857,7 +857,7 @@ body {
   display: none;
 }
 .task-info-edit:hover .img4 {
-  display: inline;
+  display: inline-block !important;
 }
 .calendarPicker::-webkit-calendar-picker-indicator {
   cursor: pointer;
