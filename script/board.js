@@ -1598,11 +1598,6 @@ function correctSubtask() {
 }
 
 
-function deleteSubtask(taskId, subtaskId) {
-
-}
-
-
 function updateNoTaskDivs() {
   const departmentIds = ['todo', 'inprogress', 'awaitingfeedback', 'done'];
   

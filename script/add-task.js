@@ -1,3 +1,4 @@
+
 let currentDraggedElement;
 let currentEditingTaskId = null;
 let taskIdCounter = 0;
@@ -8,193 +9,78 @@ let isContactsVisible = false;
 let taskContacts = [];
 let selectedContactIcons = [];
 let allTasks = [];
-let urgentTaskCount = 0;
 let selectedPriorityName = null;
 
 
 async function init() {
-    await includeHTML();
-    AddTask()
-  }
-  
-  async function includeHTML() {
-      let includeElements = document.querySelectorAll("[w3-include-html]");
-      for (let i = 0; i < includeElements.length; i++) {
-        const element = includeElements[i];
-        file = element.getAttribute("w3-include-html"); // "includes/header.html"
-        let resp = await fetch(file);
-        if (resp.ok) {
-          element.innerHTML = await resp.text();
-        } else {
-          element.innerHTML = "Page not found";
-        }
-      }
+  await includeHTML();
+  displayLoggedInUser();
+  await populateContactsDropdown();
+  await loadTasks();
+  await addTask();
 }
+
+
+function guestUsesLocalStorage() {
+  const loggedInUserName = localStorage.getItem('loggedInUserName');
+  return !loggedInUserName;
+}
+
 
 async function saveTasks() {
-  try {
-    await setItem('allTasks', JSON.stringify(allTasks));
-    console.log('Tasks saved successfully to server');
-  } catch (error) {
-    console.error('Error saving tasks to server:', error);
+  if (guestUsesLocalStorage()) {
+    try {
+      localStorage.setItem('allTasks', JSON.stringify(allTasks));
+      console.log('Tasks saved successfully to localStorage');
+    } catch (error) {
+      console.error('Error saving tasks to localStorage:', error);
+    }
+  } else {
+    try {
+      await setItem('allTasks', JSON.stringify(allTasks));
+      console.log('Tasks saved successfully to server');
+    } catch (error) {
+      console.error('Error saving tasks to server:', error);
+    }
   }
 }
 
+
 async function loadTasks() {
-  const url = `${STORAGE_URL}?key=allTasks&token=${STORAGE_TOKEN}`;
   allTasks = [];
-  console.log(allTasks);
-  try {
+  if (guestUsesLocalStorage()) {
+    try {
+      const tasks = localStorage.getItem('allTasks');
+      allTasks = tasks ? JSON.parse(tasks) : [];
+      console.log('Tasks loaded successfully from localStorage');
+    } catch (error) {
+      console.error('Error loading tasks from localStorage:', error);
+    }
+  } else {
+    const url = `${STORAGE_URL}?key=allTasks&token=${STORAGE_TOKEN}`;
+    try {
       const response = await fetch(url);
       const data = await response.json();
       if (data && data.data.value) {
-          allTasks = JSON.parse(data.data.value);
+        allTasks = JSON.parse(data.data.value);
       } else {
-          console.log('No tasks found or empty dataset returned from server.');
+        console.log('No tasks found or empty dataset returned from server.');
       }
-  } catch (error) {
+    } catch (error) {
       console.error('Error fetching tasks:', error);
-  }
-}
-
-
-async function renderTasks() {
-  const containers = ["todo", "inprogress", "done", "awaitingfeedback"];
-
-  containers.forEach((containerId) => {
-    const container = document.getElementById(containerId);
-    if (container) {
-      container.innerHTML = "";
     }
-  });
-
-  allTasks.forEach((task) => {
-    const {
-      id: taskId,
-      title,
-      description,
-      category,
-      dueDate,
-      subtasks,
-      priority: priorityName,
-      container,
-    } = task;
-    if (task.category === 'urgent') {
-      urgentTaskCount++;
-    }
-    const priorityImage = getPriorityImage(priorityName);
-    const categoryClass = getCategoryClass(category);
-    const contactsHtml = getContactsHtml(task.contacts);
-
-    const totalSubtasks = 2;
-    const completedSubtasks = subtasks.length;
-    const progressPercent = (completedSubtasks / totalSubtasks) * 100;
-
-    const taskElement = document.createElement("div");
-    taskElement.setAttribute("id", taskId);
-    taskElement.className = "board-task-card pointer";
-    taskElement.setAttribute("draggable", "true");
-    taskElement.setAttribute("ondragstart", "startDragging(event)");
-
-    taskElement.innerHTML = `
-      <div class="board-task-card-title ${categoryClass}">${category}</div>
-      <div class="board-task-card-description">${title}</div>
-      <div class="board-task-card-task">${description}</div>
-      <div class="board-task-card-date d-none">${dueDate}</div>
-      <div class="icon-container task-icon-added">${contactsHtml}</div>
-      <div class="board-task-card-priority"><img src="${priorityImage}"></div>
-      <div class="board-task-card-subtasks">
-        <div class="board-task-card-subtasks-bar">
-          <div id="bar-fill-${taskId}" class="bar-fill" style="width: ${progressPercent}%;"></div>
-        </div>
-        <div id="subtasks-amount-${taskId}" class="board-task-card-subtasks-amount">${completedSubtasks}/${totalSubtasks} Subtasks</div>
-      </div>
-    `;
-
-    const taskContainer = document.getElementById(task.container || "todo");
-    if (taskContainer) {
-      taskContainer.appendChild(taskElement);
-
-      taskElement.addEventListener("click", () => {
-        openTaskInfos(
-          taskId,
-          title,
-          description,
-          category,
-          dueDate,
-          subtasks,
-          priorityName,
-          priorityImage
-        );
-        populateContactsPlaceholder(task.contacts);
-      });
-    } else {
-      console.error(
-        `Container not found for task ID ${taskId} with container ID '${container}'`
-      );
-    }
-  });
-  updateUrgentTaskCountDisplay();
-}
-
-function updateUrgentTaskCountDisplay() {
-  const urgentElement = document.querySelector('.summary-urgent-number');
-  if (urgentElement) {
-    urgentElement.textContent = urgentTaskCount;
   }
 }
 
-async function fetchAndFilterContacts() {
-  try {
-      const loggedInUserName = localStorage.getItem("loggedInUserName");
-      if (!loggedInUserName) {
-          console.error("No logged-in user found. Contacts cannot be loaded.");
-          return [];
-      }
 
-      const contactsData = await getItem(`contacts_${loggedInUserName}`);
-      const parsedContacts = JSON.parse(contactsData) || [];
-      const filteredContacts = parsedContacts.filter(contact => contact.name || contact.email || contact.phone);
-
-      console.log("Fetched Contacts after filtering:", filteredContacts);
-      return filteredContacts;
-  } catch (error) {
-      console.error("Error loading contacts:", error);
-      return []; // Return an empty array in case of an error
-  }
-}
-
-function getPriorityImage(priorityName) {
-  switch (priorityName) {
-    case 'Urgent':
-      return '../assets/icons/urgent.svg';
-    case 'Medium':
-      return '../assets/icons/medium.svg';
-    case 'Low':
-      return '../assets/icons/low.svg';
-    default:
-      return '';
-  }
-}
-
-function getCategoryClass(category) {
-  switch (category) {
-    case 'Technical Task':
-      return 'category-technical';
-    case 'User Story':
-      return 'category-user-story';
-    default:
-      return 'category-default';
-  }
-}
-
-function AddTask() {
-  const main = document.getElementById('main');
-  main.innerHTML = `
+async function addTask() {
+  let addToTask = document.getElementById("add-task");
+  document.getElementById("add-task").classList.remove("d-none");
+  document.getElementById("add-task").classList.add("sign-up-animation");
+  addToTask.innerHTML = `
   <form onsubmit="addTodo(); return false;" class="addTaskForm">
   <div class="headline-div">
     <h1>Add Task</h1>
-    <img onclick="closeAddTodo()" class="goBack pointer" src="../assets/icons/close.svg" alt"an picture of a X">
       </div>
       <div class="add-tasks-div center">
         <div class="add-tasks-left-side-div">
@@ -207,13 +93,11 @@ function AddTask() {
             <textarea required type="text" maxlength="45" id="description-todo" placeholder="Enter a Description"></textarea>
           </div>
 
-
-
           <div class="assigned-to">
           <label for="contactsDropdownTask"><span>Assigned to</span></label>
           <div class="custom-dropdown" id="contactsDropdownContainer">
         <div id="contactsDropdownTask">
-          <input class="select-to-assign" placeholder="Select contacts to assign">
+          <input class="select-to-assign" placeholder="Select contacts to assign" readonly="readonly">
           <img id="arrowDropImage" class="find-contact-img" src="../assets/icons/arrowDrop.png" alt"a picture of an arrow pointing downwards" onclick="revealContacts()">
         </div>
           </div>
@@ -221,8 +105,6 @@ function AddTask() {
         <div class="contacts-container" id="contactsContainerTask"></div>
         <div class="selected-contacts-container "id="selectedContactsContainer"></div>
 
-
-          
         </div>
         <div class="add-tasks-right-side-div">
           <div class="duo-date">
@@ -298,121 +180,408 @@ function AddTask() {
     </div>
   </div>
 </form>
-
   `;
+  populateContactsDropdown("contactsDropdownTask");
+  bindSubtaskEvents();
+}
+
+
+async function addTodo() {
+  let title = document.getElementById("title-todo").value;
+  let description = document.getElementById("description-todo").value;
+  let category = document.getElementById("category-todo").value;
+  let dueDate = document.getElementById("date-todo").value;
+
+  let subtasks = Array.from(
+    document.querySelectorAll("#added-subtasks .added-subtask")
+  ).map((subtask) => subtask.textContent.trim());
+  let totalSubtasks = subtasks.length;
+
+  let uniqueIdFound = false;
+  let taskId;
+  while (!uniqueIdFound) {
+    taskId = `task-${taskIdCounter}`;
+    if (!allTasks.some(task => task.id === taskId)) {
+      uniqueIdFound = true;
+    } else {
+      taskIdCounter++;
     }
-    async function addTodo() {
-      let title = document.getElementById("title-todo").value;
-      let description = document.getElementById("description-todo").value;
-      let category = document.getElementById("category-todo").value;
-      let dueDate = document.getElementById("date-todo").value;
-    
-      let subtasks = Array.from(
-        document.querySelectorAll("#added-subtasks .added-subtask")
-      ).map((subtask) => subtask.textContent.trim());
-      let totalSubtasks = subtasks.length;
-    
-      let uniqueIdFound = false;
-      let taskId;
-      while (!uniqueIdFound) {
-        taskId = `task-${taskIdCounter}`;
-        if (!allTasks.some(task => task.id === taskId)) {
-          uniqueIdFound = true;
-        } else {
-          taskIdCounter++;
+  }
+
+  let priorityImage = "";
+  let priorityName = "";
+  switch (selectedPriority) {
+    case "urgent":
+      priorityImage = "../assets/icons/urgent3.svg";
+      priorityName = "Urgent";
+      break;
+    case "medium":
+      priorityImage = "../assets/icons/medium.svg";
+      priorityName = "Medium";
+      break;
+    case "low":
+      priorityImage = "../assets/icons/low.svg";
+      priorityName = "Low";
+      break;
+  }
+
+  let selectedContactsContainer = document.getElementById("selectedContactsContainer");
+  let selectedContactsHtml = selectedContactsContainer.innerHTML;
+
+  let task = {
+    id: taskId,
+    title: title,
+    description: description,
+    category: category,
+    dueDate: dueDate,
+    subtasks: subtasks,
+    priority: priorityName,
+    priorityImage: priorityImage,
+    contacts: [...selectedContactIcons]
+  };
+  allTasks.push(task);
+
+  console.log("All Tasks:", allTasks);
+
+  let contactsHtml = task.contacts.map(contact => {
+    return `<div class="task-contact-icon" style="background-color: ${contact.color};">${contact.letter}</div>`;
+  }).join('');
+
+  let categoryClass = "";
+  if (category === "Technical Task") {
+    categoryClass = "category-technical";
+  } else if (category === "User Story") {
+    categoryClass = "category-user-story";
+  }
+
+  let taskHTML = `
+  <div id="${taskId}" class="board-task-card pointer" ondragstart="startDragging(event)" draggable="true" onclick="openTaskInfos('${taskId}', '${title}', '${description}', '${category}', '${dueDate}', ${JSON.stringify(subtasks).split('"').join("&quot;")}, '${priorityName}', '${priorityImage}')">
+  <div class="board-task-card-title ${categoryClass}">${category}</div>
+  <div class="board-task-card-description">${title}</div>
+  <div class="board-task-card-task">${description}</div>
+  <div class="board-task-card-date d-none">${dueDate}</div>
+  <div class="board-task-card-subtasks">
+    <div class="board-task-card-subtasks-bar">
+      <div id="bar-fill-${taskId}" class="bar-fill" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
+    </div>
+    <div id="subtasks-amount-${taskId}" class="board-task-card-subtasks-amount">${totalSubtasks}/2 Subtasks</div>
+  </div>
+  <div class="icon-container task-icon-added">${contactsHtml}</div>
+    <div class="board-task-card-priority">
+      <img id="priority-img-${taskId}" src="${priorityImage}">
+    </div>
+  </div>
+  `;
+  selectedContactIcons = [];
+  selectedPriority = null;
+  document.getElementById("todo").insertAdjacentHTML("beforeend", taskHTML);
+  updateProgressBar(taskId, totalSubtasks);
+
+  let newTaskElement = document.getElementById(taskId);
+  bindDragEvents(newTaskElement);
+
+  await saveTasks();
+  init();
+}
+
+
+function displayLoggedInUser() {
+  const loggedInUserName = localStorage.getItem('loggedInUserName');
+  if (loggedInUserName) {
+    const userNameIcon = document.getElementById('board-user-icon');
+    const firstLetter = loggedInUserName.charAt(0).toUpperCase();
+    userNameIcon.textContent = firstLetter;
+  }
+}
+
+
+async function populateContactsDropdown() {
+  try {
+      taskContacts = await fetchAndFilterContacts();
+      if (taskContacts.length === 0) {
+          console.log("No contacts found or an error occurred while fetching contacts.");
+          return;
+      }
+
+      const contactsContainer = document.getElementById("contactsContainerTask");
+      const selectToAssignInput = document.querySelector(".select-to-assign");
+      const arrowDrop = document.getElementById("arrowDropImage");
+      const selectedContactsContainer = document.getElementById("selectedContactsContainer");
+
+      if (!selectToAssignInput) {
+          return;
+      }
+
+      selectToAssignInput.removeEventListener("click", toggleContactsVisibility);
+      selectToAssignInput.addEventListener("click", toggleContactsVisibility);
+
+      if (!contactsContainer || !selectedContactsContainer || !arrowDrop) {
+          console.log("One or more required elements are missing.");
+          return;
+      }
+
+      let contactColors = {};
+      contactsContainer.innerHTML = '';
+      renderContacts(taskContacts, contactsContainer, selectedContactsContainer, contactColors);
+
+  } catch (error) {
+      console.error("Error in populateContactsDropdown:", error);
+  }
+}
+
+
+async function addTodo() {
+  let title = document.getElementById("title-todo").value;
+  let description = document.getElementById("description-todo").value;
+  let category = document.getElementById("category-todo").value;
+  let dueDate = document.getElementById("date-todo").value;
+
+  let subtasks = Array.from(
+    document.querySelectorAll("#added-subtasks .added-subtask")
+  ).map((subtask) => subtask.textContent.trim());
+  let totalSubtasks = subtasks.length;
+
+  let uniqueIdFound = false;
+  let taskId;
+  while (!uniqueIdFound) {
+    taskId = `task-${taskIdCounter}`;
+    if (!allTasks.some(task => task.id === taskId)) {
+      uniqueIdFound = true;
+    } else {
+      taskIdCounter++;
+    }
+  }
+
+  let priorityImage = "";
+  let priorityName = "";
+  switch (selectedPriority) {
+    case "urgent":
+      priorityImage = "../assets/icons/urgent3.svg";
+      priorityName = "Urgent";
+      break;
+    case "medium":
+      priorityImage = "../assets/icons/medium.svg";
+      priorityName = "Medium";
+      break;
+    case "low":
+      priorityImage = "../assets/icons/low.svg";
+      priorityName = "Low";
+      break;
+  }
+
+  let selectedContactsContainer = document.getElementById("selectedContactsContainer");
+  let selectedContactsHtml = selectedContactsContainer.innerHTML;
+
+  let task = {
+    id: taskId,
+    title: title,
+    description: description,
+    category: category,
+    dueDate: dueDate,
+    subtasks: subtasks,
+    priority: priorityName,
+    priorityImage: priorityImage,
+    contacts: [...selectedContactIcons]
+  };
+  allTasks.push(task);
+
+  console.log("All Tasks:", allTasks);
+
+  let contactsHtml = task.contacts.map(contact => {
+    return `<div class="task-contact-icon" style="background-color: ${contact.color};">${contact.letter}</div>`;
+  }).join('');
+
+  let categoryClass = "";
+  if (category === "Technical Task") {
+    categoryClass = "category-technical";
+  } else if (category === "User Story") {
+    categoryClass = "category-user-story";
+  }
+
+  let taskHTML = `
+  <div id="${taskId}" class="board-task-card pointer" ondragstart="startDragging(event)" draggable="true" onclick="openTaskInfos('${taskId}', '${title}', '${description}', '${category}', '${dueDate}', ${JSON.stringify(subtasks).split('"').join("&quot;")}, '${priorityName}', '${priorityImage}')">
+  <div class="board-task-card-title ${categoryClass}">${category}</div>
+  <div class="board-task-card-description">${title}</div>
+  <div class="board-task-card-task">${description}</div>
+  <div class="board-task-card-date d-none">${dueDate}</div>
+  <div class="board-task-card-subtasks">
+    <div class="board-task-card-subtasks-bar">
+      <div id="bar-fill-${taskId}" class="bar-fill" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
+    </div>
+    <div id="subtasks-amount-${taskId}" class="board-task-card-subtasks-amount">${totalSubtasks}/2 Subtasks</div>
+  </div>
+  <div class="icon-container task-icon-added">${contactsHtml}</div>
+    <div class="board-task-card-priority">
+      <img id="priority-img-${taskId}" src="${priorityImage}">
+    </div>
+  </div>
+  `;
+  selectedContactIcons = [];
+  selectedPriority = null;
+  updateProgressBar(taskId, totalSubtasks);
+
+  let newTaskElement = document.getElementById(taskId);
+
+  await saveTasks();
+  location.replace("../html/board.html");
+}
+
+
+function bindSubtaskEvents() {
+  let addedSubtasksContainer = document.getElementById("added-subtasks");
+  if (addedSubtasksContainer) {
+    addedSubtasksContainer.addEventListener("click", function (event) {
+      let target = event.target;
+      if (target.tagName === "IMG") {
+        let subtaskId = target.closest(".added-subtask").id;
+        let taskId = "Ihr-Task-ID"; 
+        if (target.classList.contains("subtask-img1")) {
+          editSubtask(subtaskId);
+        } else if (target.classList.contains("subtask-img2")) {
+          deleteSubtask(taskId, subtaskId);
         }
       }
-    
-      let priorityImage = "";
-      let priorityName = "";
-      switch (selectedPriority) {
-        case "urgent":
-          priorityImage = "../assets/icons/urgent3.svg";
-          priorityName = "Urgent";
-          break;
-        case "medium":
-          priorityImage = "../assets/icons/medium.svg";
-          priorityName = "Medium";
-          break;
-        case "low":
-          priorityImage = "../assets/icons/low.svg";
-          priorityName = "Low";
-          break;
-      }
-    
-      let selectedContactsContainer = document.getElementById("selectedContactsContainer");
-      let selectedContactsHtml = selectedContactsContainer.innerHTML;
-    
-      let task = {
-        id: taskId,
-        title: title,
-        description: description,
-        category: category,
-        dueDate: dueDate,
-        subtasks: subtasks,
-        priority: priorityName,
-        priorityImage: priorityImage,
-        contacts: [...selectedContactIcons]
-      };
-      allTasks.push(task);
-    
-      console.log("All Tasks:", allTasks);
-    
-      let contactsHtml = task.contacts.map(contact => {
-        return `<div class="task-contact-icon" style="background-color: ${contact.color};">${contact.letter}</div>`;
-      }).join('');
-    
-      let categoryClass = "";
-      if (category === "Technical Task") {
-        categoryClass = "category-technical";
-      } else if (category === "User Story") {
-        categoryClass = "category-user-story";
-      }
-    
-      let taskHTML = `
-      <div id="${taskId}" class="board-task-card pointer" ondragstart="startDragging(event)" draggable="true" onclick="openTaskInfos('${taskId}', '${title}', '${description}', '${category}', '${dueDate}', ${JSON.stringify(subtasks).split('"').join("&quot;")}, '${priorityName}', '${priorityImage}')">
-      <div class="board-task-card-title ${categoryClass}">${category}</div>
-      <div class="board-task-card-description">${title}</div>
-      <div class="board-task-card-task">${description}</div>
-      <div class="board-task-card-date d-none">${dueDate}</div>
-      <div class="board-task-card-subtasks">
-        <div class="board-task-card-subtasks-bar">
-          <div id="bar-fill-${taskId}" class="bar-fill" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
-        </div>
-        <div id="subtasks-amount-${taskId}" class="board-task-card-subtasks-amount">${totalSubtasks}/2 Subtasks</div>
-      </div>
-      <div class="icon-container task-icon-added">${contactsHtml}</div>
-        <div class="board-task-card-priority">
-          <img id="priority-img-${taskId}" src="${priorityImage}">
-        </div>
-      </div>
-      `;
-      selectedContactIcons = [];
-      selectedPriority = null;
-      document.getElementById("todo").insertAdjacentHTML("beforeend", taskHTML);
-      updateProgressBar(taskId, totalSubtasks);
-    
-      let newTaskElement = document.getElementById(taskId);
-      bindDragEvents(newTaskElement);
-    
-      document.getElementById("add-task").classList.add("d-none");
-      document.getElementById("board-div").classList.remove("background");
-    
-      await saveTasks();
-      removeGreyOverlay();
-      location.reload();
-      window.location.href = 'board.html';
+    });
+  }
 }
-    
-function revealContacts() {
+
+
+async function fetchAndFilterContacts() {
+  try {
+      const loggedInUserName = localStorage.getItem("loggedInUserName");
+      if (!loggedInUserName) {
+          console.error("No logged-in user found. Contacts cannot be loaded.");
+          return [];
+      }
+
+      const contactsData = await getItem(`contacts_${loggedInUserName}`);
+      const parsedContacts = JSON.parse(contactsData) || [];
+      const filteredContacts = parsedContacts.filter(contact => contact.name || contact.email || contact.phone);
+
+      return filteredContacts;
+  } catch (error) {
+      console.error("Error loading contacts:", error);
+      return []; // Return an empty array in case of an error
+  }
+}
+
+
+function toggleContactsVisibility() {
   const contactsContainer = document.getElementById("contactsContainerTask");
   const arrowDrop = document.getElementById("arrowDropImage");
+  const selectedContactsContainer = document.getElementById("selectedContactsContainer");
 
-  isContactsVisible = !isContactsVisible;
-  contactsContainer.style.display = isContactsVisible ? "flex" : "none";
+  contactsContainer.style.display = (contactsContainer.style.display === "none") ? "flex" : "none";
+  arrowDrop.style.transform = (contactsContainer.style.display === "none") ? "rotate(0deg)" : "rotate(180deg)";
 
-  arrowDrop.style.transform = isContactsVisible ? "rotate(180deg)" : "rotate(0deg)";
+
 }
+
+
+function renderContacts(userContacts, contactsContainer, selectedContactsContainer, contactColors) {
+  userContacts.forEach((contact) => {
+    const { name, color } = contact;
+
+    if (!name) {
+      return;
+    }
+
+    const contactDiv = createContactDiv(name, color, contactColors);
+    contactsContainer.appendChild(contactDiv);
+  });
+}
+
+function createContactDiv(name, color, contactColors) {
+  const contactDiv = document.createElement("div");
+  contactDiv.classList.add("contact");
+  contactDiv.style.display = "flex";
+  contactDiv.style.marginBottom = "4px";
+  contactDiv.style.marginTop = "4px";
+  contactDiv.style.alignItems = "center";
+
+  const contactIcon = document.createElement("div");
+  contactIcon.classList.add("contact-icon");
+  contactIcon.textContent = name.charAt(0).toUpperCase();
+
+  // Generate and store color for each contact
+  contactColors[name] = color || getRandomColor();
+  contactIcon.style.backgroundColor = contactColors[name];
+  contactIcon.style.color = "white";
+
+  const contactName = document.createElement("span");
+  contactName.textContent = name;
+
+  const contactCheckbox = document.createElement("input");
+  contactCheckbox.type = "checkbox";
+  contactCheckbox.value = name;
+  contactCheckbox.dataset.color = contactColors[name];
+  contactCheckbox.classList.add("contact-checkbox");
+
+  const spacer = document.createElement("div");
+  spacer.style.flexGrow = 1;
+
+  contactDiv.appendChild(contactIcon);
+  contactDiv.appendChild(contactName);
+  contactDiv.appendChild(spacer);
+  contactDiv.appendChild(contactCheckbox);
+
+  contactDiv.addEventListener("mouseover", function () {
+    contactDiv.classList.add("hovered");
+  });
+
+  contactDiv.addEventListener("mouseout", function () {
+    contactDiv.classList.remove("hovered");
+  });
+
+  contactDiv.addEventListener("click", function (event) {
+    event.stopPropagation();
+
+    contactCheckbox.checked = !contactCheckbox.checked;
+
+    contactCheckbox.dispatchEvent(new Event("change"));
+  });
+
+  contactCheckbox.addEventListener("change", function () {
+    let contactName = contactCheckbox.value;
+  
+    if (contactCheckbox.checked) {
+      const contactDetails = {
+        name: contactName,
+        color: contactColors[contactName],
+        letter: contactName.charAt(0).toUpperCase(),
+      };
+  
+      selectedContactIcons.push(contactDetails);
+
+      contactDiv.style.backgroundColor = "rgb(42,54,71)";
+      contactDiv.style.color = "white";
+    } else {
+
+      selectedContactIcons = selectedContactIcons.filter((details) => details.name !== contactName);
+  
+      contactDiv.style.backgroundColor = "";
+      contactDiv.style.color = "";
+    }
+
+    selectedContactsContainer.innerHTML = '';
+  
+    selectedContactIcons.forEach((details) => {
+      const selectedContactIcon = document.createElement("div");
+      selectedContactIcon.classList.add("contact-icon");
+      selectedContactIcon.textContent = details.letter;
+      selectedContactIcon.style.backgroundColor = details.color;
+      selectedContactIcon.style.color = "white";
+  
+      selectedContactsContainer.appendChild(selectedContactIcon);
+    });
+  
+    console.log("Selected Contact Icons:", selectedContactIcons);
+  });
+
+  return contactDiv;
+}
+
+
 function addSubtasks() {
   let input = document.getElementById("add-subtasks");
   if (input.value.length > 0) {
@@ -426,13 +595,66 @@ function addSubtasks() {
   }
   updateProgressBar();
 }
-function cancelSubtask() {
-  let input = document.getElementById("add-subtasks");
-  input.value = "";
-  document.getElementById("subtask-add").classList.remove("d-none");
-  document.getElementById("subtask-cancel").classList.add("d-none");
-  document.getElementById("subtask-correct").classList.add("d-none");
+
+
+function updateProgressBar(taskId, totalSubtasks) {
+  const maxSubtasks = 2; // Maximale Anzahl der Subtasks
+  const progressPercent = (totalSubtasks / maxSubtasks) * 100; // Prozent der abgeschlossenen Subtasks
+
+  let progressBar = document.getElementById(`bar-fill-${taskId}`);
+  if (progressBar) {
+    progressBar.style.width = `${progressPercent}%`;
+  }
+
+  let subtaskText = document.getElementById(`subtasks-amount-${taskId}`);
+  if (subtaskText) {
+    subtaskText.textContent = `${totalSubtasks}/${maxSubtasks} Subtasks`;
+  }
 }
+
+function mapContactsForDisplay(contacts) {
+  return contacts.map((contact) => ({
+    icon: contact.profileImage,
+    name: contact.username,
+  }));
+}
+
+
+function correctSubtask(taskId) {
+  let input = document.getElementById("add-subtasks").value.trim();
+  if (input !== "") {
+    const currentSubtasks = document.querySelectorAll(
+      `#${taskId} .added-subtask`
+    ).length;
+    if (currentSubtasks < 2) {
+      const subtaskId = `subtask-${subtaskIdCounter++}`;
+      let addedSubtasks = document.getElementById("added-subtasks");
+      addedSubtasks.innerHTML += `
+        <div id="${subtaskId}" class="added-subtask pointer">
+          <div> ${input}</div>
+          <div class="subtask-both-img d-none">
+            <img onclick="editSubtask('${subtaskId}')" class="subtask-img1" src="../assets/icons/edit.svg" alt"a picture of a pen">
+            <img onclick="deleteSubtask('${subtaskId}')" class="subtask-img2" src="../assets/icons/delete.svg" alt"a picture of a trash can">
+          </div>
+        </div>
+      `;
+      document.getElementById("add-subtasks").value = "";
+      updateTaskProgress(taskId, 0, currentSubtasks + 1);
+    } else {
+      let inputElement = document.getElementById("add-subtasks");
+      inputElement.value = "Maximal 2 Subtasks";
+      inputElement.classList.add("red");
+      inputElement.disabled = true;
+      setTimeout(() => {
+        inputElement.value = "";
+        inputElement.classList.remove("red");
+        inputElement.disabled = false;
+      }, 3000);
+    }
+  }
+}
+
+
 function correctSubtask() {
   let input = document.getElementById("add-subtasks").value.trim();
   if (input !== "") {
@@ -468,11 +690,8 @@ function correctSubtask() {
     }
   }
 }
-function closeAddTodo() {
-  document.getElementById("add-task").classList.add("d-none");
-  selectedContacts = [];
-    removeGreyOverlay();
-}
+
+
 function setSelectedPriority(priority) {
   // Definitionen für Hintergrundfarben und Bildklassen
   const prioritySettings = {
@@ -511,3 +730,33 @@ switch (priority) {
 }
 console.log("Priorität gesetzt auf:", selectedPriority, selectedPriorityName);
 }
+
+
+function displaySelectedContactsIcons() {
+  const selectToAssignInput = document.querySelector('.select-to-assign');
+  const container = selectToAssignInput.parentElement;
+
+  let iconsContainer = document.getElementById('selectedContactsIcons');
+  if (!iconsContainer) {
+    iconsContainer = document.createElement('div');
+    iconsContainer.id = 'selectedContactsIcons';
+    container.appendChild(iconsContainer);
+  }
+  iconsContainer.innerHTML = '';
+}
+
+
+function updateSelectedContactsContainer(selectedContactsContainer) {
+  selectedContactsContainer.innerHTML = '';
+
+  selectedContacts.forEach((name) => {
+    const selectedContactIcon = document.createElement("div");
+    selectedContactIcon.classList.add("contact-icon");
+    selectedContactIcon.textContent = name.charAt(0).toUpperCase();
+    selectedContactIcon.style.backgroundColor = contactColors[name];
+    selectedContactIcon.style.color = "white";
+
+    selectedContactsContainer.appendChild(selectedContactIcon);
+  });
+}
+

@@ -131,8 +131,8 @@ function togglePasswordVisibility(field) {
 
   if (passwordInput.type === 'password') {
     passwordInput.type = 'text';
-    eyeIcon.src = '../assets/icons/eyeNO.png'; // Change to eyeNO.png when password is visible
-  } else {
+    eyeIcon.src = '../assets/icons/eyeNO.png';
+  } else { // Change to eyeNO.png when password is visible
     passwordInput.type = 'password';
     eyeIcon.src = '../assets/icons/eyeYES.png'; // Change to eyeYES.png when password is hidden
   }
