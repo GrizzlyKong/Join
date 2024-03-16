@@ -1,7 +1,6 @@
 body {
   /*   overflow-y: hidden; */
   overflow-x: hidden;
-
 }
 
 .noHover {
@@ -214,10 +213,6 @@ body {
   align-items: flex-start;
 }
 
-.drag-area-highlight {
-
-}
-
 .todo {
   background-color: white;
   border: 1px solid black;
@@ -340,7 +335,12 @@ body {
 
 .board-task-card-priority img {
   width: 24px;
-  height: 10px;
+  height: 24px;
+}
+
+.task-info-priority-image {
+  width: 24px;
+  height: 24px;
 }
 
 .add-tasks-whole-div {
@@ -351,7 +351,7 @@ body {
   bottom: 2vh;
   left: 20%;
   background-color: white;
-  z-index: 6;
+  z-index: 8;
   padding: 40px;
 }
 
@@ -738,8 +738,6 @@ body {
 }
 
 .whole-task-infos {
-  position: fixed;
-
   min-width: 400px;
   padding-left: 25px;
   padding-right: 25px;
@@ -968,10 +966,20 @@ body {
 }
 
 .hover-subtask {
+  display: flex;
+  margin-top: 24px;
+  margin-bottom: 24px;
+  max-width: 440px;
+  font-size: 24px;
+  justify-content: space-between;
 }
 
 .hover-subtask:hover {
   background-color: #d1d1d1;
+}
+
+.edit-subtask-images {
+  display: flex;
 }
 
 .add-input-Subtasks {
@@ -1276,7 +1284,17 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-right: -10px; /* Overlap effect */
+  margin-right: -10px;
   position: relative;
-  z-index: 1; /* Make sure this is correctly stacked */
+  z-index: 1;
 }
+
+/*
+#todo,
+#inprogress,
+#awaitingfeedback,
+#done {
+  position: relative;
+  top: 13px;
+}
+*/

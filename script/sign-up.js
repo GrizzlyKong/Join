@@ -79,20 +79,6 @@ document.getElementById("privacyCheckbox").addEventListener("change", function()
 });
 
 
-const passwordInput = document.getElementById("password");
-passwordInput.addEventListener("input", function() {
-  const passwordValue = this.value;
-  const passwordLengthError = document.getElementById("passwordLengthError");
-
-  if (passwordValue.length < 6) {
-    passwordLengthError.innerText = "Password must be at least 6 characters";
-  } else {
-    passwordLengthError.innerText = "";
-  }
-});
-
-
-
 function privacyPolicyHoverCheckbox() {
   const privacyPolicySpan = document.getElementById("sign-up-privacy-policy-id");
   const privacyCheckbox = document.getElementById("privacyCheckbox");
@@ -172,4 +158,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Add event listeners to the eye icons to toggle password visibility
 document.getElementById('eyeIconPassword').addEventListener('click', () => togglePasswordVisibility('password'));
-document.getElementById('eyeIconConfirmPassword').addEventListener('click', () => togglePasswordVisibility('passwordConfirm'));
+try {
+  document.getElementById('eyeIconConfirmPassword').addEventListener('click', () => togglePasswordVisibility('passwordConfirm'));
+} catch (error) {}
