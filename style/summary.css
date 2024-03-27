@@ -336,3 +336,26 @@ body {
   font-weight: 700;
   font-size: 64px;
 }
+
+.hidden-content {
+  opacity: 0;
+  transition: opacity 2s ease-in-out;
+}
+
+.welcome-message {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 2rem;
+  z-index: 1000;
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  display: none;
+}
+
+#whole-summary, [w3-include-html] {
+  opacity: 0;
+}

@@ -51,7 +51,48 @@ async function loadUsers() {
 
 
 /**
- * Logs the user in by checking credentials, handling remember me functionality, and redirecting to the summary page upon successful login.
+ * Checks if the provided email and password match a user in the system.
+ * @param {string} email - The email address provided by the user.
+ * @param {string} password - The password provided by the user.
+ * @returns {(object|null)} The user object if a match is found, otherwise null.
+ */
+function validateCredentials(email, password) {
+  const user = findUser(email, password);
+  if (user) {
+    return user;
+  } else {
+    return null;
+  }
+}
+
+
+/**
+ * Executes necessary actions for a successful login, including setting session flags and redirecting the user.
+ * @param {object} user
+ * @param {HTMLElement} checkbox
+ */
+function processSuccessfulLogin(user, checkbox) {
+  const isMobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  handleRememberMe(checkbox, user.email, user.password);
+  setLoggedInUser(user.name);
+  localStorage.setItem('isMobileDevice', isMobileDevice);
+  redirectToSummaryPage();
+}
+
+
+/**
+ * Displays an error message when login fails due to invalid credentials.
+ * @param {HTMLElement} invalidUserData
+ * @param {HTMLElement} emailInput
+ * @param {HTMLElement} passwordInput
+ */
+function showLoginError(invalidUserData, emailInput, passwordInput) {
+  showInvalidUserData(invalidUserData, emailInput, passwordInput);
+}
+
+
+/**
+ * processes a successful login or shows an error message based on the validation result.
  */
 async function login() {
   await loadUsers();
@@ -59,16 +100,14 @@ async function login() {
   const passwordInput = document.getElementById('loginPassword');
   const invalidUserData = document.getElementById('ifInvalid');
   const checkbox = document.getElementById('remember-me-checkbox');
+  clearValidationStyles(emailInput, passwordInput, invalidUserData);
   const email = emailInput.value;
   const password = passwordInput.value;
-  clearValidationStyles(emailInput, passwordInput, invalidUserData);
-  const user = findUser(email, password);
+  const user = validateCredentials(email, password);
   if (user) {
-    handleRememberMe(checkbox, email, password);
-    setLoggedInUser(user.name);
-    redirectToSummaryPage();
+    processSuccessfulLogin(user, checkbox);
   } else {
-    showInvalidUserData(invalidUserData, emailInput, passwordInput);
+    showLoginError(invalidUserData, emailInput, passwordInput);
   }
 }
 

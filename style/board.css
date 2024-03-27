@@ -550,7 +550,7 @@ body {
 }
 
 .subtasks {
-  padding-top: 16px;
+  padding-top: 36px;
 }
 
 .subtasks span {
@@ -564,6 +564,10 @@ body {
   height: 48px;
   border-radius: 10px;
   border: 1px solid #d1d1d1;
+}
+
+.input-warning::placeholder {
+  color: red;
 }
 
 .input-icon1 {
@@ -627,19 +631,18 @@ body {
 .stroke {
 }
 
-.oninput {
-  display: flex;
-  margin-left: -65px;
-  width: 59px;
-}
 .input-icon2 {
-  margin-left: -30px;
-  margin-bottom: -4px;
-  padding: 5px;
+  display: inline-block;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  box-sizing: border-box;
+  cursor: pointer;
+  transform: translateX(-44px) translateY(14px);
 }
+
 .input-icon2:hover {
   background-color: #d1d1d1;
-  border-radius: 50%;
 }
 .input-icon3 {
   margin-bottom: -5px;
@@ -993,6 +996,14 @@ body {
   font-size: 18px;
   width: 445px;
   height: 48px;
+}
+
+.edit-subtask-images img {
+  display: none;
+}
+
+.hover-subtask:hover .edit-subtask-images img {
+  display: inline-block;
 }
 
 .custom-dropdown {

@@ -38,24 +38,47 @@ async function loadUsers() {
 }
 
 
+function validateCredentials(email, password) {
+  const user = findUser(email, password);
+  if (user) {
+    return user;
+  } else {
+    return null;
+  }
+}
+
+
+function processSuccessfulLogin(user, checkbox) {
+  const isMobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  handleRememberMe(checkbox, user.email, user.password);
+  setLoggedInUser(user.name);
+  localStorage.setItem('isMobileDevice', isMobileDevice);
+  redirectToSummaryPage();
+}
+
+
+function showLoginError(invalidUserData, emailInput, passwordInput) {
+  showInvalidUserData(invalidUserData, emailInput, passwordInput);
+}
+
+
 async function login() {
   await loadUsers();
   const emailInput = document.getElementById('loginEmail');
   const passwordInput = document.getElementById('loginPassword');
   const invalidUserData = document.getElementById('ifInvalid');
   const checkbox = document.getElementById('remember-me-checkbox');
+  
+  clearValidationStyles(emailInput, passwordInput, invalidUserData);
+  
   const email = emailInput.value;
   const password = passwordInput.value;
-
-  clearValidationStyles(emailInput, passwordInput, invalidUserData);
-  const user = findUser(email, password);
+  const user = validateCredentials(email, password);
   
   if (user) {
-    handleRememberMe(checkbox, email, password);
-    setLoggedInUser(user.name);
-    redirectToSummaryPage();
+    processSuccessfulLogin(user, checkbox);
   } else {
-    showInvalidUserData(invalidUserData, emailInput, passwordInput);
+    showLoginError(invalidUserData, emailInput, passwordInput);
   }
 }
 

@@ -1,3 +1,8 @@
+/**
+ * Initializes the application by loading HTML content, showing the summary,
+ * loading and displaying task counts, setting the logged-in user name, and displaying
+ * the welcome message or content directly based on conditions.
+ */
 async function init() {
   await includeHTML();
   showSummary();
@@ -5,9 +10,14 @@ async function init() {
       await loadAndDisplayTaskCounts();
   }, 100);
   setLoggedInUserName();
+  displayWelcomeMessageAndContent();
 }
 
 
+/**
+ * Dynamically includes HTML from specified files into elements with the "w3-include-html" attribute.
+ * It uses fetch to load the HTML content and inserts it into the target elements.
+ */
 async function includeHTML() {
   let includeElements = document.querySelectorAll("[w3-include-html]");
   for (let i = 0; i < includeElements.length; i++) {
@@ -23,6 +33,10 @@ async function includeHTML() {
 }
 
 
+/**
+ * Asynchronously loads tasks from storage.
+ * @returns {Promise<Array>}
+ */
 async function loadTasks() {
   try {
       let tasks = await getItem('allTasks');
@@ -39,6 +53,9 @@ async function loadTasks() {
 }
 
 
+/**
+ * Sets the logged-in user's name in the designated element on the page.
+ */
 function setLoggedInUserName() {
   const loggedInUserName = localStorage.getItem('loggedInUserName');
   if (loggedInUserName) {
@@ -48,6 +65,9 @@ function setLoggedInUserName() {
 }
 
 
+/**
+ * Loads tasks and calculates task counts by categories, then updates the summary display with these counts.
+ */
 async function loadAndDisplayTaskCounts() {
   let allTasks = await loadTasks();
   let counts = countTasksInColumns(allTasks);
@@ -55,6 +75,11 @@ async function loadAndDisplayTaskCounts() {
 }
 
 
+/**
+ * Counts tasks based on their container categories.
+ * @param {Array} tasks
+ * @returns {Object}
+ */
 function countTasksInColumns(tasks) {
   const counts = {
     todo: 0,
@@ -62,7 +87,6 @@ function countTasksInColumns(tasks) {
     done: 0,
     awaitingFeedback: 0
   };
-
   tasks.forEach(task => {
     const container = normalizeContainer(task.container);
     counts[container]++;
@@ -71,6 +95,11 @@ function countTasksInColumns(tasks) {
 }
 
 
+/**
+ * Normalizes container names to standard keys used in task counts.
+ * @param {string} container
+ * @returns {string}
+ */
 function normalizeContainer(container) {
   const containerMap = {
     todo: 'todo',
@@ -82,6 +111,10 @@ function normalizeContainer(container) {
 }
 
 
+/**
+ * Updates elements on the page with the provided task counts.
+ * @param {Object} counts
+ */
 function updateSummaryDisplay(counts) {
   updateElementText('summary-todo-number', counts.todo);
   updateElementText('tasks-done-number', counts.done);
@@ -89,6 +122,12 @@ function updateSummaryDisplay(counts) {
   updateElementText('tasks-progress-number', counts.inProgress);
 }
 
+
+/**
+ * Updates the text content of an element by its ID.
+ * @param {string} id
+ * @param {string|number} text
+ */
 function updateElementText(id, text) {
   const element = document.getElementById(id);
   if (element) {
@@ -97,6 +136,17 @@ function updateElementText(id, text) {
 }
 
 
+/**
+ * Filters the tasks array to count only urgent tasks.
+ */
+function countUrgentTasks() {
+  return allTasks.filter(task => task.category === 'urgent').length;
+}
+
+
+/**
+ * Renders the summary view on the page by setting the innerHTML of the summary container.
+ */
 function showSummary() {
   let wholeSummary = document.getElementById('whole-summary');
   wholeSummary.innerHTML = `
@@ -168,6 +218,118 @@ function showSummary() {
   </div>
 </div>
   `;
+}
+
+
+/**
+ * Updates the display of urgent tasks count on the summary view.
+ */
+function updateUrgentTasksDisplay() {
+  const urgentTasksCount = countUrgentTasks();
+  const urgentTasksElement = document.querySelector('.summary-urgent-number');
+  if (urgentTasksElement) {
+    urgentTasksElement.textContent = urgentTasksCount;
+  }
+}
+
+
+/**
+ * Creates a welcome message element personalized with the user's name.
+ * @param {string} userName
+ */
+function createWelcomeMessage(userName) {
+  const welcomeMessage = document.createElement('div');
+  welcomeMessageStyle();
+  const messageText = document.createTextNode('Willkommen ');
+  const userNameSpan = document.createElement('span');
+  userNameSpan.textContent = userName;
+  userNameSpan.style.color = 'rgb(41,171,226)';
+  welcomeMessage.appendChild(messageText);
+  welcomeMessage.appendChild(userNameSpan);
+  return welcomeMessage;
+}
+
+
+/**
+ * Applies styling to the welcome message element. (Note: This function needs to be adjusted to correctly reference and style an element.)
+ */
+function welcomeMessageStyle () {
+  welcomeMessage.style.cssText = `
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  fontSize: 24px;
+  zIndex: 1000;
+  color: rgb(42,54,71);
+  text-align: center;
+`;
+}
+
+
+/**
+ * Displays the welcome message by appending it to the document body.
+ * @param {HTMLElement} welcomeMessage
+ */
+function showWelcomeMessage(welcomeMessage) {
+  document.body.style.backgroundColor = 'white';
+  document.body.appendChild(welcomeMessage);
+}
+
+
+/**
+ * Removes the welcome message from the document body and resets the background color.
+ * @param {HTMLElement} welcomeMessage
+ */
+function removeWelcomeMessage(welcomeMessage) {
+  welcomeMessage.remove();
+  document.body.style.backgroundColor = '';
+}
+
+
+/**
+ * Decides whether to display the welcome message and then content based on device type and if the user is logged in.
+ * Shows content directly if the conditions are not met.
+ */
+function displayWelcomeMessageAndContent() {
+  const isMobileDevice = localStorage.getItem('isMobileDevice') === 'true';
+  const userName = localStorage.getItem('loggedInUserName');
+  if (isMobileDevice && userName) {
+    const welcomeMessage = createWelcomeMessage(userName);
+    showWelcomeMessage(welcomeMessage);
+    setTimeout(() => {
+      removeWelcomeMessage(welcomeMessage);
+      fadeInContent();
+    }, 2000);
+  } else {
+    showContentDirectly();
+  }
+}
+
+
+/**
+ * Applies a fade-in effect to the main content and any dynamically included HTML content.
+ */
+function fadeInContent() {
+  const mainContent = document.getElementById('whole-summary');
+  mainContent.style.transition = 'opacity 1s';
+  mainContent.style.opacity = '1';
+  document.querySelectorAll('[w3-include-html]').forEach(element => {
+    element.style.transition = 'opacity 1s';
+    element.style.opacity = '1';
+  });
+}
+
+
+/**
+ * Immediately shows the main content and any dynamically included HTML content without a fade-in effect.
+ */
+function showContentDirectly() {
+  const mainContent = document.getElementById('whole-summary');
+  mainContent.style.opacity = '1';
+  document.querySelectorAll('[w3-include-html]').forEach(element => {
+    element.style.opacity = '1';
+  });
 }
 
 

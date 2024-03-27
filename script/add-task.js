@@ -76,7 +76,6 @@ async function loadTasks() {
 async function addTask() {
   let addToTask = document.getElementById("add-task");
   document.getElementById("add-task").classList.remove("d-none");
-  document.getElementById("add-task").classList.add("sign-up-animation");
   addToTask.innerHTML = `
   <form onsubmit="addTodo(); return false;" class="addTaskForm">
   <div class="headline-div">
@@ -183,105 +182,6 @@ async function addTask() {
   `;
   populateContactsDropdown("contactsDropdownTask");
   bindSubtaskEvents();
-}
-
-
-async function addTodo() {
-  let title = document.getElementById("title-todo").value;
-  let description = document.getElementById("description-todo").value;
-  let category = document.getElementById("category-todo").value;
-  let dueDate = document.getElementById("date-todo").value;
-
-  let subtasks = Array.from(
-    document.querySelectorAll("#added-subtasks .added-subtask")
-  ).map((subtask) => subtask.textContent.trim());
-  let totalSubtasks = subtasks.length;
-
-  let uniqueIdFound = false;
-  let taskId;
-  while (!uniqueIdFound) {
-    taskId = `task-${taskIdCounter}`;
-    if (!allTasks.some(task => task.id === taskId)) {
-      uniqueIdFound = true;
-    } else {
-      taskIdCounter++;
-    }
-  }
-
-  let priorityImage = "";
-  let priorityName = "";
-  switch (selectedPriority) {
-    case "urgent":
-      priorityImage = "../assets/icons/urgent3.svg";
-      priorityName = "Urgent";
-      break;
-    case "medium":
-      priorityImage = "../assets/icons/medium.svg";
-      priorityName = "Medium";
-      break;
-    case "low":
-      priorityImage = "../assets/icons/low.svg";
-      priorityName = "Low";
-      break;
-  }
-
-  let selectedContactsContainer = document.getElementById("selectedContactsContainer");
-  let selectedContactsHtml = selectedContactsContainer.innerHTML;
-
-  let task = {
-    id: taskId,
-    title: title,
-    description: description,
-    category: category,
-    dueDate: dueDate,
-    subtasks: subtasks,
-    priority: priorityName,
-    priorityImage: priorityImage,
-    contacts: [...selectedContactIcons]
-  };
-  allTasks.push(task);
-
-  console.log("All Tasks:", allTasks);
-
-  let contactsHtml = task.contacts.map(contact => {
-    return `<div class="task-contact-icon" style="background-color: ${contact.color};">${contact.letter}</div>`;
-  }).join('');
-
-  let categoryClass = "";
-  if (category === "Technical Task") {
-    categoryClass = "category-technical";
-  } else if (category === "User Story") {
-    categoryClass = "category-user-story";
-  }
-
-  let taskHTML = `
-  <div id="${taskId}" class="board-task-card pointer" ondragstart="startDragging(event)" draggable="true" onclick="openTaskInfos('${taskId}', '${title}', '${description}', '${category}', '${dueDate}', ${JSON.stringify(subtasks).split('"').join("&quot;")}, '${priorityName}', '${priorityImage}')">
-  <div class="board-task-card-title ${categoryClass}">${category}</div>
-  <div class="board-task-card-description">${title}</div>
-  <div class="board-task-card-task">${description}</div>
-  <div class="board-task-card-date d-none">${dueDate}</div>
-  <div class="board-task-card-subtasks">
-    <div class="board-task-card-subtasks-bar">
-      <div id="bar-fill-${taskId}" class="bar-fill" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
-    </div>
-    <div id="subtasks-amount-${taskId}" class="board-task-card-subtasks-amount">${totalSubtasks}/2 Subtasks</div>
-  </div>
-  <div class="icon-container task-icon-added">${contactsHtml}</div>
-    <div class="board-task-card-priority">
-      <img id="priority-img-${taskId}" src="${priorityImage}">
-    </div>
-  </div>
-  `;
-  selectedContactIcons = [];
-  selectedPriority = null;
-  document.getElementById("todo").insertAdjacentHTML("beforeend", taskHTML);
-  updateProgressBar(taskId, totalSubtasks);
-
-  let newTaskElement = document.getElementById(taskId);
-  bindDragEvents(newTaskElement);
-
-  await saveTasks();
-  init();
 }
 
 

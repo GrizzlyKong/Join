@@ -8,6 +8,7 @@ async function init() {
       await loadAndDisplayTaskCounts();
   }, 100); // Verzögerung von 100 ms
   setLoggedInUserName();
+  displayWelcomeMessageAndContent();
 }
 
 async function includeHTML() {
@@ -52,12 +53,15 @@ function setLoggedInUserName() {
     userName.textContent = loggedInUserName;
   }
 }
+
+
 async function loadAndDisplayTaskCounts() {
   let allTasks = await loadTasks();
   console.log("Geladene Aufgaben: ", allTasks); // Zum Debuggen
   let counts = countTasksInColumns(allTasks);
   updateSummaryDisplay(counts);
 }
+
 
 function countTasksInColumns(tasks) {
   const counts = {
@@ -111,6 +115,7 @@ function updateSummaryDisplay(counts) {
       urgentElement.textContent = counts.urgent;
   }
 }
+
 
 function countUrgentTasks() {
   return allTasks.filter(task => task.category === 'urgent').length;
@@ -190,12 +195,83 @@ function showSummary() {
   `;
 }
 
+
 function updateUrgentTasksDisplay() {
   const urgentTasksCount = countUrgentTasks();
   const urgentTasksElement = document.querySelector('.summary-urgent-number');
   if (urgentTasksElement) {
     urgentTasksElement.textContent = urgentTasksCount;
   }
+}
+
+
+function createWelcomeMessage(userName) {
+  const welcomeMessage = document.createElement('div');
+  welcomeMessage.style.cssText = `
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    fontSize: 24px;
+    zIndex: 1000;
+    color: rgb(42,54,71);
+    text-align: center;
+  `;
+  const messageText = document.createTextNode('Willkommen ');
+  const userNameSpan = document.createElement('span');
+  userNameSpan.textContent = userName;
+  userNameSpan.style.color = 'rgb(41,171,226)';
+  welcomeMessage.appendChild(messageText);
+  welcomeMessage.appendChild(userNameSpan);
+  return welcomeMessage;
+}
+
+
+function showWelcomeMessage(welcomeMessage) {
+  document.body.style.backgroundColor = 'white';
+  document.body.appendChild(welcomeMessage);
+}
+
+
+function removeWelcomeMessage(welcomeMessage) {
+  welcomeMessage.remove();
+  document.body.style.backgroundColor = '';
+}
+
+
+function displayWelcomeMessageAndContent() {
+  const isMobileDevice = localStorage.getItem('isMobileDevice') === 'true';
+  const userName = localStorage.getItem('loggedInUserName');
+  if (isMobileDevice && userName) {
+    const welcomeMessage = createWelcomeMessage(userName);
+    showWelcomeMessage(welcomeMessage);
+    setTimeout(() => {
+      removeWelcomeMessage(welcomeMessage);
+      fadeInContent();
+    }, 2000);
+  } else {
+showContentDirectly();
+  }
+}
+
+
+function fadeInContent() {
+  const mainContent = document.getElementById('whole-summary');
+  mainContent.style.transition = 'opacity 1s';
+  mainContent.style.opacity = '1';
+  document.querySelectorAll('[w3-include-html]').forEach(element => {
+    element.style.transition = 'opacity 1s';
+    element.style.opacity = '1';
+  });
+}
+
+
+function showContentDirectly() {
+  const mainContent = document.getElementById('whole-summary');
+  mainContent.style.opacity = '1';
+  document.querySelectorAll('[w3-include-html]').forEach(element => {
+    element.style.opacity = '1';
+  });
 }
 
 
