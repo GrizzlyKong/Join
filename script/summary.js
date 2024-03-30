@@ -248,13 +248,13 @@ function updateUrgentTasksDisplay() {
  */
 function createWelcomeMessage(userName) {
   const welcomeMessage = document.createElement('div');
-  welcomeMessageStyle();
   const messageText = document.createTextNode('Willkommen ');
   const userNameSpan = document.createElement('span');
   userNameSpan.textContent = userName;
   userNameSpan.style.color = 'rgb(41,171,226)';
   welcomeMessage.appendChild(messageText);
   welcomeMessage.appendChild(userNameSpan);
+  welcomeMessageStyle(welcomeMessage); // Adjust this line
   return welcomeMessage;
 }
 
@@ -262,17 +262,17 @@ function createWelcomeMessage(userName) {
 /**
  * Applies styling to the welcome message element. (Note: This function needs to be adjusted to correctly reference and style an element.)
  */
-function welcomeMessageStyle () {
+function welcomeMessageStyle(welcomeMessage) {
   welcomeMessage.style.cssText = `
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  fontSize: 24px;
-  zIndex: 1000;
-  color: rgb(42,54,71);
-  text-align: center;
-`;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    fontSize: 24px;
+    zIndex: 1000;
+    color: rgb(42,54,71);
+    text-align: center;
+  `;
 }
 
 
