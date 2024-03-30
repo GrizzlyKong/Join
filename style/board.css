@@ -980,7 +980,7 @@ body {
   justify-content: space-between;
 }
 
-.hover-subtask:hover {
+.hover-subtask2:hover {
   background-color: #d1d1d1;
 }
 
@@ -1303,12 +1303,3 @@ body {
   z-index: 1;
 }
 
-/*
-#todo,
-#inprogress,
-#awaitingfeedback,
-#done {
-  position: relative;
-  top: 13px;
-}
-*/
