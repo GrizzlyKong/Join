@@ -11,6 +11,9 @@ let allTasks = [];
 let selectedPriorityName = null;
 
 
+/**
+ * Initializes the application by including HTML files, displaying logged-in user, populating contacts dropdown, loading tasks, and adding a task.
+ */
 async function init() {
   await includeHTML();
   displayLoggedInUser();
@@ -20,12 +23,19 @@ async function init() {
 }
 
 
+/**
+ * Checks if the application is being used by a guest (without logged-in user).
+ * @returns {boolean} True if the application is being used by a guest, otherwise false.
+ */
 function guestUsesLocalStorage() {
   const loggedInUserName = localStorage.getItem('loggedInUserName');
   return !loggedInUserName;
 }
 
 
+/**
+ * Saves tasks either to local storage or server depending on the user's authentication status.
+ */
 async function saveTasks() {
   if (guestUsesLocalStorage()) {
     try {
@@ -45,6 +55,9 @@ async function saveTasks() {
 }
 
 
+/**
+ * Loads tasks from either local storage or server depending on the user's authentication status.
+ */
 async function loadTasks() {
   allTasks = [];
   if (guestUsesLocalStorage()) {
@@ -55,6 +68,9 @@ async function loadTasks() {
 }
 
 
+/**
+ * Loads tasks from local storage.
+ */
 async function loadTasksFromLocalStorage() {
   try {
     const tasks = localStorage.getItem('allTasks');
@@ -66,6 +82,9 @@ async function loadTasksFromLocalStorage() {
 }
 
 
+/**
+ * Loads tasks from the server.
+ */
 async function loadTasksFromServer() {
   const url = `${STORAGE_URL}?key=allTasks&token=${STORAGE_TOKEN}`;
   try {
@@ -82,6 +101,9 @@ async function loadTasksFromServer() {
 }
 
 
+/**
+ * Adds a task by displaying a form and handling user input.
+ */
 async function addTask() {
   let addToTask = document.getElementById("add-task");
   document.getElementById("add-task").classList.remove("d-none");
@@ -164,8 +186,7 @@ async function addTask() {
       </div>
     </div>
         </div>
-        <div class="absolute" id="added-subtasks">
-        
+        <div class="absolute" id="added-subtasks">       
         </div>
     </div>
   </div>
@@ -194,6 +215,9 @@ async function addTask() {
 }
 
 
+/**
+ * Displays the logged-in user's initials.
+ */
 function displayLoggedInUser() {
   const loggedInUserName = localStorage.getItem('loggedInUserName');
   if (loggedInUserName) {
@@ -204,6 +228,9 @@ function displayLoggedInUser() {
 }
 
 
+/**
+ * Populates the contacts dropdown with available contacts.
+ */
 async function populateContactsDropdown() {
   try {
       taskContacts = await fetchAndFilterContacts();
@@ -218,6 +245,11 @@ async function populateContactsDropdown() {
 }
 
 
+/**
+ * Checks if the list of contacts is empty.
+ * @param {Array} taskContacts - List of contacts to check.
+ * @returns {boolean} True if the list of contacts is empty, otherwise false.
+ */
 function isContactsListEmpty(taskContacts) {
     if (taskContacts.length === 0) {
         console.log("No contacts found or an error occurred while fetching contacts.");
@@ -227,6 +259,10 @@ function isContactsListEmpty(taskContacts) {
 }
 
 
+/**
+ * Retrieves UI elements needed for populating the contacts dropdown.
+ * @returns {Object} UI elements required for populating the contacts dropdown.
+ */
 function getUIElements() {
     const contactsContainer = document.getElementById("contactsContainerTask");
     const selectToAssignInput = document.querySelector(".select-to-assign");
@@ -236,6 +272,11 @@ function getUIElements() {
 }
 
 
+/**
+ * Checks if UI elements required for populating the contacts dropdown are missing.
+ * @param {Object} uiElements - UI elements required for populating the contacts dropdown.
+ * @returns {boolean} True if UI elements are missing, otherwise false.
+ */
 function uiElementsMissing({ contactsContainer, selectToAssignInput, arrowDrop, selectedContactsContainer }) {
     if (!selectToAssignInput || !contactsContainer || !selectedContactsContainer || !arrowDrop) {
         return true;
@@ -244,12 +285,22 @@ function uiElementsMissing({ contactsContainer, selectToAssignInput, arrowDrop, 
 }
 
 
+/**
+ * Sets up event listeners for UI elements.
+ * @param {HTMLElement} selectToAssignInput - Input element for selecting contacts.
+ */
 function setupUIEventListeners(selectToAssignInput) {
     selectToAssignInput.removeEventListener("click", toggleContactsVisibility);
     selectToAssignInput.addEventListener("click", toggleContactsVisibility);
 }
 
 
+/**
+ * Prepares the contacts container by rendering contacts.
+ * @param {HTMLElement} contactsContainer - Container for displaying contacts.
+ * @param {Array} taskContacts - List of contacts to render.
+ * @param {HTMLElement} selectedContactsContainer - Container for displaying selected contacts.
+ */
 function prepareContactsContainer(contactsContainer, taskContacts, selectedContactsContainer) {
     let contactColors = {};
     contactsContainer.innerHTML = '';
@@ -257,6 +308,9 @@ function prepareContactsContainer(contactsContainer, taskContacts, selectedConta
 }
 
 
+/**
+ * Adds a task based on user input.
+ */
 async function addTodo() {
   const title = document.getElementById("title-todo").value;
   const description = document.getElementById("description-todo").value;
@@ -275,10 +329,19 @@ async function addTodo() {
 }
 
 
+/**
+ * Retrieves subtasks from the input field.
+ * @returns {Array} List of subtasks.
+ */
 function getSubtasks() {
   return Array.from(document.querySelectorAll("#added-subtasks .added-subtask")).map(subtask => subtask.textContent.trim());
 }
 
+
+/**
+ * Generates a unique ID for a task.
+ * @returns {string} Unique task ID.
+ */
 function generateUniqueId() {
   let uniqueIdFound = false;
   let taskId;
@@ -293,6 +356,11 @@ function generateUniqueId() {
   return taskId;
 }
 
+
+/**
+ * Retrieves the image path for the selected priority.
+ * @returns {string} Image path for the selected priority.
+ */
 function getPriorityImage() {
   let priorityImage = "";
   switch (selectedPriority) {
@@ -309,6 +377,11 @@ function getPriorityImage() {
   return priorityImage;
 }
 
+
+/**
+ * Retrieves the name for the selected priority.
+ * @returns {string} Name for the selected priority.
+ */
 function getPriorityName() {
   let priorityName = "";
   switch (selectedPriority) {
@@ -325,6 +398,19 @@ function getPriorityName() {
   return priorityName;
 }
 
+
+/**
+ * Creates a task object.
+ * @param {string} id - Task ID.
+ * @param {string} title - Task title.
+ * @param {string} description - Task description.
+ * @param {string} category - Task category.
+ * @param {string} dueDate - Due date for the task.
+ * @param {Array} subtasks - List of subtasks for the task.
+ * @param {string} priorityName - Priority name for the task.
+ * @param {string} priorityImage - Image path for the priority.
+ * @returns {Object} Task object.
+ */
 function createTask(id, title, description, category, dueDate, subtasks, priorityName, priorityImage) {
   return {
     id: id,
@@ -339,26 +425,45 @@ function createTask(id, title, description, category, dueDate, subtasks, priorit
   };
 }
 
+
+/**
+ * Adds a task to the list of all tasks.
+ * @param {Object} task - Task object to add.
+ */
 function addToAllTasks(task) {
   allTasks.push(task);
 }
 
+
+/**
+ * Updates the HTML representation of a task's category.
+ * @param {string} category - Category of the task.
+ * @returns {string} HTML representation of the task's category.
+ */
+function getCategoryHtml(category) {
+  let categoryClass = "";
+  if (category === "Technical Task") {
+    categoryClass = "category-technical";
+  } else if (category === "User Story") {
+    categoryClass = "category-user-story";
+  }
+  return `<div class="board-task-card-title ${categoryClass}">${category}</div>`;
+}
+
+
+/**
+ * Updates the HTML representation of a task.
+ * @param {Object} task - Task object to update HTML for.
+ * @returns {string} HTML representation of the task.
+ */
 function updateTaskHtml(task) {
   const contactsHtml = task.contacts.map(contact => {
     return `<div class="task-contact-icon" style="background-color: ${contact.color};">${contact.letter}</div>`;
   }).join('');
-
-  let categoryClass = "";
-  if (task.category === "Technical Task") {
-    categoryClass = "category-technical";
-  } else if (task.category === "User Story") {
-    categoryClass = "category-user-story";
-  }
-
   const totalSubtasks = task.subtasks.length;
-  const taskHTML = `
+  return `
     <div id="${task.id}" class="board-task-card pointer" ondragstart="startDragging(event)" draggable="true" onclick="openTaskInfos('${task.id}', '${task.title}', '${task.description}', '${task.category}', '${task.dueDate}', ${JSON.stringify(task.subtasks).split('"').join("&quot;")}, '${task.priority}', '${task.priorityImage}')">
-      <div class="board-task-card-title ${categoryClass}">${task.category}</div>
+      ${getCategoryHtml(task.category)}
       <div class="board-task-card-description">${task.title}</div>
       <div class="board-task-card-task">${task.description}</div>
       <div class="board-task-card-date d-none">${task.dueDate}</div>
@@ -377,12 +482,18 @@ function updateTaskHtml(task) {
 }
 
 
+/**
+ * Resets selections after adding a task.
+ */
 function resetSelections() {
   selectedContactIcons = [];
   selectedPriority = null;
 }
 
 
+/**
+ * Binds event listeners for subtasks.
+ */
 function bindSubtaskEvents() {
   let addedSubtasksContainer = document.getElementById("added-subtasks");
   if (addedSubtasksContainer) {
@@ -402,6 +513,10 @@ function bindSubtaskEvents() {
 }
 
 
+/**
+ * Fetches and filters contacts for the logged-in user.
+ * @returns {Array} Filtered list of contacts.
+ */
 async function fetchAndFilterContacts() {
   try {
       const loggedInUserName = localStorage.getItem("loggedInUserName");
@@ -420,6 +535,9 @@ async function fetchAndFilterContacts() {
 }
 
 
+/**
+ * Toggles the visibility of the contacts dropdown.
+ */
 function toggleContactsVisibility() {
   const contactsContainer = document.getElementById("contactsContainerTask");
   const arrowDrop = document.getElementById("arrowDropImage");
@@ -429,6 +547,13 @@ function toggleContactsVisibility() {
 }
 
 
+/**
+ * Renders contacts in the contacts container.
+ * @param {Array} userContacts - List of user contacts.
+ * @param {HTMLElement} contactsContainer - Container for displaying contacts.
+ * @param {HTMLElement} selectedContactsContainer - Container for displaying selected contacts.
+ * @param {Object} contactColors - Object containing contact colors.
+ */
 function renderContacts(userContacts, contactsContainer, selectedContactsContainer, contactColors) {
   userContacts.forEach((contact) => {
     const { name, color } = contact;
@@ -441,6 +566,13 @@ function renderContacts(userContacts, contactsContainer, selectedContactsContain
 }
 
 
+/**
+ * Creates a div element for displaying contact information.
+ * @param {string} name - Contact name.
+ * @param {string} color - Color associated with the contact.
+ * @param {Object} contactColors - Object containing contact colors.
+ * @returns {HTMLElement} Div element for contact information.
+ */
 function createContactDiv(name, color, contactColors) {
   const contactDiv = createMainContactDiv();
   appendContactIcon(contactDiv, name, color, contactColors);
@@ -452,6 +584,10 @@ function createContactDiv(name, color, contactColors) {
 }
 
 
+/**
+ * Creates the main contact div.
+ * @returns {HTMLElement} Main contact div.
+ */
 function createMainContactDiv() {
   const contactDiv = document.createElement("div");
   contactDiv.classList.add("contact");
@@ -460,6 +596,13 @@ function createMainContactDiv() {
 }
 
 
+/**
+ * Appends contact icon to the contact div.
+ * @param {HTMLElement} contactDiv - Contact div element.
+ * @param {string} name - Contact name.
+ * @param {string} color - Color associated with the contact.
+ * @param {Object} contactColors - Object containing contact colors.
+ */
 function appendContactIcon(contactDiv, name, color, contactColors) {
   const contactIcon = document.createElement("div");
   contactIcon.classList.add("contact-icon");
@@ -471,6 +614,11 @@ function appendContactIcon(contactDiv, name, color, contactColors) {
 }
 
 
+/**
+ * Appends contact name to the contact div.
+ * @param {HTMLElement} contactDiv - Contact div element.
+ * @param {string} name - Contact name.
+ */
 function appendContactName(contactDiv, name) {
   const contactName = document.createElement("span");
   contactName.textContent = name;
@@ -478,6 +626,10 @@ function appendContactName(contactDiv, name) {
 }
 
 
+/**
+ * Appends spacer to the contact div.
+ * @param {HTMLElement} contactDiv - Contact div element.
+ */
 function appendSpacer(contactDiv) {
   const spacer = document.createElement("div");
   spacer.style.flexGrow = "1";
@@ -485,6 +637,12 @@ function appendSpacer(contactDiv) {
 }
 
 
+/**
+ * Appends contact checkbox to the contact div.
+ * @param {HTMLElement} contactDiv - Contact div element.
+ * @param {string} name - Contact name.
+ * @param {Object} contactColors - Object containing contact colors.
+ */
 function appendContactCheckbox(contactDiv, name, contactColors) {
   const contactCheckbox = document.createElement("input");
   contactCheckbox.type = "checkbox";
@@ -495,6 +653,11 @@ function appendContactCheckbox(contactDiv, name, contactColors) {
 }
 
 
+/**
+ * Sets up event listeners for the contact div.
+ * @param {HTMLElement} contactDiv - Contact div element.
+ * @param {Object} contactColors - Object containing contact colors.
+ */
 function setupEventListeners(contactDiv, contactColors) {
   contactDiv.addEventListener("mouseover", () => contactDiv.classList.add("hovered"));
   contactDiv.addEventListener("mouseout", () => contactDiv.classList.remove("hovered"));
@@ -509,6 +672,11 @@ function setupEventListeners(contactDiv, contactColors) {
 }
 
 
+/**
+ * Handles the change event for the contact checkbox.
+ * @param {HTMLElement} contactCheckbox - Contact checkbox element.
+ * @param {Object} contactColors - Object containing contact colors.
+ */
 function handleCheckboxChange(contactCheckbox, contactColors) {
   updateSelectedContacts(contactCheckbox, contactColors);
   renderSelectedContactIcons();
@@ -523,6 +691,9 @@ function handleCheckboxChange(contactCheckbox, contactColors) {
 }
 
 
+/**
+ * Renders selected contact icons in the selected contacts container.
+ */
 function renderSelectedContactIcons() {
   const selectedContactsContainer = document.getElementById("selectedContactsContainer");
   selectedContactsContainer.innerHTML = '';
@@ -536,6 +707,11 @@ function renderSelectedContactIcons() {
 }
 
 
+/**
+ * Updates the list of selected contacts based on checkbox changes.
+ * @param {HTMLElement} contactCheckbox - Contact checkbox element.
+ * @param {Object} contactColors - Object containing contact colors.
+ */
 function updateSelectedContacts(contactCheckbox, contactColors) {
   const contactName = contactCheckbox.value;
   const isChecked = contactCheckbox.checked;
@@ -552,6 +728,9 @@ function updateSelectedContacts(contactCheckbox, contactColors) {
 }
 
 
+/**
+ * Adds subtasks based on user input.
+ */
 function addSubtasks() {
   let input = document.getElementById("add-subtasks");
   if (input.value.length > 0) {
@@ -567,6 +746,12 @@ function addSubtasks() {
 }
 
 
+/**
+ * Updates the progress bar for subtasks.
+ * @param {string} taskId - Task ID.
+ * @param {number} completedSubtasks - Number of completed subtasks.
+ * @param {number} totalSubtasks - Total number of subtasks.
+ */
 function updateProgressBar(taskId, totalSubtasks) {
   const maxSubtasks = 2;
   const progressPercent = (totalSubtasks / maxSubtasks) * 100;
@@ -581,6 +766,11 @@ function updateProgressBar(taskId, totalSubtasks) {
 }
 
 
+/**
+ * Maps contacts for display by extracting the icon and name from each contact object.
+ * @param {Array} contacts - List of contacts to map.
+ * @returns {Array} Mapped contacts with icon and name.
+ */
 function mapContactsForDisplay(contacts) {
   return contacts.map((contact) => ({
     icon: contact.profileImage,
@@ -589,6 +779,9 @@ function mapContactsForDisplay(contacts) {
 }
 
 
+/**
+ * Corrects a subtask by validating input, adding it to the DOM if conditions are met, and handling errors.
+ */
 function correctSubtask() {
   const input = document.getElementById("add-subtasks").value.trim();
   if (input !== "") {
@@ -603,11 +796,19 @@ function correctSubtask() {
 }
 
 
+/**
+ * Counts the current number of subtasks in the DOM.
+ * @returns {number} Current number of subtasks.
+ */
 function countCurrentSubtasks() {
   return document.getElementsByClassName("added-subtask").length;
 }
 
 
+/**
+ * Adds a subtask to the DOM based on user input.
+ * @param {string} input - User input for the subtask.
+ */
 function addSubtaskToDOM(input) {
   const subtaskId = generateSubtaskId();
   const addedSubtasks = document.getElementById("added-subtasks");
@@ -623,16 +824,26 @@ function addSubtaskToDOM(input) {
 }
 
 
+/**
+ * Generates a unique ID for a subtask.
+ * @returns {string} Unique subtask ID.
+ */
 function generateSubtaskId() {
   return `subtask-${subtaskIdCounter++}`;
 }
 
 
+/**
+ * Resets the input field for adding subtasks.
+ */
 function resetInput() {
   document.getElementById("add-subtasks").value = "";
 }
 
 
+/**
+ * Handles the error when the maximum number of subtasks is reached.
+ */
 function handleMaxSubtasksError() {
   const inputElement = document.getElementById("add-subtasks");
   inputElement.value = "Maximal 2 Subtasks";
@@ -646,6 +857,11 @@ function handleMaxSubtasksError() {
 }
 
 
+/**
+ * Resets the priority settings based on the selected priority.
+ * @param {Object} prioritySettings - Object containing priority settings.
+ * @param {string} priority - Selected priority.
+ */
 function resetPriorities(prioritySettings, priority) {
   document.querySelectorAll('.prioprity-urgent, .prioprity-medium, .prioprity-low').forEach(priorityElement => {
     priorityElement.style.backgroundColor = '';
@@ -655,6 +871,11 @@ function resetPriorities(prioritySettings, priority) {
 }
 
 
+/**
+ * Updates the display for the selected priority based on priority settings.
+ * @param {Object} prioritySettings - Object containing priority settings.
+ * @param {string} priority - Selected priority.
+ */
 function updateSelectedPriorityDisplay(prioritySettings, priority) {
   let selectedElement = document.getElementById(`priority-${priority}-todo`);
   if (selectedElement) {
@@ -666,6 +887,12 @@ function updateSelectedPriorityDisplay(prioritySettings, priority) {
 }
 
 
+/**
+ * Toggles the visibility of images based on priority settings.
+ * @param {HTMLElement} priorityElement - Priority element.
+ * @param {Object} prioritySettings - Object containing priority settings.
+ * @param {string} priority - Selected priority.
+ */
 function toggleImagesVisibility(priorityElement, prioritySettings, priority) {
   priorityElement.querySelectorAll('img').forEach(img => {
     img.classList.toggle('d-none', img.classList.contains(prioritySettings[priority].imgToShow));
@@ -673,6 +900,11 @@ function toggleImagesVisibility(priorityElement, prioritySettings, priority) {
 }
 
 
+/**
+ * Sets the priority name based on the selected priority.
+ * @param {string} priority - Selected priority.
+ * @returns {string} Priority name.
+ */
 function setPriorityName(priority) {
   switch (priority) {
     case 'urgent':
@@ -685,6 +917,10 @@ function setPriorityName(priority) {
 }
 
 
+/**
+ * Sets the selected priority and updates the display accordingly.
+ * @param {string} priority - Selected priority.
+ */
 function setSelectedPriority(priority) {
   const prioritySettings = {
     'urgent': { color: '#ff3d00', textColor: 'white', imgToShow: 'urgent2', imgToHide: 'urgent1' },
@@ -698,6 +934,9 @@ function setSelectedPriority(priority) {
 }
 
 
+/**
+ * Displays selected contacts icons in the selected contacts container.
+ */
 function displaySelectedContactsIcons() {
   const selectToAssignInput = document.querySelector('.select-to-assign');
   const container = selectToAssignInput.parentElement;
@@ -711,6 +950,10 @@ function displaySelectedContactsIcons() {
 }
 
 
+/**
+ * Updates the selected contacts container with selected contacts.
+ * @param {HTMLElement} selectedContactsContainer - Container for displaying selected contacts.
+ */
 function updateSelectedContactsContainer(selectedContactsContainer) {
   selectedContactsContainer.innerHTML = '';
   selectedContacts.forEach((name) => {
