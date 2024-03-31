@@ -276,7 +276,6 @@ function prepareContactsContainer(contactsContainer, taskContacts, selectedConta
 }
 
 
-
 function toggleContactsVisibility() {
   const contactsContainer = document.getElementById("contactsContainerTask");
   const arrowDrop = document.getElementById("arrowDropImage");
@@ -1672,13 +1671,11 @@ function setSelectedPriority(priority) {
     'medium': { color: '#ffa800', textColor: 'white', imgToShow: 'medium2', imgToHide: 'medium1' },
     'low': { color: '#7ae229', textColor: 'white', imgToShow: 'low2', imgToHide: 'low1' }
   };
-
   resetPriorities(prioritySettings, priority);
   updateSelectedPriorityDisplay(prioritySettings, priority);
   selectedPriority = priority;
   selectedPriorityName = setPriorityName(priority);
 }
-
 
 
 function bindDragEvents(element) {
