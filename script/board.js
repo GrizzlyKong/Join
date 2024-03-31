@@ -416,6 +416,14 @@ function setupEventListeners(contactDiv, contactColors) {
 function handleCheckboxChange(contactCheckbox, contactColors) {
   updateSelectedContacts(contactCheckbox, contactColors);
   renderSelectedContacts();
+  const contactElement = contactCheckbox.closest('.contact');
+  if (contactCheckbox.checked) {
+    contactElement.style.backgroundColor = 'rgb(42,54,71)';
+    contactElement.style.color = 'white';
+  } else {
+    contactElement.style.backgroundColor = '';
+    contactElement.style.color = '';
+  }
 }
 
 
@@ -993,6 +1001,23 @@ function createContactElement(contact, isSelected) {
   const nameSpan = createNameSpan(contact.name);
   const checkbox = createCheckbox(contact, isSelected);
   contactElement.append(iconDiv, nameSpan, checkbox);
+
+
+  function updateContainerStyle() {
+    if (checkbox.checked) {
+      contactElement.style.backgroundColor = "rgb(42, 54, 71)";
+      contactElement.style.color = "white";
+    } else {
+      contactElement.style.backgroundColor = "transparent";
+      contactElement.style.color = "inherit";
+    }}
+  updateContainerStyle();
+  contactElement.addEventListener('click', function(event) {
+    if (event.target !== checkbox) {
+      checkbox.checked = !checkbox.checked;
+      updateContainerStyle();
+      checkbox.dispatchEvent(new Event('change'));
+    }});
   return contactElement;
 }
 

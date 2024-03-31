@@ -1048,7 +1048,7 @@ body {
 
 .contacts-container {
   position: absolute;
-  bottom: 10.9vh;
+  bottom: 12.5vh;
   right: 56.6%;
   z-index: 10;
   display: none;
@@ -1088,6 +1088,12 @@ body {
 .find-contact-img:hover {
   background-color: rgb(238, 238, 238);
   border-radius: 50%;
+}
+
+.contact {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .contact:hover {

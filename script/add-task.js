@@ -512,6 +512,14 @@ function setupEventListeners(contactDiv, contactColors) {
 function handleCheckboxChange(contactCheckbox, contactColors) {
   updateSelectedContacts(contactCheckbox, contactColors);
   renderSelectedContactIcons();
+  const contactElement = contactCheckbox.closest('.contact');
+  if (contactCheckbox.checked) {
+    contactElement.style.backgroundColor = 'rgb(42,54,71)';
+    contactElement.style.color = 'white';
+  } else {
+    contactElement.style.backgroundColor = '';
+    contactElement.style.color = '';
+  }
 }
 
 
