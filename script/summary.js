@@ -186,7 +186,6 @@ function showSummary() {
         </div>
       </div>
     </div>
-
     <div class="summary-urgent-div pointer center" onclick="locationReplaceToBoard()">
       <div class="summary-urgent center">
         <div class="summary-urgent-icon-whitout-change">
@@ -202,7 +201,6 @@ function showSummary() {
         <span class="summmary-deadline">Upcoming Deadline</span>
       </div>
     </div>
-
     <div class="all-tasks center">
       <div class="tasks-in-board pointer text-center center column" onclick="locationReplaceToBoard()">
         <span class="tasks-in-board-number text-center">0</span>
@@ -218,7 +216,6 @@ function showSummary() {
       </div>
     </div>
   </div>
-
   <div class="greeting center column">
     <span class="greeting-good-morning">Good morning</span>
     <span id="loginName" class="greeting-name"></span>
