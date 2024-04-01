@@ -28,7 +28,7 @@
 
         <div class="board-title-head">Board</div>
         <form class="find-task">
-          <input class="input-field" required="" type="text" placeholder="Find Task" id="findTask" oninput="findTask()">
+          <input class="input-field" required="" type="text" placeholder="Find Task" id="findTask">
           <img class="find-task-img" src="../assets/icons/find.png" alt="magnifying glass picture">
         </form>
         <div onclick="addTask()" class="add-task-button pointer">
@@ -61,8 +61,8 @@
             </div>
           </div>
           <div class="board-column-empty">No tasks in Progress</div>
-          <div id="inprogress" class="drag-area column" ondragleave="removeHighlight('inprogress')"
-            ondrop="drop(event, 'inprogress')" ondragover="allowDrop(event); highlight('inprogress')"></div>
+          <div id="inprogress" class="drag-area column"
+            ondrop="drop(event, 'inprogress')" ondragover="allowDrop(event)"></div>
         </div>
 
         <div class="move-right">
@@ -74,8 +74,8 @@
             </div>
           </div>
           <div class="board-column-empty">No Feedback awaited</div>
-          <div id="awaitingfeedback" class="drag-area column" ondragleave="removeHighlight('awaitingfeedback')"
-            ondrop="drop(event, 'awaitingfeedback')" ondragover="allowDrop(event); highlight('awaitingfeedback')"></div>
+          <div id="awaitingfeedback" class="drag-area column"
+            ondrop="drop(event, 'awaitingfeedback')" ondragover="allowDrop(event)"></div>
         </div>
 
         <div class="move-right">
