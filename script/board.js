@@ -859,10 +859,14 @@ function openTaskInfos(taskId, title, description, category, dueDate, subtasks, 
         <div class="task-info-delete-edit center absolute">
           <div onclick="deleteTaskInfos('${taskId}')" class="task-info-delete pointer center">
             <img class="img1" src="../assets/icons/delete2.svg" alt="">
+            <img class="img2 d-none" src="../assets/icons/delete2.png" alt="">
             <span><b>Delete</b></span>
           </div>
-          <div onclick="editTaskInfos('${taskId}', '${encodeURIComponent(JSON.stringify(subtasks))}', '${priorityName}', '${priorityImage}')" class="task-info-edit pointer center">
-            <img class="img3" src="../assets/icons/edit2.svg" alt="">
+          <div onclick="editTaskInfos('${taskId}', '${encodeURIComponent(
+            JSON.stringify(subtasks)
+          )}', '${priorityName}', '${priorityImage}')" class="task-info-edit pointer center"> 
+                  <img class="img3" src="../assets/icons/edit2.svg" alt="">
+            <img class="img4 d-none" src="../assets/icons/edit2.png" alt="">
             <span><b>Edit</b></span>
           </div>
         </div>
@@ -1054,14 +1058,13 @@ function editTaskInfos(taskId, priorityName, priorityImage) {
 
     taskInfoContainer.innerHTML = `
       <form onsubmit="saveEditedTaskInfo('${taskId}'); return false;">
-        <div class="edit-the-category">
-          <div>Category:</div>
-          <select value="${category}" type="text" id="edit-category-${taskId}" required class="edit-the-category-select pointer" placeholder="Select task category">
-            <option value="" class="d-none">Select task category</option>
-            <option>Technical Task</option>
-            <option>User Story</option>
-          </select>
-        </div>
+      <div class="edit-the-category">
+      <div>Category:</div>
+      <select type="text" id="edit-category-${taskId}" required class="edit-the-category-select pointer">
+        <option value="Technical Task" ${category === "Technical Task" ? "selected" : ""}>Technical Task</option>
+        <option value="User Story" ${category === "User Story" ? "selected" : ""}>User Story</option>
+      </select>
+    </div>
 
         <div class="edit-the-title">
           <div>Title:</div>

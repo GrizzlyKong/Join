@@ -213,6 +213,10 @@ body {
   align-items: flex-start;
 }
 
+.drag-area-highlight {
+
+}
+
 .todo {
   background-color: white;
   border: 1px solid black;
@@ -419,7 +423,7 @@ body {
 }
 
 .assigned-to {
-  padding-top: 32px;
+  padding-top: 0px;
   display: flex;
   flex-direction: column;
 }
@@ -459,7 +463,7 @@ body {
 /*priorities*/
 
 .all-priorities {
-  padding-top: 30px;
+  padding-top: 0px;
 }
 
 .all-priorities span {
@@ -738,6 +742,7 @@ body {
 }
 
 .whole-task-infos {
+  position: fixed;
   min-width: 400px;
   padding-left: 25px;
   padding-right: 25px;
@@ -746,6 +751,7 @@ body {
   z-index: 999;
   min-height: 200px;
   border-radius: 30px;
+  margin-left: 200px;
   background-color: #ffffff;
 }
 
@@ -871,8 +877,8 @@ body {
   font-size: 20px;
 }
 .edit-the-category-select {
-  margin-top: 12px;
-  margin-bottom: 32px;
+  margin-top: 6px;
+  margin-bottom: 12px;
   border: 1px solid #d1d1d1;
   border-radius: 10px;
   font-size: 18px;
@@ -894,11 +900,12 @@ body {
   font-size: 20px;
 }
 .edit-the-title-input {
-  margin-top: 12px;
-  margin-bottom: 32px;
+  margin-top: 6px;
+  margin-bottom: 12px;
   border: 1px solid #d1d1d1;
   border-radius: 10px;
   font-size: 18px;
+
   width: 440px;
   height: 48px;
 }
@@ -913,8 +920,8 @@ body {
   font-size: 20px;
 }
 .edit-the-description-textarea {
-  margin-top: 12px;
-  margin-bottom: 32px;
+  margin-top: 6px;
+  margin-bottom: 12px;
   border: 1px solid #d1d1d1;
   border-radius: 10px;
   font-size: 18px;
@@ -932,8 +939,8 @@ body {
   font-size: 20px;
 }
 .edit-the-dueDate-input {
-  margin-top: 12px;
-  margin-bottom: 32px;
+  margin-top: 6px;
+  margin-bottom: 12px;
   border: 1px solid #d1d1d1;
   border-radius: 10px;
   font-size: 18px;
@@ -967,10 +974,10 @@ body {
 
 .hover-subtask {
   display: flex;
-  margin-top: 24px;
-  margin-bottom: 24px;
+  margin-top: 12px;
+  margin-bottom: 12px;
   max-width: 440px;
-  font-size: 24px;
+  font-size: 18px;
   justify-content: space-between;
 }
 
@@ -1146,7 +1153,8 @@ body {
 }
 
 .select-to-assign {
-  margin-top: 16px;
+  margin-top: 6px;
+  margin-bottom: 12px;
   width: 440px;
   height: 50px;
   border-radius: 10px;
@@ -1298,3 +1306,8 @@ body {
   top: 13px;
 }
 */
+
+
+@media only screen and (max-width: 600px) {
+  
+}

@@ -118,6 +118,8 @@ body {
   width: 550px;
   height: 400px;
   display: flex;
+  justify-content: center;
+  align-items: center;
   flex-direction: column;
   border-radius: 30px;
   border-width: 0;
@@ -289,6 +291,7 @@ body {
 }
 
 .log-in-guestlogin-button {
+  text-align: center;
   background-color: white;
   color: rgb(42, 54, 71);
   border: 1px;
@@ -318,3 +321,445 @@ body {
   left: 1vw;
   z-index: 12;
 }
+
+
+
+@media only screen and (max-width: 430px) {
+  .logo-animation {
+    top: 20%;
+    left: 28%;
+  }
+
+  .log-in-sign-up {
+    top: 75vh;
+    right: 16vw;
+  }
+  
+  .log-in-sign-up p {
+    font-size: 22px;
+    margin: 0;
+  }
+  
+  .log-in-sign-up-button {
+
+  }
+  
+  .log-in-sign-up-button:hover {
+
+  }
+  
+  .log-in-links {
+    gap: 24px;
+    top: 85vh;
+  }
+  .log-in-content {
+    margin-right: 7px;
+    top: 25vh;
+    width: 400px;
+    height: 400px;
+  }
+  .log-in-title {
+    width: auto;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    bottom: 3vh;
+    font-weight: 700;
+    font-size: 60px;
+    padding-bottom: 10px;
+  }
+  .log-in-title::before{
+
+    bottom  : 0;
+    height  : 1px;
+    width   : 85%;
+    border-bottom: 3px solid #29abe2;
+  }
+  .input-main{
+    height: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: 21px;
+  }
+  .input-div{
+    height: 70px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: 21px;
+  }
+  .log-in-field {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 23rem;
+    height: 3vh;
+    padding: 10px;
+    border: 1px solid rgb(209, 209, 209);
+    border-radius: 10px;
+    outline: none;
+  }
+  
+  .log-in-field::placeholder {
+    color: rgb(209, 209, 209);
+    font-size: 18px;
+  }
+  
+  .log-in-mail-lock-icon {
+    position: relative;
+    top: 0px;
+    right: 2rem;
+    height: 22px;
+  }
+  .log-in-remember-me {
+    margin-right: 16rem;
+    top: 2vh;
+  }
+  .log-in-login-buttons{
+    padding-top: 50px;
+  }
+  .log-in-guestlogin-button {
+    text-align: center;
+    background-color: white;
+    color: rgb(42, 54, 71);
+    border: 1px;
+    border-radius: 10px;
+    border-style: solid;
+    border-color: rgb(42, 54, 71);
+    display: flex;
+    width: 140px;
+    height: 40px;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    font-size: 16px;
+    font-weight: bold;
+  }
+}
+
+@media only screen and (max-width: 416px) {
+  .logo-animation {
+    top: 20%;
+    left: 28%;
+  }
+
+  .log-in-sign-up {
+    top: 75vh;
+    right: 16vw;
+  }
+  
+  .log-in-sign-up p {
+    font-size: 22px;
+    margin: 0;
+  }
+  
+  .log-in-sign-up-button {
+
+  }
+  
+  .log-in-sign-up-button:hover {
+
+  }
+  
+  .log-in-links {
+    gap: 24px;
+    top: 85vh;
+  }
+  .log-in-content {
+    margin-right: 7px;
+    top: 25vh;
+    width: 350px;
+    height: 400px;
+  }
+  .log-in-title {
+    width: auto;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    bottom: 3vh;
+    font-weight: 700;
+    font-size: 60px;
+    padding-bottom: 10px;
+  }
+  .log-in-title::before{
+
+    bottom  : 0;
+    height  : 1px;
+    width   : 85%;
+    border-bottom: 3px solid #29abe2;
+  }
+  .input-main{
+    height: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: 21px;
+  }
+  .input-div{
+    height: 70px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: 21px;
+  }
+  .log-in-field {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 20rem;
+    height: 3vh;
+    padding: 10px;
+    border: 1px solid rgb(209, 209, 209);
+    border-radius: 10px;
+    outline: none;
+  }
+  
+  .log-in-field::placeholder {
+    color: rgb(209, 209, 209);
+    font-size: 18px;
+  }
+  
+  .log-in-mail-lock-icon {
+    position: relative;
+    top: 0px;
+    right: 2rem;
+    height: 22px;
+  }
+  .log-in-remember-me {
+    margin-right: 14rem;
+    top: 2vh;
+  }
+  .log-in-login-buttons{
+    padding-top: 50px;
+  }
+  .log-in-guestlogin-button {
+    text-align: center;
+    background-color: white;
+    color: rgb(42, 54, 71);
+    border: 1px;
+    border-radius: 10px;
+    border-style: solid;
+    border-color: rgb(42, 54, 71);
+    display: flex;
+    width: 140px;
+    height: 40px;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    font-size: 16px;
+    font-weight: bold;
+  }
+}
+
+@media only screen and (max-width: 380px) {
+  .log-in-content {
+    margin-right: 7px;
+    top: 25vh;
+    width: 320px;
+    height: 330px;
+  }
+  .log-in-login-buttons{
+    padding: 0;
+  }
+  .log-in-field {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 17rem;
+    height: 3vh;
+    padding: 10px;
+    border: 1px solid rgb(209, 209, 209);
+    border-radius: 10px;
+    outline: none;
+  }
+  .log-in-remember-me {
+    margin-right: 10rem;
+    top: 1vh;
+  }
+  .log-in-sign-up {
+    top: 71vh;
+    right: 13vw;
+  }
+  .log-in-links {
+    gap: 24px;
+    top: 81vh;
+  }
+}
+
+@media only screen and (min-width: 320px) and (max-width: 380px) {
+  .logo-animation {
+    top: 15%;
+    left: 15%;
+  }
+
+  .log-in-sign-up {
+    position: absolute;
+    top: 68vh;
+    right: 4vw;
+  }
+  
+  .log-in-sign-up p {
+    font-size: 22px;
+    margin: 0;
+  }
+  
+  .log-in-sign-up-button {
+
+  }
+  
+  .log-in-sign-up-button:hover {
+
+  }
+  
+  .log-in-links {
+    gap: 24px;
+    top: 77vh;
+  }
+  .log-in-content {
+    top: 25vh;
+    width: 300px;
+    height: 300px;
+  }
+  .log-in-title {
+    width: auto;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    bottom: 3vh;
+    font-weight: 700;
+    font-size: 55px;
+    padding-bottom: 10px;
+  }
+  .log-in-title::before{
+
+    bottom  : 0;
+    height  : 1px;
+    width   : 85%;
+    border-bottom: 3px solid #29abe2;
+  }
+  .input-main{
+    height: 15px;
+  }
+  .input-div{
+    height: 40px;
+  }
+  .log-in-field {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 17rem;
+    height: 3vh;
+    padding: 10px;
+    border: 1px solid rgb(209, 209, 209);
+    border-radius: 10px;
+    outline: none;
+  }
+  
+  .log-in-field::placeholder {
+    color: rgb(209, 209, 209);
+    font-size: 18px;
+  }
+  
+  .log-in-mail-lock-icon {
+    position: relative;
+    top: 8px;
+    right: 2rem;
+    height: 22px;
+  }
+  .log-in-remember-me {
+    margin-right: 11rem;
+    top: 3vh;
+  }
+}
+
+@media only screen and (max-width: 320px) {
+  .logo-animation {
+    top: 15%;
+    left: 15%;
+  }
+
+  .log-in-sign-up {
+    position: absolute;
+    top: 68vh;
+    right: 4vw;
+  }
+  
+  .log-in-sign-up p {
+    font-size: 22px;
+    margin: 0;
+  }
+  
+  .log-in-sign-up-button {
+
+  }
+  
+  .log-in-sign-up-button:hover {
+
+  }
+  
+  .log-in-links {
+    gap: 24px;
+    top: 77vh;
+  }
+  .log-in-content {
+    top: 25vh;
+    width: 300px;
+    height: 300px;
+  }
+  .log-in-title {
+    width: auto;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    bottom: 3vh;
+    font-weight: 700;
+    font-size: 55px;
+    padding-bottom: 10px;
+  }
+  .log-in-title::before{
+
+    bottom  : 0;
+    height  : 1px;
+    width   : 85%;
+    border-bottom: 3px solid #29abe2;
+  }
+  .input-main{
+    height: 15px;
+  }
+  .input-div{
+    height: 40px;
+  }
+  .log-in-field {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 17rem;
+    height: 3vh;
+    padding: 10px;
+    border: 1px solid rgb(209, 209, 209);
+    border-radius: 10px;
+    outline: none;
+  }
+  
+  .log-in-field::placeholder {
+    color: rgb(209, 209, 209);
+    font-size: 18px;
+  }
+  
+  .log-in-mail-lock-icon {
+    position: relative;
+    top: 8px;
+    right: 2rem;
+    height: 22px;
+  }
+  .log-in-remember-me {
+    margin-right: 11rem;
+    top: 3vh;
+  }
+}
+

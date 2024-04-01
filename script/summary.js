@@ -155,13 +155,13 @@ function showSummary() {
     <div class="summary-urgent-icon-without-change">
         <img class="urgent1" src="../assets/icons/urgent.svg" alt="an image that describes urgency - urgent">
     </div>
-    <div class="center column">
+    <div class="text-center center column">
         <span id="summary-urgent-number" class="summary-urgent-number text-center">0</span>
         <span class="summary-urgent-span">Urgent Tasks</span>
     </div>
 </div>
       <div class="date-deadline center column">
-        <span class="summmary-date">October 16, 2022</span>
+        <span class="summmary-date">April 16, 2024</span>
         <span class="summmary-deadline">Upcoming Deadline</span>
       </div>
     </div>
