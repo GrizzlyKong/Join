@@ -42,12 +42,23 @@ async function init() {
  * @returns {Object} An object containing the count of tasks in each category.
  */
 function countTasks() {
-  return {
-      todo: allTasks.filter(task => task.category === 'todo').length,
-      inProgress: allTasks.filter(task => task.category === 'in-progress').length,
-      testing: allTasks.filter(task => task.category === 'testing').length,
-      done: allTasks.filter(task => task.category === 'done').length
-  };
+  let todoCount = 0, inProgressCount = 0, testingCount = 0, doneCount = 0;
+  for (let i = 0; i < allTasks.length; i++) {
+    switch (allTasks[i].category) {
+      case 'todo':
+        todoCount++;
+        break;
+      case 'in-progress':
+        inProgressCount++;
+        break;
+      case 'testing':
+        testingCount++;
+        break;
+      case 'done':
+        doneCount++;
+        break;
+    }}
+  return { todo: todoCount, inProgress: inProgressCount, testing: testingCount, done: doneCount };
 }
 
 
@@ -137,7 +148,9 @@ async function loadTasksFromServer() {
  */
 async function renderTasks() {
   clearTaskContainers(['todo', 'inprogress', 'done', 'awaitingfeedback']);
-  allTasks.forEach(renderTask);
+  for (let i = 0; i < allTasks.length; i++) {
+    renderTask(allTasks[i]);
+  }
 }
 
 
@@ -146,12 +159,13 @@ async function renderTasks() {
  * @param {string[]} containers - An array of container IDs to be cleared.
  */
 function clearTaskContainers(containers) {
-  containers.forEach(containerId => {
+  for (let i = 0; i < containers.length; i++) {
+    const containerId = containers[i];
     const container = document.getElementById(containerId);
     if (container) {
       container.innerHTML = '';
     }
-  });
+  }
 }
 
 
@@ -277,21 +291,21 @@ function updateUrgentTaskCountDisplay() {
  * @returns {Promise<Object[]>} A Promise that resolves with the filtered contacts array.
  */
 async function fetchAndFilterContacts() {
-  try {
-      const loggedInUserName = localStorage.getItem("loggedInUserName");
-      if (!loggedInUserName) {
-          console.error("No logged-in user found. Contacts cannot be loaded.");
-          return [];
-      }
-      const contactsData = await getItem(`contacts_${loggedInUserName}`);
-      const parsedContacts = JSON.parse(contactsData) || [];
-      const filteredContacts = parsedContacts.filter(contact => contact.name || contact.email || contact.phone);
-      return filteredContacts;
-  } catch (error) {
-      console.error("Error loading contacts:", error);
+    const loggedInUserName = localStorage.getItem("loggedInUserName");
+    if (!loggedInUserName) {
+      console.error("No logged-in user found. Contacts cannot be loaded.");
       return [];
+    }
+    const contactsData = await getItem(`contacts_${loggedInUserName}`);
+    const parsedContacts = JSON.parse(contactsData) || [];
+    const filteredContacts = [];
+    for (let i = 0; i < parsedContacts.length; i++) {
+      const contact = parsedContacts[i];
+      if (contact.name || contact.email || contact.phone) {
+        filteredContacts.push(contact);
+      }}
+    return filteredContacts;
   }
-}
 
 
 /**
@@ -303,11 +317,14 @@ function getContactsHtml(contacts) {
   if (!contacts || contacts.length === 0) {
     return 'None';
   }
-  return contacts.map(contact => {
+  let html = '';
+  for (let i = 0; i < contacts.length; i++) {
+    const contact = contacts[i];
     const contactInitial = contact.name.charAt(0).toUpperCase();
     const backgroundColor = contact.color || '#ddd';
-    return `<div class="task-contact-icon" style="background-color: ${backgroundColor};">${contactInitial}</div>`;
-  }).join('');
+    html += `<div class="task-contact-icon" style="background-color: ${backgroundColor};">${contactInitial}</div>`;
+  }
+  return html;
 }
 
 
@@ -318,7 +335,12 @@ function getContactsHtml(contacts) {
  */
 function calculateSubtaskProgress(subtasks) {
   if (!subtasks || subtasks.length === 0) return 0;
-  const completedSubtasks = subtasks.filter(st => st.completed).length;
+  let completedSubtasks = 0;
+  for (let i = 0; i < subtasks.length; i++) {
+    if (subtasks[i].completed) {
+      completedSubtasks++;
+    }
+  }
   return (completedSubtasks / subtasks.length) * 100;
 }
 
@@ -441,36 +463,48 @@ function displaySelectedContactsIcons() {
  */
 function updateSelectedContactsContainer(selectedContactsContainer) {
   selectedContactsContainer.innerHTML = '';
-  selectedContacts.forEach((name) => {
+  for (let i = 0; i < selectedContactIcons.length; i++) {
+    const contact = selectedContactIcons[i];
     const selectedContactIcon = document.createElement("div");
     selectedContactIcon.classList.add("contact-icon");
-    selectedContactIcon.textContent = name.charAt(0).toUpperCase();
-    selectedContactIcon.style.backgroundColor = contactColors[name];
-    selectedContactIcon.style.color = "white";
+    selectedContactIcon.textContent = contact.letter;
+    selectedContactIcon.style.backgroundColor = contact.color;
     selectedContactsContainer.appendChild(selectedContactIcon);
+  }
+}
+
+
+/**
+ * Updates the selected contact icons based on the checkboxes state.
+ * Clears the existing icons and updates them according to the selected checkboxes.
+ */
+function updateSelectedContactIcons() {
+  const selectedContactsContainer = document.getElementById("selectedContactsContainer");
+  selectedContactsContainer.innerHTML = '';
+updateSelectedContacIconsLoop(selectedContactsContainer);
+}
+const checkboxes = document.querySelectorAll('.contact-checkbox');
+for (let i = 0; i < checkboxes.length; i++) {
+  checkboxes[i].addEventListener('change', (event) => {
+      updateSelectedContactIcons();
   });
 }
 
 
 /**
- * Updates the selected contact icons based on checkbox changes.
+ * Updates the selected contact icons displayed in the specified container.
+ * Iterates over an array of selected contact icons and creates a div element for each icon.
  */
-function updateSelectedContactIcons() {
-  const selectedContactsContainer = document.getElementById("selectedContactsContainer");
-  selectedContactsContainer.innerHTML = '';
-  selectedContactIcons.forEach(contact => {
-      const iconElement = document.createElement('div');
-      iconElement.className = 'contact-icon';
-      iconElement.textContent = contact.letter;
-      iconElement.style.backgroundColor = contact.color;
-      selectedContactsContainer.appendChild(iconElement);
-  });
+function updateSelectedContacIconsLoop(selectedContactsContainer) {
+  for (let i = 0; i < selectedContactIcons.length; i++) {
+    const contact = selectedContactIcons[i];
+    const iconElement = document.createElement('div');
+    iconElement.className = 'contact-icon';
+    iconElement.textContent = contact.letter;
+    iconElement.style.backgroundColor = contact.color;
+    selectedContactsContainer.appendChild(iconElement);
+  }
 }
-document.querySelectorAll('.contact-checkbox').forEach(checkbox => {
-  checkbox.addEventListener('change', (event) => {
-      updateSelectedContactIcons();
-  });
-});
 
 
 /**
@@ -481,14 +515,15 @@ document.querySelectorAll('.contact-checkbox').forEach(checkbox => {
  * @param {Object} contactColors - An object containing contact colors.
  */
 function renderContacts(userContacts, contactsContainer, selectedContactsContainer, contactColors) {
-  userContacts.forEach((contact) => {
+  for (let i = 0; i < userContacts.length; i++) {
+    const contact = userContacts[i];
     const { name, color } = contact;
     if (!name) {
-      return;
+      continue;
     }
     const contactDiv = createContactDiv(name, color, contactColors);
     contactsContainer.appendChild(contactDiv);
-  });
+  }
 }
 
 
@@ -626,15 +661,50 @@ function updateSelectedContacts(contactCheckbox, contactColors) {
   const contactName = contactCheckbox.value;
   const isChecked = contactCheckbox.checked;
   const contactDetail = {
-      name: contactName,
-      color: contactColors[contactName],
-      letter: contactName.charAt(0).toUpperCase(),
+    name: contactName,
+    color: contactColors[contactName],
+    letter: contactName.charAt(0).toUpperCase(),
   };
+
   if (isChecked) {
-      selectedContactIcons.push(contactDetail);
+    addSelectedContact(contactDetail);
   } else {
-      selectedContactIcons = selectedContactIcons.filter(detail => detail.name !== contactName);
+    removeSelectedContact(contactName);
   }
+}
+
+
+/**
+ * Adds a selected contact to the list of selected contacts.
+ * @param {Object} contactDetail - The contact details.
+ */
+function addSelectedContact(contactDetail) {
+  const contactName = contactDetail.name;
+  let isContactExist = false;
+  for (let i = 0; i < selectedContactIcons.length; i++) {
+    if (selectedContactIcons[i].name === contactName) {
+      isContactExist = true;
+      break;
+    }
+  }
+  if (!isContactExist) {
+    selectedContactIcons.push(contactDetail);
+  }
+}
+
+
+/**
+ * Removes a selected contact from the list of selected contacts.
+ * @param {string} contactName - The name of the contact to be removed.
+ */
+function removeSelectedContact(contactName) {
+  let updatedSelectedContactIcons = [];
+  for (let i = 0; i < selectedContactIcons.length; i++) {
+    if (selectedContactIcons[i].name !== contactName) {
+      updatedSelectedContactIcons.push(selectedContactIcons[i]);
+    }
+  }
+  selectedContactIcons = updatedSelectedContactIcons;
 }
 
 
@@ -689,7 +759,8 @@ function findTask() {
   const inputValue = document.getElementById("findTask").value.trim().toLowerCase();
   const allTasks = document.querySelectorAll(".board-task-card");
   let isAnyTaskVisible = false;
-  allTasks.forEach((container) => {
+  for (let i = 0; i < allTasks.length; i++) {
+    const container = allTasks[i];
     const taskDescription = container.querySelector(".board-task-card-description").innerText.trim().toLowerCase();
     if (taskDescription.includes(inputValue)) {
       container.style.display = "flex";
@@ -697,7 +768,7 @@ function findTask() {
     } else {
       container.style.display = "none";
     }
-  });
+  }
 }
 
 
@@ -717,10 +788,11 @@ function displayAssignedContacts() {
   const contactsData = getItem(`contacts_${loggedInUserName}`);
   const userContacts = JSON.parse(contactsData) || [];
   const contactsContainer = document.getElementById("contactsContainerTask");
-  userContacts.forEach((contact) => {
+  for (let i = 0; i < userContacts.length; i++) {
+    const contact = userContacts[i];
     const contactElement = createContactIcon(contact);
     contactsContainer.appendChild(contactElement);
-  });
+  }
 }
 
 
@@ -917,8 +989,13 @@ function getTaskDetailsFromForm() {
  * @returns {string[]} An array of subtask strings.
  */
 function processSubtasks() {
-  return Array.from(document.querySelectorAll("#added-subtasks .added-subtask"))
-              .map(subtask => subtask.textContent.trim());
+  const subtaskElements = Array.from(document.querySelectorAll("#added-subtasks .added-subtask"));
+  const subtasks = [];
+  for (let i = 0; i < subtaskElements.length; i++) {
+    const subtask = subtaskElements[i];
+    subtasks.push(subtask.textContent.trim());
+  }
+  return subtasks;
 }
 
 
@@ -1026,7 +1103,12 @@ function cleanupAfterTaskAddition() {
  * @returns {string} The HTML content for displaying contacts.
  */
 function generateContactsHtml(contacts) {
-  return contacts.map(contact => `<div class="task-contact-icon" style="background-color: ${contact.color};">${contact.letter}</div>`).join('');
+  let htmlContent = '';
+  for (let i = 0; i < contacts.length; i++) {
+    const contact = contacts[i];
+    htmlContent += `<div class="task-contact-icon" style="background-color: ${contact.color};">${contact.letter}</div>`;
+  }
+  return htmlContent;
 }
 
 
@@ -1078,19 +1160,6 @@ function updateProgressBar(taskId, totalSubtasks) {
   if (subtaskText) {
     subtaskText.textContent = `${totalSubtasks}/${maxSubtasks} Subtasks`;
   }
-}
-
-
-/**
- * Maps contacts for display purposes.
- * @param {Array<Object>} contacts - The array of contacts to map.
- * @returns {Array<Object>} The mapped contacts array.
- */
-function mapContactsForDisplay(contacts) {
-  return contacts.map((contact) => ({
-    icon: contact.profileImage,
-    name: contact.username,
-  }));
 }
 
 
@@ -1212,10 +1281,13 @@ function getPriorityImage(priorityName) {
  */
 function populateContactsPlaceholder(contacts) {
   let selectedContactsPlaceholder = document.getElementById("selectedContactsPlaceholder");
-  selectedContactsPlaceholder.innerHTML = contacts.map(contact => {
+  let htmlContent = '';
+  for (let i = 0; i < contacts.length; i++) {
+    const contact = contacts[i];
     let iconDiv = `<div class="self-made-icon" style="background-color: ${contact.color};">${contact.letter}</div>`;
-    return `<div class="assigned-to-edit-contact">${iconDiv} ${contact.name}</div>`;
-  }).join('');
+    htmlContent += `<div class="assigned-to-edit-contact">${iconDiv} ${contact.name}</div>`;
+  }
+  selectedContactsPlaceholder.innerHTML = htmlContent;
 }
 
 
@@ -1238,10 +1310,11 @@ function populateSelectedContactsPlaceholder(taskId) {
   if (task) {
     let selectedContactsPlaceholder = document.getElementById('selectedContactsPlaceholder');
     selectedContactsPlaceholder.innerHTML = '';
-    task.contacts.forEach(contact => {
+    for (let i = 0; i < task.contacts.length; i++) {
+      let contact = task.contacts[i];
       let contactDiv = createContactElement(contact);
       selectedContactsPlaceholder.appendChild(contactDiv);
-    });
+    }
   }
 }
 
@@ -1253,10 +1326,16 @@ function populateSelectedContactsPlaceholder(taskId) {
  */
 function logTaskIdAndFindIndex(taskId) {
   console.log("Received task ID to delete:", taskId);
-  const taskIndex = allTasks.findIndex(task => task.id === taskId);
-  console.log("Task IDs before deletion:", allTasks.map(task => task.id));
+  let taskIndex = -1;
+  for (let i = 0; i < allTasks.length; i++) {
+    if (allTasks[i].id === taskId) {
+      taskIndex = i;
+      break;
+    }
+  }
   return taskIndex;
 }
+
 
 
 /**
@@ -1474,13 +1553,16 @@ function renderSelectedContacts(containerId) {
   if (!container) return;
   const task = retrieveTask();
   if (!task) return;
-  taskContacts.forEach(contact => {
+  for (let i = 0; i < taskContacts.length; i++) {
+    const contact = taskContacts[i];
     const isSelected = task.contacts.some(c => c.name === contact.name);
     const contactElement = createContactElement(contact, isSelected);
-    setupCheckboxListener(contactElement.querySelector('.contact-checkbox'), contact, task);
+    const checkbox = contactElement.querySelector('.contact-checkbox');
+    setupCheckboxListener(checkbox, contact, task);
     container.appendChild(contactElement);
-  });
+  }
 }
+
 
 
 /**
@@ -1542,14 +1624,18 @@ function getTaskInfoElements(taskInfoContainer) {
  * @returns {string} The HTML for displaying subtasks.
  */
 function generateSubtasksHtml1(subtasks, taskId) {
-  return subtasks.map((subtask, index) =>
-    `<div id="hoverSubtask-${index}" class="hover-subtask">
+  let html = '';
+  for (let index = 0; index < subtasks.length; index++) {
+    const subtask = subtasks[index];
+    html += `<div id="hoverSubtask-${index}" class="hover-subtask">
       <span>${subtask}</span>
       <div class="edit-subtask-images">
       </div>
-    </div>`
-  ).join("");
+    </div>`;
+  }
+  return html;
 }
+
 
 
 /**
@@ -1559,16 +1645,20 @@ function generateSubtasksHtml1(subtasks, taskId) {
  * @returns {string} The HTML for displaying editable subtasks.
  */
 function generateSubtasksHtml2(subtasks, taskId) {
-  return subtasks.map((subtask, index) =>
-    `<div id="hoverSubtask-${index}" class="hover-subtask hover-subtask2 pointer" onmouseover="showIcons(${index})" onmouseout="hideIcons(${index})">
+  let html = '';
+  for (let index = 0; index < subtasks.length; index++) {
+    const subtask = subtasks[index];
+    html += `<div id="hoverSubtask-${index}" class="hover-subtask hover-subtask2 pointer" onmouseover="showIcons(${index})" onmouseout="hideIcons(${index})">
       <span>${subtask}</span>
       <div class="edit-subtask-images">
         <img id="edit-icon-${index}" onclick="startEditingSubtask('hoverSubtask-${index}', '${subtask}', '${taskId}')" src="../assets/icons/edit.svg" style="display:none">
         <img id="delete-icon-${index}" onclick="deleteExistingSubtask(${index}, '${taskId}')" src="../assets/icons/delete.svg" style="display:none">
       </div>
-    </div>`
-  ).join("");
+    </div>`;
+  }
+  return html;
 }
+
 
 
 /**
@@ -1662,7 +1752,7 @@ function renderTaskForm(taskId, title, description, category, dueDate, subtasksH
  * @param {Array<HTMLElement>} subtasks - The array of subtask elements.
  */
 function bindSubtaskEvents(subtasks) {
-  subtasks.forEach((_, index) => {
+  for (let index = 0; index < subtasks.length; index++) {
     let hoverSubtask = document.getElementById(`hoverSubtask-${index}`);
     hoverSubtask.onmouseover = () => {
       document.getElementById(`edit-icon-${index}`).style.display = 'inline';
@@ -1672,7 +1762,7 @@ function bindSubtaskEvents(subtasks) {
       document.getElementById(`edit-icon-${index}`).style.display = 'none';
       document.getElementById(`delete-icon-${index}`).style.display = 'none';
     };
-  });
+  }
 }
 
 
@@ -1805,11 +1895,15 @@ function createNewSubtaskElement(input, subtaskId) {
 function bindSubtaskEvents(subtaskElement) {
   subtaskElement.onmouseover = function() {
     let icons = this.querySelector(".edit-subtask-images").children;
-    Array.from(icons).forEach(icon => icon.style.display = 'block');
+    for (let i = 0; i < icons.length; i++) {
+      icons[i].style.display = 'block';
+    }
   };
   subtaskElement.onmouseout = function() {
     let icons = this.querySelector(".edit-subtask-images").children;
-    Array.from(icons).forEach(icon => icon.style.display = 'none');
+    for (let i = 0; i < icons.length; i++) {
+      icons[i].style.display = 'none';
+    }
   };
 }
 
@@ -2190,15 +2284,19 @@ function getPriorityImage(priorityName) {
  * @returns {object} Object containing HTML content for contacts and subtasks.
  */
 function generateContactAndSubtaskHtml(task) {
-  let subtasksHtml = task.subtasks.map((subtask, index) =>
-    `<div class="hover-subtask column pointer">${subtask}</div>`
-  ).join("");
-  let contactsHtml = task.contacts.map(contact => {
-    return `<div class="assigned-contact-display">
-              <div class="contact-icon" style="background-color: ${contact.color};">${contact.letter}</div>
-              <span class="contact-name">${contact.name}</span>
-            </div>`;
-  }).join('');
+  let subtasksHtml = '';
+  for (let index = 0; index < task.subtasks.length; index++) {
+    const subtask = task.subtasks[index];
+    subtasksHtml += `<div class="hover-subtask column pointer">${subtask}</div>`;
+  }
+  let contactsHtml = '';
+  for (let i = 0; i < task.contacts.length; i++) {
+    const contact = task.contacts[i];
+    contactsHtml += `<div class="assigned-contact-display">
+                        <div class="contact-icon" style="background-color: ${contact.color};">${contact.letter}</div>
+                        <span class="contact-name">${contact.name}</span>
+                     </div>`;
+  }
   return { contactsHtml, subtasksHtml };
 }
 
@@ -2267,11 +2365,13 @@ function closeTaskInfos() {
  * @param {string} priority - The selected priority.
  */
 function resetPriorities(prioritySettings, priority) {
-  document.querySelectorAll('.prioprity-urgent, .prioprity-medium, .prioprity-low').forEach(priorityElement => {
+  const priorityElements = document.querySelectorAll('.prioprity-urgent, .prioprity-medium, .prioprity-low');
+  for (let i = 0; i < priorityElements.length; i++) {
+    let priorityElement = priorityElements[i];
     priorityElement.style.backgroundColor = '';
     priorityElement.style.color = 'black';
     toggleImagesVisibility(priorityElement, prioritySettings, priority);
-  });
+  }
 }
 
 
@@ -2298,9 +2398,11 @@ function updateSelectedPriorityDisplay(prioritySettings, priority) {
  * @param {string} priority - The selected priority.
  */
 function toggleImagesVisibility(priorityElement, prioritySettings, priority) {
-  priorityElement.querySelectorAll('img').forEach(img => {
+  const images = priorityElement.querySelectorAll('img');
+  for (let i = 0; i < images.length; i++) {
+    let img = images[i];
     img.classList.toggle('d-none', img.classList.contains(prioritySettings[priority].imgToShow));
-  });
+  }
 }
 
 
@@ -2404,11 +2506,12 @@ function addTaskToDOM(task) {
  */
 function updateHTML() {
   let taskCards = document.querySelectorAll(".board-task-card");
-  taskCards.forEach((card, index) => {
+  for (let index = 0; index < taskCards.length; index++) {
+    let card = taskCards[index];
     card.setAttribute("draggable", true);
     card.setAttribute("id", "task-card-" + index); 
     card.addEventListener("dragstart", (e) => startDragging(e, card));
-  });
+  }
 }
 
 
@@ -2607,9 +2710,11 @@ function handleMaxSubtasksErrorDisplay(inputElement) {
  */
 function updateNoTaskDivs() {
   const departmentIds = ['todo', 'inprogress', 'awaitingfeedback', 'done'];
-  departmentIds.forEach((id, index) => {
+  const noTaskDivs = document.getElementsByClassName('board-column-empty');
+  
+  for (let index = 0; index < departmentIds.length; index++) {
+    const id = departmentIds[index];
     const taskContainer = document.getElementById(id);
-    const noTaskDivs = document.getElementsByClassName('board-column-empty');
     const noTaskDiv = noTaskDivs[index];
     if (taskContainer && noTaskDiv) {
       const tasks = taskContainer.getElementsByClassName('board-task-card');
@@ -2617,7 +2722,7 @@ function updateNoTaskDivs() {
     } else {
       console.error('Task container or no task message div not found for:', id);
     }
-  });
+  }
 }
 
 

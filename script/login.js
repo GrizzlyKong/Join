@@ -76,18 +76,7 @@ function processSuccessfulLogin(user, checkbox) {
   handleRememberMe(checkbox, user.email, user.password);
   setLoggedInUser(user.name);
   localStorage.setItem('isMobileDevice', isMobileDevice);
-  redirectToSummaryPage();
-}
-
-
-/**
- * Displays an error message when login fails due to invalid credentials.
- * @param {HTMLElement} invalidUserData
- * @param {HTMLElement} emailInput
- * @param {HTMLElement} passwordInput
- */
-function showLoginError(invalidUserData, emailInput, passwordInput) {
-  showInvalidUserData(invalidUserData, emailInput, passwordInput);
+  location.replace("../html/summary.html");
 }
 
 
@@ -107,7 +96,7 @@ async function login() {
   if (user) {
     processSuccessfulLogin(user, checkbox);
   } else {
-    showLoginError(invalidUserData, emailInput, passwordInput);
+    showInvalidUserData(invalidUserData, emailInput, passwordInput);
   }
 }
 
@@ -119,16 +108,6 @@ function clearValidationStyles(emailInput, passwordInput, invalidUserData) {
   invalidUserData.innerHTML = '';
   emailInput.style.borderColor = '';
   passwordInput.style.borderColor = '';
-}
-
-
-/**
- * Finds a user in the users array based on email and password.
- * @param {string} email - The email of the user.
- * @param {string} password - The password of the user.
- */
-function findUser(email, password) {
-  return users.find(u => u.email === email && u.password === password);
 }
 
 
@@ -156,10 +135,12 @@ function setLoggedInUser(userName) {
 
 
 /**
- * Redirects the user to the summary page.
+ * Finds a user in the users array based on email and password.
+ * @param {string} email - The email of the user.
+ * @param {string} password - The password of the user.
  */
-function redirectToSummaryPage() {
-  location.replace("../html/summary.html");
+function findUser(email, password) {
+  return users.find(u => u.email === email && u.password === password);
 }
 
 
@@ -183,17 +164,8 @@ function loginForm(users) {
   const emailInput = document.getElementById('loginEmail');
   const passwordInput = document.getElementById('loginPassword');
   const rememberCheckbox = document.getElementById('remember-me-checkbox');
-  setRememberCheckboxDefault(rememberCheckbox);
+  rememberCheckbox.checked = true;
   setEmailChangeListener(emailInput, passwordInput, users);
-}
-
-
-/**
- * Sets the default state of the remember me checkbox.
- * @param {HTMLInputElement} checkbox - The checkbox element.
- */
-function setRememberCheckboxDefault(checkbox) {
-  checkbox.checked = true;
 }
 
 

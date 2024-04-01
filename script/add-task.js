@@ -323,7 +323,8 @@ async function addTodo() {
   const task = createTask(taskId, title, description, category, dueDate, subtasks, priorityName, priorityImage);
   addToAllTasks(task);
   updateTaskHtml(task);
-  resetSelections();
+  selectedContactIcons = [];
+  selectedPriority = null;
   await saveTasks();
   location.replace("../html/board.html");
 }
@@ -483,15 +484,6 @@ function updateTaskHtml(task) {
 
 
 /**
- * Resets selections after adding a task.
- */
-function resetSelections() {
-  selectedContactIcons = [];
-  selectedPriority = null;
-}
-
-
-/**
  * Binds event listeners for subtasks.
  */
 function bindSubtaskEvents() {
@@ -554,15 +546,14 @@ function toggleContactsVisibility() {
  * @param {HTMLElement} selectedContactsContainer - Container for displaying selected contacts.
  * @param {Object} contactColors - Object containing contact colors.
  */
-function renderContacts(userContacts, contactsContainer, selectedContactsContainer, contactColors) {
-  userContacts.forEach((contact) => {
-    const { name, color } = contact;
-    if (!name) {
-      return;
-    }
-    const contactDiv = createContactDiv(name, color, contactColors);
-    contactsContainer.appendChild(contactDiv);
-  });
+function renderContacts(taskContacts, contactsContainer, selectedContactsContainer, contactColors) {
+  contactsContainer.innerHTML = ''; // Clear existing contacts
+  for (let i = 0; i < taskContacts.length; i++) {
+      const contact = taskContacts[i];
+      // createContactDiv is assumed to return an HTML element for each contact.
+      const contactElement = createContactDiv(contact.name, contact.color, contactColors);
+      contactsContainer.appendChild(contactElement);
+  }
 }
 
 
@@ -788,7 +779,7 @@ function correctSubtask() {
     const currentSubtasks = countCurrentSubtasks();
     if (currentSubtasks < 2) {
       addSubtaskToDOM(input);
-      resetInput();
+      document.getElementById("add-subtasks").value = "";
     } else {
       handleMaxSubtasksError();
     }
@@ -810,7 +801,7 @@ function countCurrentSubtasks() {
  * @param {string} input - User input for the subtask.
  */
 function addSubtaskToDOM(input) {
-  const subtaskId = generateSubtaskId();
+  const subtaskId = `subtask-${subtaskIdCounter++}`;
   const addedSubtasks = document.getElementById("added-subtasks");
   addedSubtasks.innerHTML += `
     <div id="${subtaskId}" class="added-subtask pointer">
@@ -821,23 +812,6 @@ function addSubtaskToDOM(input) {
       </div>
     </div>
   `;
-}
-
-
-/**
- * Generates a unique ID for a subtask.
- * @returns {string} Unique subtask ID.
- */
-function generateSubtaskId() {
-  return `subtask-${subtaskIdCounter++}`;
-}
-
-
-/**
- * Resets the input field for adding subtasks.
- */
-function resetInput() {
-  document.getElementById("add-subtasks").value = "";
 }
 
 
