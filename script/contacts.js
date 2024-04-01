@@ -57,7 +57,9 @@ function displayContactsFromLocalStorage() {
 function displayGuestContacts() {
   const guestContactsKey = "guestContacts";
   const guestContacts = JSON.parse(localStorage.getItem(guestContactsKey)) || [];
-  guestContacts.forEach(displayGuestContact);
+  for (let i = 0; i < guestContacts.length; i++) {
+    displayGuestContact(guestContacts[i]);
+  }
 }
 
 
@@ -607,9 +609,9 @@ async function displayUserContacts() {
   if (!responseText) return;
   const savedContacts = getSavedContacts(responseText);
   if (!savedContacts) return;
-  savedContacts.forEach((contact) => {
-    displayContact(contact);
-  });
+  for (let i = 0; i < savedContacts.length; i++) {
+    displayContact(savedContacts[i]);
+  }
 }
 
 
@@ -1143,7 +1145,10 @@ function openEditContactForm(contactToEdit, contactIndex) {
   const initialLetter = name.charAt(0).toUpperCase();
   const editContactDiv = document.getElementById("add-new-contact");
   const addNewContactDiv = document.getElementById("add-new-contact");
-  [editContactDiv, addNewContactDiv].forEach(elem => elem.classList.add("sign-up-animation"));
+  for (let i = 0; i < 2; i++) {
+    const elem = i === 0 ? editContactDiv : addNewContactDiv;
+    elem.classList.add("sign-up-animation");
+  }
   addNewContactDiv.classList.remove("d-none");
   greyOverlay();
   editContactDiv.innerHTML = generateEditContactFormHTML(contactToEdit, contactIndex, initialLetter, email, phone, color);
@@ -1240,7 +1245,13 @@ async function updateContact(index) {
  * @returns {string[]} An array containing the values of the contact fields.
  */
 function getContactValues() {
-  return ["contactNameInput", "contactEmailInput", "contactPhoneInput"].map(getValueById);
+  const contactFieldIds = ["contactNameInput", "contactEmailInput", "contactPhoneInput"];
+  const contactValues = [];
+  for (let i = 0; i < contactFieldIds.length; i++) {
+    const value = getValueById(contactFieldIds[i]);
+    contactValues.push(value);
+  }
+  return contactValues;
 }
 
 

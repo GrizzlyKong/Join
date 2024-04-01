@@ -335,7 +335,12 @@ async function addTodo() {
  * @returns {Array} List of subtasks.
  */
 function getSubtasks() {
-  return Array.from(document.querySelectorAll("#added-subtasks .added-subtask")).map(subtask => subtask.textContent.trim());
+  const subtaskElements = document.querySelectorAll("#added-subtasks .added-subtask");
+  const subtasks = [];
+  for (let i = 0; i < subtaskElements.length; i++) {
+    subtasks.push(subtaskElements[i].textContent.trim());
+  }
+  return subtasks;
 }
 
 
@@ -458,9 +463,11 @@ function getCategoryHtml(category) {
  * @returns {string} HTML representation of the task.
  */
 function updateTaskHtml(task) {
-  const contactsHtml = task.contacts.map(contact => {
-    return `<div class="task-contact-icon" style="background-color: ${contact.color};">${contact.letter}</div>`;
-  }).join('');
+  let contactsHtml = '';
+  for (let i = 0; i < task.contacts.length; i++) {
+    const contact = task.contacts[i];
+    contactsHtml += `<div class="task-contact-icon" style="background-color: ${contact.color};">${contact.letter}</div>`;
+  }
   const totalSubtasks = task.subtasks.length;
   return `
     <div id="${task.id}" class="board-task-card pointer" ondragstart="startDragging(event)" draggable="true" onclick="openTaskInfos('${task.id}', '${task.title}', '${task.description}', '${task.category}', '${task.dueDate}', ${JSON.stringify(task.subtasks).split('"').join("&quot;")}, '${task.priority}', '${task.priorityImage}')">
@@ -510,20 +517,19 @@ function bindSubtaskEvents() {
  * @returns {Array} Filtered list of contacts.
  */
 async function fetchAndFilterContacts() {
-  try {
       const loggedInUserName = localStorage.getItem("loggedInUserName");
       if (!loggedInUserName) {
           console.error("No logged-in user found. Contacts cannot be loaded.");
-          return [];
-      }
+          return [];}
       const contactsData = await getItem(`contacts_${loggedInUserName}`);
       const parsedContacts = JSON.parse(contactsData) || [];
-      const filteredContacts = parsedContacts.filter(contact => contact.name || contact.email || contact.phone);
+      const filteredContacts = [];
+      for (let i = 0; i < parsedContacts.length; i++) {
+          const contact = parsedContacts[i];
+          if (contact.name || contact.email || contact.phone) {
+              filteredContacts.push(contact);
+          }}
       return filteredContacts;
-  } catch (error) {
-      console.error("Error loading contacts:", error);
-      return [];
-  }
 }
 
 
@@ -688,13 +694,14 @@ function handleCheckboxChange(contactCheckbox, contactColors) {
 function renderSelectedContactIcons() {
   const selectedContactsContainer = document.getElementById("selectedContactsContainer");
   selectedContactsContainer.innerHTML = '';
-  selectedContactIcons.forEach(contact => {
+  for (let i = 0; i < selectedContactIcons.length; i++) {
+    const contact = selectedContactIcons[i];
     const iconElement = document.createElement('div');
     iconElement.className = 'contact-icon';
     iconElement.textContent = contact.letter;
     iconElement.style.backgroundColor = contact.color;
     selectedContactsContainer.appendChild(iconElement);
-  });
+  }
 }
 
 
@@ -709,12 +716,18 @@ function updateSelectedContacts(contactCheckbox, contactColors) {
   const contactDetail = {
       name: contactName,
       color: contactColors[contactName],
-      letter: contactName.charAt(0).toUpperCase(),
-  };
+      letter: contactName.charAt(0).toUpperCase(),};
   if (isChecked) {
       selectedContactIcons.push(contactDetail);
   } else {
-      selectedContactIcons = selectedContactIcons.filter(detail => detail.name !== contactName);
+      let updatedSelectedContactIcons = [];
+      for (let i = 0; i < selectedContactIcons.length; i++) {
+          const detail = selectedContactIcons[i];
+          if (detail.name !== contactName) {
+              updatedSelectedContactIcons.push(detail);
+          }
+      }
+      selectedContactIcons = updatedSelectedContactIcons;
   }
 }
 
@@ -759,15 +772,21 @@ function updateProgressBar(taskId, totalSubtasks) {
 
 /**
  * Maps contacts for display by extracting the icon and name from each contact object.
- * @param {Array} contacts - List of contacts to map.
+ * @param {Array} contacts - List of contacts to loop through.
  * @returns {Array} Mapped contacts with icon and name.
  */
 function mapContactsForDisplay(contacts) {
-  return contacts.map((contact) => ({
-    icon: contact.profileImage,
-    name: contact.username,
-  }));
+  const mappedContacts = [];
+  for (let i = 0; i < contacts.length; i++) {
+    const contact = contacts[i];
+    mappedContacts.push({
+      icon: contact.profileImage,
+      name: contact.username
+    });
+  }
+  return mappedContacts;
 }
+
 
 
 /**
@@ -837,11 +856,13 @@ function handleMaxSubtasksError() {
  * @param {string} priority - Selected priority.
  */
 function resetPriorities(prioritySettings, priority) {
-  document.querySelectorAll('.prioprity-urgent, .prioprity-medium, .prioprity-low').forEach(priorityElement => {
+  const priorityElements = document.querySelectorAll('.prioprity-urgent, .prioprity-medium, .prioprity-low');
+  for (let i = 0; i < priorityElements.length; i++) {
+    const priorityElement = priorityElements[i];
     priorityElement.style.backgroundColor = '';
     priorityElement.style.color = 'black';
     toggleImagesVisibility(priorityElement, prioritySettings, priority);
-  });
+  }
 }
 
 
@@ -868,9 +889,11 @@ function updateSelectedPriorityDisplay(prioritySettings, priority) {
  * @param {string} priority - Selected priority.
  */
 function toggleImagesVisibility(priorityElement, prioritySettings, priority) {
-  priorityElement.querySelectorAll('img').forEach(img => {
+  const images = priorityElement.querySelectorAll('img');
+  for (let i = 0; i < images.length; i++) {
+    const img = images[i];
     img.classList.toggle('d-none', img.classList.contains(prioritySettings[priority].imgToShow));
-  });
+  }
 }
 
 
@@ -930,12 +953,13 @@ function displaySelectedContactsIcons() {
  */
 function updateSelectedContactsContainer(selectedContactsContainer) {
   selectedContactsContainer.innerHTML = '';
-  selectedContacts.forEach((name) => {
+  for (let i = 0; i < selectedContacts.length; i++) {
+    const name = selectedContacts[i];
     const selectedContactIcon = document.createElement("div");
     selectedContactIcon.classList.add("contact-icon");
     selectedContactIcon.textContent = name.charAt(0).toUpperCase();
     selectedContactIcon.style.backgroundColor = contactColors[name];
     selectedContactIcon.style.color = "white";
     selectedContactsContainer.appendChild(selectedContactIcon);
-  });
+  }
 }

@@ -87,10 +87,11 @@ function countTasksInColumns(tasks) {
     done: 0,
     awaitingFeedback: 0
   };
-  tasks.forEach(task => {
+  for (let i = 0; i < tasks.length; i++) {
+    const task = tasks[i];
     const container = normalizeContainer(task.container);
     counts[container]++;
-  });
+  }
   return counts;
 }
 
@@ -140,7 +141,13 @@ function updateElementText(id, text) {
  * Filters the tasks array to count only urgent tasks.
  */
 function countUrgentTasks() {
-  return allTasks.filter(task => task.category === 'urgent').length;
+  let count = 0;
+  for (let i = 0; i < allTasks.length; i++) {
+    if (allTasks[i].category === 'urgent') {
+      count++;
+    }
+  }
+  return count;
 }
 
 
@@ -323,10 +330,12 @@ function fadeInContent() {
   const mainContent = document.getElementById('whole-summary');
   mainContent.style.transition = 'opacity 1s';
   mainContent.style.opacity = '1';
-  document.querySelectorAll('[w3-include-html]').forEach(element => {
+  const elements = document.querySelectorAll('[w3-include-html]');
+  for (let i = 0; i < elements.length; i++) {
+    const element = elements[i];
     element.style.transition = 'opacity 1s';
     element.style.opacity = '1';
-  });
+  }
 }
 
 
@@ -336,9 +345,11 @@ function fadeInContent() {
 function showContentDirectly() {
   const mainContent = document.getElementById('whole-summary');
   mainContent.style.opacity = '1';
-  document.querySelectorAll('[w3-include-html]').forEach(element => {
+  const elements = document.querySelectorAll('[w3-include-html]');
+  for (let i = 0; i < elements.length; i++) {
+    const element = elements[i];
     element.style.opacity = '1';
-  });
+  }
 }
 
 
