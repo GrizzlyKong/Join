@@ -91,7 +91,6 @@ function countTasksInColumns(tasks) {
   };
   for (let i = 0; i < tasks.length; i++) {
     const task = tasks[i];
-    console.log(task.id, task.container);
     updateCounts(task, counts);
     if (task.priority === 'Urgent') {
       counts.urgent++;

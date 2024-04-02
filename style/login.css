@@ -6,6 +6,7 @@ body {
   align-items: center;
   background-color: rgb(246, 247, 248);
   margin: 0 !important;
+  font-family: "Inter", sans-serif;
 }
 
 .center {

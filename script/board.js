@@ -776,6 +776,7 @@ function findTask() {
  * Adds an event listener to the find task input field.
  */
 function addFindTaskEventListener() {
+  if (window.location.href.indexOf("board") !=-1)
   document.getElementById('findTask').addEventListener('input', findTask);
 }
 

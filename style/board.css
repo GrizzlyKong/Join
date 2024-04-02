@@ -1,6 +1,7 @@
 body {
   /*   overflow-y: hidden; */
   overflow-x: hidden;
+  font-family: "Inter", sans-serif;
 }
 
 .noHover {
@@ -1308,9 +1309,6 @@ body {
   margin-right: -10px;
   position: relative;
   z-index: 1;
-<<<<<<< HEAD
-}
-=======
 }
 
 /*
@@ -1327,4 +1325,3 @@ body {
 @media only screen and (max-width: 600px) {
   
 }
->>>>>>> ba39a0052b18b5218333bd45a37d12f9471590c8
