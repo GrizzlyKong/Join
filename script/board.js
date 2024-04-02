@@ -929,9 +929,9 @@ function addTask() {
   </div>
 </form>
   `;
+  greyOverlay();
   populateContactsDropdown("contactsDropdownTask");
   bindSubtaskEvents();
-  greyOverlay();
   updateNoTaskDivs();
 }
 
@@ -2719,8 +2719,6 @@ function updateNoTaskDivs() {
     if (taskContainer && noTaskDiv) {
       const tasks = taskContainer.getElementsByClassName('board-task-card');
       noTaskDiv.style.display = tasks.length > 0 ? 'none' : 'grid';
-    } else {
-      console.error('Task container or no task message div not found for:', id);
     }
   }
 }

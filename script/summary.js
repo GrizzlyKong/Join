@@ -76,23 +76,52 @@ async function loadAndDisplayTaskCounts() {
 
 
 /**
- * Counts tasks based on their container categories.
- * @param {Array} tasks
- * @returns {Object}
+ * Counts the number of tasks in different columns and calculates the total number of tasks.
+ * @param {Array} tasks An array of tasks to be counted.
+ * @returns {Object} An object containing counts of tasks in different columns and the total count.
  */
 function countTasksInColumns(tasks) {
   const counts = {
     todo: 0,
     inProgress: 0,
     done: 0,
-    awaitingFeedback: 0
+    awaitingFeedback: 0,
+    total: 0,
+    urgent: 0
   };
   for (let i = 0; i < tasks.length; i++) {
     const task = tasks[i];
-    const container = normalizeContainer(task.container);
-    counts[container]++;
+    console.log(task.id, task.container);
+    updateCounts(task, counts);
+    if (task.priority === 'Urgent') {
+      counts.urgent++;
+    }
   }
   return counts;
+}
+
+
+/**
+ * Updates the counts of tasks in different columns based on the given task.
+ * @param {Object} task The task to update counts for.
+ * @param {Object} counts The object containing counts of tasks in different columns.
+ */
+function updateCounts(task, counts) {
+  counts.total++;
+  switch (task.container.toLowerCase()) {
+    case 'todo':
+      counts.todo++;
+      break;
+    case 'inprogress':
+      counts.inProgress++;
+      break;
+    case 'done':
+      counts.done++;
+      break;
+    case 'awaitingfeedback':
+      counts.awaitingFeedback++;
+      break;
+  }
 }
 
 
@@ -113,14 +142,44 @@ function normalizeContainer(container) {
 
 
 /**
- * Updates elements on the page with the provided task counts.
- * @param {Object} counts
+ * Updates the display of summary information based on the provided counts.
+ * @param {Object} counts An object containing counts of various tasks.
  */
 function updateSummaryDisplay(counts) {
-  updateElementText('summary-todo-number', counts.todo);
-  updateElementText('tasks-done-number', counts.done);
-  updateElementText('summary-awaitingfeedback-number', counts.awaitingFeedback);
-  updateElementText('tasks-progress-number', counts.inProgress);
+  updateElementTextContent('summary-todo-number', counts.todo);
+  updateElementTextContent('tasks-done-number', counts.done);
+  updateElementTextContent('summary-awaitingfeedback-number', counts.awaitingFeedback);
+  updateElementTextContent('tasks-progress-number', counts.inProgress);
+  updateElementTextContent('total-tasks-number', counts.total);
+  updateElementTextContent('summary-urgent-number', counts.urgent);
+}
+
+
+/**
+ * Updates the text content of an HTML element with the provided value.
+ * @param {string} elementId The ID of the HTML element to be updated.
+ * @param {string|number} value The value to set as the text content of the element.
+ */
+function updateElementTextContent(elementId, value) {
+  const element = document.getElementById(elementId);
+  if (element) {
+    element.textContent = value;
+  }
+}
+
+
+/**
+ * Counts the number of tasks categorized as 'urgent' in the allTasks array.
+ * @returns {number} The number of tasks categorized as 'urgent'.
+ */
+function countUrgentTasks() {
+  let count = 0;
+  for (let i = 0; i < allTasks.length; i++) {
+    if (allTasks[i].category === 'urgent') {
+      count++;
+    }
+  }
+  return count;
 }
 
 
@@ -152,6 +211,18 @@ function countUrgentTasks() {
 
 
 /**
+ * Updates the display of urgent tasks count on the summary view.
+ */
+function updateUrgentTasksDisplay() {
+  const urgentTasksCount = countUrgentTasks();
+  const urgentTasksElement = document.querySelector('.summary-urgent-number');
+  if (urgentTasksElement) {
+    urgentTasksElement.textContent = urgentTasksCount;
+  }
+}
+
+
+/**
  * Renders the summary view on the page by setting the innerHTML of the summary container.
  */
 function showSummary() {
@@ -163,14 +234,13 @@ function showSummary() {
       <h1>Join 360</h1>
       <span>Key Metrics at a Glance</span>
     </div>
-
-    <div class="summary-todo-and-done-div center">
-      <div class="summary-todo center" onclick="locationReplaceToBoard()">
+    <div class="summary-todo-and-done-div center" onclick="locationReplaceToBoard()">
+      <div class="summary-todo center">
         <div class="summary-todo-icons">
           <img class="todo1" src="../assets/icons/done.svg" alt="a picture with a pen">
           <img class="todo2 d-none" src="../assets/icons/done2.svg" alt="a picture with a pen and white a background">
         </div>
-        <div class="summary-todo-number-and-name center column">
+        <div class="summary-todo-number-and-name center column" onclick="locationReplaceToBoard()">
           <span id="summary-todo-number" class="summary-todo-number text-center">0</span>
           <span class="summary-todo-span">To-do</span>
         </div>
@@ -187,15 +257,15 @@ function showSummary() {
       </div>
     </div>
     <div class="summary-urgent-div pointer center" onclick="locationReplaceToBoard()">
-      <div class="summary-urgent center">
-        <div class="summary-urgent-icon-whitout-change">
-          <img class="urgent1" src="../assets/icons/urgent.svg" alt="an image that describes the urgency - urgent">
-        </div>
-        <div class="center column">
-          <span class="summary-urgent-number text-center">0</span>
-          <span class="summary-urgent-span">To-do</span>
-        </div>
-      </div>
+    <div class="summary-urgent center">
+    <div class="summary-urgent-icon-without-change">
+        <img class="urgent1" src="../assets/icons/urgent.svg" alt="an image that describes urgency - urgent">
+    </div>
+    <div class="center column">
+        <span id="summary-urgent-number" class="summary-urgent-number text-center">0</span>
+        <span class="summary-urgent-span">Urgent Tasks</span>
+    </div>
+</div>
       <div class="date-deadline center column">
         <span class="summmary-date">October 16, 2022</span>
         <span class="summmary-deadline">Upcoming Deadline</span>
@@ -203,7 +273,7 @@ function showSummary() {
     </div>
     <div class="all-tasks center">
       <div class="tasks-in-board pointer text-center center column" onclick="locationReplaceToBoard()">
-        <span class="tasks-in-board-number text-center">0</span>
+        <span class="tasks-in-board-number text-center" id="total-tasks-number">0</span>
         <span class="tasks-in-board-name">Tasks in <br> Board</span>
       </div>
       <div class="tasks-in-progress pointer text-center center column" onclick="locationReplaceToBoard()">
@@ -216,7 +286,7 @@ function showSummary() {
       </div>
     </div>
   </div>
-  <div class="greeting center column">
+  <div class="greeting column">
     <span class="greeting-good-morning">Good morning</span>
     <span id="loginName" class="greeting-name"></span>
   </div>
@@ -235,14 +305,11 @@ function locationReplaceToBoard() {
 
 
 /**
- * Updates the display of urgent tasks count on the summary view.
+ * Redirects the browser to the 'board.html' page, replacing the current page in the browser's history.
+ * @function locationReplaceToBoard
  */
-function updateUrgentTasksDisplay() {
-  const urgentTasksCount = countUrgentTasks();
-  const urgentTasksElement = document.querySelector('.summary-urgent-number');
-  if (urgentTasksElement) {
-    urgentTasksElement.textContent = urgentTasksCount;
-  }
+function locationReplaceToBoard() {
+  location.replace("../html/board.html");
 }
 
 
