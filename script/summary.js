@@ -267,7 +267,7 @@ function showSummary() {
     </div>
 </div>
       <div class="date-deadline center column">
-        <span class="summmary-date">October 16, 2022</span>
+        <span class="summmary-date">April 16, 2024</span>
         <span class="summmary-deadline">Upcoming Deadline</span>
       </div>
     </div>
