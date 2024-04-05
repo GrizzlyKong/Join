@@ -43,10 +43,6 @@ body {
 /*summary left side*/
 /*Headline*/
 
-.summary-left-side {
-
-}
-
 .summary-join-360 {
 }
 .summary-join-360 h1 {
@@ -76,9 +72,6 @@ body {
   transition: all 0.2s ease-in-out;
 }
 
-.todo2 {
-}
-
 .summary-todo:hover {
   cursor: pointer;
   transform: scale(1.1);
@@ -90,9 +83,6 @@ body {
 
 .summary-todo:hover .todo2 {
   display: inline;
-}
-
-.summary-todo-number-and-name {
 }
 
 .summary-todo-span {
@@ -127,9 +117,6 @@ body {
   transition: all 0.2s ease-in-out;
 }
 
-.done2 {
-}
-
 .summary-done:hover {
   transform: scale(1.1);
   background-color: #2a3647;
@@ -140,9 +127,6 @@ body {
 
 .summary-done:hover .done2 {
   display: inline;
-}
-
-.summary-done-number-and-name {
 }
 
 .summary-done-span {
@@ -259,6 +243,7 @@ body {
   transition: all 0.2s ease-in-out;
   margin-top: 18px;
 }
+
 .tasks-progress-number {
   color: #000;
   font-family: Inter;
@@ -267,9 +252,11 @@ body {
   font-weight: 600;
   line-height: 120%;
 }
+
 .tasks-progress-name {
   font-size: 20px;
 }
+
 .awaiting-feedback {
   width: 168px;
   height: 168px;
@@ -280,6 +267,7 @@ body {
   transition: all 0.2s ease-in-out;
   margin-top: 18px;
 }
+
 .tasks-awaiting-feedback-number {
   color: #000;
   font-family: Inter;
@@ -292,6 +280,7 @@ body {
 .tasks-awaiting-feedback-name {
   font-size: 20px;
 }
+
 .tasks-in-board:hover {
   color: white;
   transform: scale(1.1);

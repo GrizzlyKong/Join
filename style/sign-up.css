@@ -129,7 +129,6 @@
   border-bottom: 3px solid #29abe2;
 }
 
-
 .sign-up-inputs {
   position: relative;
   bottom: 3vh;
@@ -164,9 +163,6 @@
   height: 22px;
 }
 
-.sign-up-checkbox-and-button {
-}
-
 .sign-up-privacy-policy {
   display: flex;
   justify-content: center;
@@ -174,18 +170,6 @@
   gap: 8px;
   position: relative;
   top: 6vh;
-}
-
-.sign-up-checkbox {
-/*   height: 16px;
-  width: 16px;
-  border-radius: 3px;
-  border-style: solid; */
-}
-
-.sign-up-checkbox:hover {
-/*   scale: 1.1;
-  background-color: rgb(238, 238, 238); */
 }
 
 .sign-up-login-buttons {
@@ -239,10 +223,6 @@
 .sign-up-privacy-policy p {
   margin: 0 !important;
   color: rgb(209, 209, 209);
-}
-
-.sign-up-privacy-policy span {
-
 }
 
 .sign-up-privacy-policy-span{
