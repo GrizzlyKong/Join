@@ -762,12 +762,24 @@ function addSubtaskToDOM(input) {
   addedSubtasks.innerHTML += /*HTML*/`
     <div id="${subtaskId}" class="added-subtask pointer">
         <div>&bull; ${input}</div>
-      <div class="subtask-both-img d-none">
-        <img onclick="editSubtask('${subtaskId}')" class="subtask-img1" src="../assets/icons/edit.svg" alt="a picture of a pen">
-        <img onclick="deleteSubtask('${subtaskId}')" class="subtask-img2" src="../assets/icons/delete.svg" alt="a picture of a trash can">
+      <div class="subtask-both-img">
+        <img onclick="editSubtask('${subtaskId}')" class="subtask-img1" src="../assets/icons/edit.svg" alt="Edit icon">
+        <img onclick="deleteSubtask('${subtaskId}')" class="subtask-img2" src="../assets/icons/delete.svg" alt="Delete icon">
       </div>
     </div>
   `;
+}
+
+
+/**
+ * Deletes a subtask element from the DOM.
+ * @param {string} subtaskId - The ID of the subtask to be deleted.
+ */
+function deleteSubtask(subtaskId) {
+  const subtaskElement = document.getElementById(subtaskId);
+  if (subtaskElement) {
+    subtaskElement.remove();
+  }
 }
 
 
