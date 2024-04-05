@@ -107,21 +107,24 @@ function countTasksInColumns(tasks) {
  */
 function updateCounts(task, counts) {
   counts.total++;
-  switch (task.container.toLowerCase()) {
-    case 'todo':
-      counts.todo++;
-      break;
-    case 'inprogress':
-      counts.inProgress++;
-      break;
-    case 'done':
-      counts.done++;
-      break;
-    case 'awaitingfeedback':
-      counts.awaitingFeedback++;
-      break;
+  if (task.container) {
+    switch (task.container.toLowerCase()) {
+      case 'todo':
+        counts.todo++;
+        break;
+      case 'inprogress':
+        counts.inProgress++;
+        break;
+      case 'done':
+        counts.done++;
+        break;
+      case 'awaitingfeedback':
+        counts.awaitingFeedback++;
+        break;
+    }
   }
 }
+
 
 
 /**

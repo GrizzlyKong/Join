@@ -24,6 +24,17 @@ async function init() {
 
 
 /**
+ * When the Enter key is detected, it triggers the `correctSubtask` function.
+ * @param {KeyboardEvent} event - The keyboard event triggered when a key is pressed.
+ */
+function checkEnter(event) {
+  if (event.key === "Enter") {
+      correctSubtask();
+  }
+}
+
+
+/**
  * Checks if the application is being used by a guest (without logged-in user).
  * @returns {boolean} True if the application is being used by a guest, otherwise false.
  */
@@ -112,6 +123,23 @@ async function addTask() {
   addToTask.innerHTML += addTaskHTML();
   populateContactsDropdown("contactsDropdownTask");
   bindSubtaskEvents();
+}
+
+
+/**
+ * Toggles the visibility of the contacts container on the webpage.
+ * Also rotates an arrow image indicating the dropdown state.
+ */
+function revealContacts() {
+  const contactsContainer = document.getElementById("contactsContainerTask");
+  const arrowImage = document.getElementById("arrowDropImage");
+  if (contactsContainer.style.display === "none" || contactsContainer.style.display === "") {
+    contactsContainer.style.display = "block";
+    arrowImage.classList.add("rotate");
+  } else {
+    contactsContainer.style.display = "none";
+    arrowImage.classList.remove("rotate");
+  }
 }
 
 
@@ -633,7 +661,15 @@ function updateSelectedContacts(contactCheckbox, contactColors) {
 
 
 /**
- * Adds subtasks based on user input.
+ * Focuses on the subtask input field.
+ */
+function focusOnSubtaskInput() {
+  document.getElementById("add-subtasks").focus();
+}
+
+
+/**
+ * Adds subtasks to a task.
  */
 function addSubtasks() {
   let input = document.getElementById("add-subtasks");
@@ -648,7 +684,6 @@ function addSubtasks() {
   }
   updateProgressBar();
 }
-
 
 /**
  * Updates the progress bar for subtasks.
@@ -688,9 +723,8 @@ function mapContactsForDisplay(contacts) {
 }
 
 
-
 /**
- * Corrects a subtask by validating input, adding it to the DOM if conditions are met, and handling errors.
+ * Corrects a subtask by adding it to the DOM, clearing the input, and toggling icon visibility based on subtask count.
  */
 function correctSubtask() {
   const input = document.getElementById("add-subtasks").value.trim();
@@ -699,6 +733,9 @@ function correctSubtask() {
     if (currentSubtasks < 2) {
       addSubtaskToDOM(input);
       document.getElementById("add-subtasks").value = "";
+      document.getElementById("subtask-add").classList.remove("d-none");
+      document.getElementById("subtask-cancel").classList.add("d-none");
+      document.getElementById("subtask-correct").classList.add("d-none");
     } else {
       handleMaxSubtasksError();
     }
@@ -722,15 +759,52 @@ function countCurrentSubtasks() {
 function addSubtaskToDOM(input) {
   const subtaskId = `subtask-${subtaskIdCounter++}`;
   const addedSubtasks = document.getElementById("added-subtasks");
-  addedSubtasks.innerHTML += `
+  addedSubtasks.innerHTML += /*HTML*/`
     <div id="${subtaskId}" class="added-subtask pointer">
         <div>&bull; ${input}</div>
       <div class="subtask-both-img d-none">
-        <img onclick="editSubtask('${subtaskId}')" class="subtask-img1" src="../assets/icons/edit.svg" alt"a picture of a pen">
-        <img onclick="deleteSubtask('${subtaskId}')" class="subtask-img2" src="../assets/icons/delete.svg" alt"a picture of a trash can">
+        <img onclick="editSubtask('${subtaskId}')" class="subtask-img1" src="../assets/icons/edit.svg" alt="a picture of a pen">
+        <img onclick="deleteSubtask('${subtaskId}')" class="subtask-img2" src="../assets/icons/delete.svg" alt="a picture of a trash can">
       </div>
     </div>
   `;
+}
+
+
+/**
+ * Initiates the editing of a subtask.
+ * @param {string} subtaskId - The ID of the subtask being edited.
+ */
+function editSubtask(subtaskId) {
+  const subtaskElement = document.getElementById(subtaskId);
+  const currentText = subtaskElement.innerText.trim();
+  subtaskElement.innerHTML = /*html*/`
+    <input type="text" value="${currentText}" id="edit-input-${subtaskId}" class="subtask-edit-input">
+    <img src="../assets/icons/correct.svg" alt="Save" class="hook-image" onclick="saveEditedSubtask('${subtaskId}')">
+  `;
+  const editInput = document.getElementById(`edit-input-${subtaskId}`);
+  editInput.focus();
+  editInput.setSelectionRange(currentText.length, currentText.length);
+}
+
+
+/**
+ * Saves the edited subtask and updates the DOM.
+ * @param {string} subtaskId - The ID of the subtask being edited.
+ */
+function saveEditedSubtask(subtaskId) {
+  const editInput = document.getElementById(`edit-input-${subtaskId}`);
+  const newText = editInput.value.trim();
+  if (newText) {
+    const subtaskElement = document.getElementById(subtaskId);
+    subtaskElement.innerHTML = /*html*/`
+      <div>${newText}</div>
+      <div class="subtask-both-img">
+        <img onclick="editSubtask('${subtaskId}')" class="subtask-img1" src="../assets/icons/edit.svg" alt="a picture of a pen">
+        <img onclick="deleteSubtask('${subtaskId}')" class="subtask-img2" src="../assets/icons/delete.svg" alt="a picture of a trash can">
+      </div>
+    `;
+  }
 }
 
 

@@ -52,7 +52,7 @@ function generateTaskHTMLContent(taskId, categoryClass, category, title, descrip
               <textarea required type="text" maxlength="45" id="description-todo" placeholder="Enter a Description"></textarea>
             </div>
             <div class="assigned-to">
-            <label for="contactsDropdownTask"><span>Assigned to</span></label>
+            <div for="contactsDropdownTask"><span>Assigned to</span></div>
             <div class="custom-dropdown" id="contactsDropdownContainer">
           <div id="contactsDropdownTask">
             <input class="select-to-assign" placeholder="Select contacts to assign" readonly="readonly">
@@ -105,8 +105,8 @@ function generateTaskHTMLContent(taskId, categoryClass, category, title, descrip
         <div class="subtasks">
           <div><span>Subtasks</span><span class="important">*</span></div>
         <div class="subtaskInput">
-          <input minlength="1" oninput="addSubtasks()" id="add-subtasks" type="text" placeholder="Add new subtask">
-          <img id="subtask-add" class="input-icon2 pointer" src="../assets/icons/add.svg" alt="an image of a plus">
+          <input minlength="1" oninput="addSubtasks()" id="add-subtasks" type="text" placeholder="Add new subtask" onkeydown="checkEnter(event)">
+          <img id="subtask-add" class="input-icon2 pointer" src="../assets/icons/add.svg" alt="an image of a plus" onclick="focusOnSubtaskInput()">
         <div class="oninput">
           <img onclick="cancelSubtask()" id="subtask-cancel" class="input-icon3 d-none pointer center" src="../assets/icons/cancelX.svg" alt="a picture of a X">
           <img onclick="correctSubtask()" id="subtask-correct" class="input-icon4 d-none pointer center" src="../assets/icons/correct.svg" alt="a picture of a hook">
@@ -305,11 +305,11 @@ function renderTaskForm(taskId, title, description, category, dueDate, subtasksH
           <input class="edit-the-dueDate-input" required type="date" id="edit-due-date-${taskId}" value="${dueDate}">
         </div>
         <div class="assigned-to">
-          <label for="contactsDropdownTask"><span>Assigned to</span></label>
+          <div for="contactsDropdownTask"><span>Assigned to</span></div>
           <div class="custom-dropdown" id="contactsDropdownContainer2">
             <div id="contactsDropdownTask2">
               <input class="select-to-assign" placeholder="Select contacts to assign" readonly="readonly">
-              <img id="arrowDropImage2" class="find-contact-img" src="../assets/icons/arrowDrop.png" alt"a picture of an arrow pointing downwards" onclick="revealContacts()">
+              <img id="arrowDropImage2" class="find-contact-img" src="../assets/icons/arrowDrop.png" alt="a picture of an arrow pointing downwards" onclick="revealContacts()">
             </div>
           </div>
         </div>
@@ -343,7 +343,7 @@ function renderTaskForm(taskId, title, description, category, dueDate, subtasksH
         </div>
         <div class="subtasks">
           <div><span>Subtasks</span><span class="important">*</span></div>
-          <input minlength="1" id="add-subtasks-edit" type="text" placeholder="Add new subtask">
+          <input minlength="1" id="add-subtasks-edit" type="text" placeholder="Add new subtask" onkeydown="checkEnterEdit(event)">
           <img onclick="correctSubtaskEdit()" id="subtask-add-edit" class="input-icon2 pointer" src="../assets/icons/add.svg" alt="an image of a plus">
           <div id="edited-subtasks">${subtasksHtml}</div>
         </div>
@@ -471,8 +471,8 @@ function addSubtaskToDOM(subtaskId, input) {
       <div id="${subtaskId}" class="added-subtask pointer">
         <div>${input}</div>
         <div class="subtask-both-img d-none">
-          <img onclick="editSubtask('${subtaskId}')" class="subtask-img1" src="../assets/icons/edit.svg" alt"a picture of a pen">
-          <img onclick="deleteSubtask('${subtaskId}')" class="subtask-img2" src="../assets/icons/delete.svg" alt"a picture of a trash can">
+          <img onclick="editSubtask('${subtaskId}')" class="subtask-img1" src="../assets/icons/edit.svg" alt="a picture of a pen">
+          <img onclick="deleteSubtask('${subtaskId}')" class="subtask-img2" src="../assets/icons/delete.svg" alt="a picture of a trash can">
         </div>
       </div>
     `;
@@ -485,14 +485,14 @@ function addSubtaskToDOM(subtaskId, input) {
  * @param {Array} currentSubtasks - An array containing the current subtasks of the task.
  * @returns {string} The generated HTML content for the subtask.
  */
-  function addSubtask(input, currentSubtasks) {
+  function addSubtaskHTML(input, subtaskId) {
     return /*html*/ `
-    <div id="${subtaskId}" class="added-subtask pointer">
-        <div>&bull; ${input}</div>
-      <div class="subtask-both-img d-none">
-        <img onclick="editSubtask('${subtaskId}')" class="subtask-img1" src="../assets/icons/edit.svg" alt="a picture of a pen">
-        <img onclick="deleteSubtask('${subtaskId}')" class="subtask-img2" src="../assets/icons/delete.svg" alt="a picture of a trash can">
+      <div id="${subtaskId}" class="added-subtask pointer">
+          <div>&bull; ${input}</div>
+        <div class="subtask-both-img">
+          <img onclick="editSubtask('${subtaskId}')" class="subtask-img1" src="../assets/icons/edit.svg" alt="a picture of a pen">
+          <img onclick="deleteSubtask('${subtaskId}')" class="subtask-img2" src="../assets/icons/delete.svg" alt="a picture of a trash can">
+        </div>
       </div>
-    </div>
-  `;
-  }
+    `;
+  }  

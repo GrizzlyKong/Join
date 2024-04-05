@@ -19,7 +19,7 @@ function addTaskHTML() {
             </div>
   
             <div class="assigned-to">
-            <label for="contactsDropdownTask"><span>Assigned to</span></label>
+            <div for="contactsDropdownTask"><span>Assigned to</span></div>
             <div class="custom-dropdown" id="contactsDropdownContainer">
           <div id="contactsDropdownTask">
             <input class="select-to-assign" placeholder="Select contacts to assign" readonly="readonly">
@@ -73,8 +73,8 @@ function addTaskHTML() {
         <div class="subtasks">
           <div><span>Subtasks</span><span class="important">*</span></div>
         <div class="subtaskInput">
-          <input minlength="1" oninput="addSubtasks()" id="add-subtasks" type="text" placeholder="Add new subtask">
-          <img id="subtask-add" class="input-icon2 pointer" src="../assets/icons/add.svg" alt="an image of a plus">
+          <input minlength="1" oninput="addSubtasks()" id="add-subtasks" type="text" placeholder="Add new subtask" onkeydown="checkEnter(event)">
+          <img id="subtask-add" class="input-icon2 pointer" src="../assets/icons/add.svg" alt="an image of a plus" onclick="focusOnSubtaskInput()">
         <div class="oninput">
           <img onclick="cancelSubtask()" id="subtask-cancel" class="input-icon3 d-none pointer center" src="../assets/icons/cancelX.svg" alt="a picture of a X">
           <img onclick="correctSubtask()" id="subtask-correct" class="input-icon4 d-none pointer center" src="../assets/icons/correct.svg" alt="a picture of a hook">

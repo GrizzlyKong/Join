@@ -23,7 +23,6 @@ let currentlyEditingSubtaskId = null;
  * - Renders tasks.
  * - Updates the display of task containers.
  * - Adds event listener for finding tasks.
- * @returns {Promise<void>} A Promise that resolves when initialization is complete.
  */
 async function init() {
   await includeHTML();
@@ -34,6 +33,28 @@ async function init() {
   await renderTasks();
   updateNoTaskDivs();
   addFindTaskEventListener();
+}
+
+
+/**
+ * When the Enter key is detected, it triggers the `correctSubtask` function.
+ * @param {KeyboardEvent} event - The keyboard event triggered when a key is pressed.
+ */
+function checkEnter(event) {
+  if (event.key === "Enter") {
+      correctSubtask();
+  }
+}
+
+
+/**
+ * When the Enter key is detected, it triggers the `correctSubtaskEdit` function.
+ * @param {KeyboardEvent} event - The keyboard event triggered when a key is pressed.
+ */
+function checkEnterEdit(event) {
+  if (event.key === "Enter") {
+      correctSubtaskEdit();
+  }
 }
 
 
@@ -798,10 +819,9 @@ function addTask() {
   document.getElementById("board-div").classList.add("background");
   document.getElementById("add-task").classList.remove("d-none");
   document.getElementById("add-task").classList.add("sign-up-animation");
-  addToTask.innerHTML += addTaskHTML();
+  addToTask.innerHTML = addTaskHTML();
   greyOverlay();
   populateContactsDropdown("contactsDropdownTask");
-  bindSubtaskEvents();
   updateNoTaskDivs();
 }
 
@@ -938,8 +958,15 @@ function createTaskHTML(task) {
   const totalSubtasks = subtasks.length;
   const contactsHtml = generateContactsHtml(task.contacts);
   const categoryClass = getCategoryClass(category);
-  content.innerHTML += generateTaskHTMLcontent(id, categoryClass, category, title, description, dueDate, contactsHTML);
+  const taskContainer = document.getElementById('task-container');
+  if (taskContainer) {
+    const taskHTML = generateTaskHTMLcontent(id, categoryClass, category, title, description, dueDate, contactsHtml, priorityImage, totalSubtasks);
+    taskContainer.innerHTML += taskHTML;
+  } else {
+    console.error('Task container not found');
+  }
 }
+
 
 
 /**
@@ -1130,7 +1157,6 @@ function populateSelectedContactsPlaceholder(taskId) {
  * @returns {number} The index of the task in the task list.
  */
 function logTaskIdAndFindIndex(taskId) {
-  console.log("Received task ID to delete:", taskId);
   let taskIndex = -1;
   for (let i = 0; i < allTasks.length; i++) {
     if (allTasks[i].id === taskId) {
@@ -1142,7 +1168,6 @@ function logTaskIdAndFindIndex(taskId) {
 }
 
 
-
 /**
  * Removes a task if it exists and updates the DOM.
  * @param {number} taskIndex - The index of the task to remove.
@@ -1151,7 +1176,6 @@ function logTaskIdAndFindIndex(taskId) {
 async function removeTaskIfExists(taskIndex, taskId) {
   if (taskIndex > -1) {
     allTasks.splice(taskIndex, 1);
-    console.log(`Task ${taskId} removed successfully from allTasks.`);
     await saveTasksAndUpdateDOM(taskId);
   } else {
     console.error(`Task ${taskId} not found in allTasks.`);
@@ -1423,25 +1447,6 @@ function getTaskInfoElements(taskInfoContainer) {
 
 
 /**
- * Binds mouseover and mouseout events to display/hide icons for subtasks.
- * @param {Array<HTMLElement>} subtasks - The array of subtask elements.
- */
-function bindSubtaskEvents(subtasks) {
-  for (let index = 0; index < subtasks.length; index++) {
-    let hoverSubtask = document.getElementById(`hoverSubtask-${index}`);
-    hoverSubtask.onmouseover = () => {
-      document.getElementById(`edit-icon-${index}`).style.display = 'inline';
-      document.getElementById(`delete-icon-${index}`).style.display = 'inline';
-    };
-    hoverSubtask.onmouseout = () => {
-      document.getElementById(`edit-icon-${index}`).style.display = 'none';
-      document.getElementById(`delete-icon-${index}`).style.display = 'none';
-    };
-  }
-}
-
-
-/**
  * Binds click event to toggle display of selected contacts container.
  */
 function bindSelectToAssignEvent() {
@@ -1591,28 +1596,57 @@ function startEditingSubtask(subtaskId, taskId) {
 
 /**
  * Edits the content of a subtask.
- * @param {number} index - The index of the subtask.
- * @param {string} subtask - The content of the subtask.
+ * @param {string} subtaskId - The ID of the subtask.
  */
-function editSubtask(index, subtask) {
-  const subtaskContainer = document.getElementById('edited-subtasks');
-  const subtasks = subtaskContainer.getElementsByClassName('hover-subtask');
-  const subtaskToEdit = subtasks[index];
-  const inputField = createInputField(subtask);
-  if (subtaskToEdit) {
-    insertInputBeforeSubtask(inputField, subtaskToEdit, subtaskContainer);
-  } else {
-    appendInputField(inputField, subtaskContainer);
-  }
+function editSubtask(subtaskId) {
+  const subtaskElement = document.getElementById(subtaskId);
+  const currentText = subtaskElement.querySelector('div').textContent.substring(2);
+  subtaskElement.innerHTML = /*html*/`
+    <input type="text" value="${currentText}" id="edit-input-${subtaskId}" class="subtask-edit-input">
+    <img src="../assets/icons/correct.svg" alt="Save" class="hook-image" onclick="saveEditedSubtask('${subtaskId}')">
+  `;
+  const editInput = document.getElementById(`edit-input-${subtaskId}`);
+  editInput.focus();
+  editInput.selectionStart = editInput.selectionEnd = currentText.length;
+}
+
+
+/**
+ * Saves the edited subtask by replacing its existing HTML with updated content.
+ * @param {string} subtaskId - The ID of the subtask to be saved after editing.
+ */
+function saveEditedSubtask(subtaskId) {
+  const editInput = document.getElementById(`edit-input-${subtaskId}`);
+  const newText = editInput.value;
+  const subtaskHTML = addSubtaskHTML(newText, subtaskId);
+  const subtaskElement = document.getElementById(subtaskId);
+  subtaskElement.outerHTML = subtaskHTML;
+}
+
+
+/**
+ * Sets up event listeners for the input field in a subtask.
+ * @param {HTMLElement} inputField - The input field element.
+ * @param {HTMLElement} subtaskElement - The subtask element that contains the input field.
+ * @param {string} subtaskId - The ID of the subtask.
+ */
+function setupInputFieldEventListeners(inputField, subtaskElement, subtaskId) {
   inputField.addEventListener('blur', function() {
-    replaceInputWithText(inputField, index, subtaskContainer);
+    const updatedSubtaskContent = inputField.value;
+    subtaskElement.innerHTML = `<div>&bull; ${updatedSubtaskContent}</div>`;
+    const buttonsHTML = `
+      <div class="subtask-both-img">
+        <img onclick="editSubtask('${subtaskId}')" class="subtask-img1" src="../assets/icons/edit.svg" alt="a picture of a pen">
+        <img onclick="deleteSubtask('${subtaskId}')" class="subtask-img2" src="../assets/icons/delete.svg" alt="a picture of a trash can">
+      </div>
+    `;
+    subtaskElement.innerHTML += buttonsHTML;
   });
   inputField.addEventListener('keydown', function(e) {
     if (e.key === 'Enter') {
       inputField.blur();
     }
   });
-  inputField.focus();
 }
 
 
@@ -2073,6 +2107,14 @@ function updateHTML() {
 
 
 /**
+ * Focuses on the subtask input field.
+ */
+function focusOnSubtaskInput() {
+  document.getElementById("add-subtasks").focus();
+}
+
+
+/**
  * Adds subtasks to a task.
  */
 function addSubtasks() {
@@ -2130,7 +2172,7 @@ function addSubtask(input, currentSubtasks) {
   if (currentSubtasks < 2) {
     const subtaskId = `subtask-${subtaskIdCounter++}`;
     let addedSubtasks = document.getElementById("added-subtasks");
-    addedSubtasks.innerHTML += addSubtask(input, currentSubtasks);
+    addedSubtasks.innerHTML += addSubtaskHTML(input, subtaskId);
     document.getElementById("add-subtasks").value = "";
   } else {
     disableInputTemporarily();
@@ -2141,7 +2183,6 @@ function addSubtask(input, currentSubtasks) {
 /**
  * Disables the input field temporarily.
  */
-
 function disableInputTemporarily() {
   let inputElement = document.getElementById("add-subtasks");
   inputElement.value = "Maximal 2 Subtasks";
@@ -2163,8 +2204,8 @@ function resetInputField(inputElement) {
 
 
 /**
- * Handles the correction of subtasks.
- * @param {object} options - Options for correction.
+ * Corrects or adds a subtask based on the input from a specific input element.
+ * @param {string|null} [options.taskId=null] - The ID of the specific task to which the subtask is being added or corrected.
  */
 function correctSubtask({ taskId = null } = {}) {
   const inputElement = document.getElementById("add-subtasks");
@@ -2175,9 +2216,14 @@ function correctSubtask({ taskId = null } = {}) {
   const currentSubtasksCount = getCurrentSubtasksCount(containerSelector);
   if (currentSubtasksCount < 2) {
     handleSubtaskAddition(inputElement, input, currentSubtasksCount, taskId);
+    inputElement.value = "";
+    document.getElementById("subtask-add").classList.remove("d-none");
+    document.getElementById("subtask-cancel").classList.add("d-none");
+    document.getElementById("subtask-correct").classList.add("d-none");
   } else {
     handleMaxSubtasksError(isTaskSpecific, inputElement, taskId);
   }
+  updateProgressBar();
 }
 
 

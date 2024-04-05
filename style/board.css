@@ -550,9 +550,11 @@ body {
   margin-left: -30px;
   margin-bottom: -6px;
 }
+
 .subtaskInput {
   display: flex;
 }
+
 .add-img {
   margin-left: -25px;
   margin-top: 28px;
@@ -570,6 +572,7 @@ body {
 #added-subtasks {
   font-size: 16px !important;
 }
+
 .added-subtask {
   display: flex;
   justify-content: space-between;
@@ -581,25 +584,28 @@ body {
   padding-bottom: 4px;
   border-radius: 10px;
 }
+
 .added-subtask:hover {
   background-color: #d1d1d1;
 }
+
 .added-subtask-unset:hover {
   background-color: unset;
 }
+
 .added-subtask:hover .d-none {
   display: block;
   height: 17px;
 }
-.subtask-both-img {
-  margin-top: -7px;
-}
+
 .subtask-img1:hover {
   padding-top: 1px;
 }
+
 .subtask-img2:hover {
   padding-top: 1px;
 }
+
 .red {
   color: red;
 }
@@ -617,20 +623,30 @@ body {
 .input-icon2:hover {
   background-color: #d1d1d1;
 }
+
 .input-icon3 {
+  position: absolute;
+  right: 4%;
+  top: 68%;
   margin-bottom: -5px;
   padding: 1px;
   height: auto;
   border-radius: 50%;
 }
+
 .input-icon3:hover {
   background-color: #d1d1d1;
 }
+
 .input-icon4 {
+  position: absolute;
+    right: 7%;
+    top: 68%;
   margin-bottom: -5px;
   padding: 1px;
   border-radius: 50%;
 }
+
 .input-icon4:hover {
   background-color: #d1d1d1;
 }
@@ -1049,7 +1065,7 @@ body {
 .find-contact-img {
   cursor: pointer;
   position: absolute;
-  top: 26px;
+  top: 18px;
   right: 1rem;
   width: 32px;
   height: 32px;

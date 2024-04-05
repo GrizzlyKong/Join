@@ -3,8 +3,6 @@ let contacts = [];
 
 /**
  * Initializes the application.
- * 
- * @returns {Promise<void>} A Promise that resolves when initialization is complete.
  */
 async function init() {
   await includeHTML();
