@@ -27,10 +27,10 @@
       <div class="board-title">
 
         <div class="board-title-head">Board</div>
-        <form class="find-task">
+        <form class="find-task" onsubmit="return false;">
           <input class="input-field" required="" type="text" placeholder="Find Task" id="findTask">
-          <img class="find-task-img" src="../assets/icons/find.png" alt="magnifying glass picture">
-        </form>
+          <img class="find-task-img" src="../assets/icons/find.png" alt="magnifying glass picture" onclick="focusOnSearchInput()">
+        </form>        
         <div onclick="addTask()" class="add-task-button pointer">
           Add Task <img src="../assets/icons/add.png" alt="an image with a plus">
         </div>

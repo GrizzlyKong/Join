@@ -59,6 +59,18 @@ function checkEnterEdit(event) {
 
 
 /**
+ * If the Enter key is pressed, it calls the correctSubtask function to add the subtask.
+ * @param {KeyboardEvent} event - The keyboard event object.
+ */
+function correctSubtaskEnter(event) {
+  if (event.key === 'Enter') { 
+    correctSubtask();
+    event.preventDefault();
+  }
+}
+
+
+/**
  * Counts the number of tasks in each category.
  * @returns {Object} An object containing the count of tasks in each category.
  */
@@ -1608,6 +1620,21 @@ function editSubtask(subtaskId) {
   const editInput = document.getElementById(`edit-input-${subtaskId}`);
   editInput.focus();
   editInput.selectionStart = editInput.selectionEnd = currentText.length;
+  editInput.addEventListener('keydown', function(event) {
+    handleEnterWhileEditingSubtask(event, subtaskId);
+  });
+}
+
+
+/**
+ * Calls saveEditedSubtask() if Enter key is pressed.
+ * @param {string} subtaskId - The ID of the subtask.
+ */
+function handleEnterWhileEditingSubtask(event, subtaskId) {
+  if (event.key === 'Enter') {
+    event.preventDefault();
+    saveEditedSubtask(subtaskId);
+  }
 }
 
 
@@ -1647,6 +1674,30 @@ function setupInputFieldEventListeners(inputField, subtaskElement, subtaskId) {
       inputField.blur();
     }
   });
+}
+
+
+/**
+ * Validates the form for adding a new task and invokes the function to create the task.
+ */
+function validateFormAddTask() {
+  var form = document.querySelector('.addTaskForm');
+  if (!form.checkValidity()) {
+    return false;
+  }
+  addTodo();
+  return false;
+}
+
+
+/**
+ * Prevents form submission when the Enter key is pressed within the title input field.
+ * @param {KeyboardEvent} event - The keyboard event object.
+ */
+function preventSubmitInputTitle(event) {
+  if (event.key === "Enter") {
+    event.preventDefault();
+  }
 }
 
 
@@ -2107,10 +2158,18 @@ function updateHTML() {
 
 
 /**
- * Focuses on the subtask input field.
+ * Focuses on the subtask-input field.
  */
 function focusOnSubtaskInput() {
   document.getElementById("add-subtasks").focus();
+}
+
+
+/**
+ * Focuses on the search-input field.
+ */
+function focusOnSearchInput() {
+  document.getElementById("findTask").focus();
 }
 
 
