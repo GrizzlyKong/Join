@@ -106,3 +106,32 @@ function addTaskHTML() {
 </form>
   `;
 }
+
+
+/**
+ * Updates the HTML template for a task card.
+ * @param {Object} task - The task object containing task details.
+ * @param {string} contactsHtml - HTML content for task contacts.
+ * @param {number} totalSubtasks - Total number of subtasks.
+ * @returns {string} The updated HTML template for the task card.
+ */
+function updateTaskHTMLtemplate(task, contactsHtml, totalSubtasks) {
+  return /*html*/ `
+  <div id="${task.id}" class="board-task-card pointer" ondragstart="startDragging(event)" draggable="true" onclick="openTaskInfos('${task.id}', '${task.title}', '${task.description}', '${task.category}', '${task.dueDate}', ${JSON.stringify(task.subtasks).split('"').join("&quot;")}, '${task.priority}', '${task.priorityImage}')">
+    ${getCategoryHtml(task.category)}
+    <div class="board-task-card-description">${task.title}</div>
+    <div class="board-task-card-task">${task.description}</div>
+    <div class="board-task-card-date d-none">${task.dueDate}</div>
+    <div class="board-task-card-subtasks">
+      <div class="board-task-card-subtasks-bar">
+        <div id="bar-fill-${task.id}" class="bar-fill" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
+      </div>
+      <div id="subtasks-amount-${task.id}" class="board-task-card-subtasks-amount">${totalSubtasks}/2 Subtasks</div>
+    </div>
+    <div class="icon-container task-icon-added">${contactsHtml}</div>
+    <div class="board-task-card-priority">
+      <img id="priority-img-${task.id}" src="${task.priorityImage}">
+    </div>
+  </div>
+`;
+}

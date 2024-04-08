@@ -127,6 +127,19 @@ async function addTask() {
 
 
 /**
+ * Displays the logged-in user's initials.
+ */
+function displayLoggedInUser() {
+  const loggedInUserName = localStorage.getItem('loggedInUserName');
+  if (loggedInUserName) {
+    const userNameIcon = document.getElementById('board-user-icon');
+    const firstLetter = loggedInUserName.charAt(0).toUpperCase();
+    userNameIcon.textContent = firstLetter;
+  }
+}
+
+
+/**
  * Toggles the visibility of the contacts container on the webpage.
  * Also rotates an arrow image indicating the dropdown state.
  */
@@ -139,19 +152,6 @@ function revealContacts() {
   } else {
     contactsContainer.style.display = "none";
     arrowImage.classList.remove("rotate");
-  }
-}
-
-
-/**
- * Displays the logged-in user's initials.
- */
-function displayLoggedInUser() {
-  const loggedInUserName = localStorage.getItem('loggedInUserName');
-  if (loggedInUserName) {
-    const userNameIcon = document.getElementById('board-user-icon');
-    const firstLetter = loggedInUserName.charAt(0).toUpperCase();
-    userNameIcon.textContent = firstLetter;
   }
 }
 
@@ -386,9 +386,8 @@ function getCategoryHtml(category) {
 
 
 /**
- * Updates the HTML representation of a task.
- * @param {Object} task - Task object to update HTML for.
- * @returns {string} HTML representation of the task.
+ * Updates the HTML content for a task with contacts and subtasks.
+ * @param {Object} task - The task object containing task details.
  */
 function updateTaskHtml(task) {
   let contactsHtml = '';
@@ -397,24 +396,7 @@ function updateTaskHtml(task) {
     contactsHtml += `<div class="task-contact-icon" style="background-color: ${contact.color};">${contact.letter}</div>`;
   }
   const totalSubtasks = task.subtasks.length;
-  return `
-    <div id="${task.id}" class="board-task-card pointer" ondragstart="startDragging(event)" draggable="true" onclick="openTaskInfos('${task.id}', '${task.title}', '${task.description}', '${task.category}', '${task.dueDate}', ${JSON.stringify(task.subtasks).split('"').join("&quot;")}, '${task.priority}', '${task.priorityImage}')">
-      ${getCategoryHtml(task.category)}
-      <div class="board-task-card-description">${task.title}</div>
-      <div class="board-task-card-task">${task.description}</div>
-      <div class="board-task-card-date d-none">${task.dueDate}</div>
-      <div class="board-task-card-subtasks">
-        <div class="board-task-card-subtasks-bar">
-          <div id="bar-fill-${task.id}" class="bar-fill" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
-        </div>
-        <div id="subtasks-amount-${task.id}" class="board-task-card-subtasks-amount">${totalSubtasks}/2 Subtasks</div>
-      </div>
-      <div class="icon-container task-icon-added">${contactsHtml}</div>
-      <div class="board-task-card-priority">
-        <img id="priority-img-${task.id}" src="${task.priorityImage}">
-      </div>
-    </div>
-  `;
+  updateTaskHTMLtemplate(task, contactsHtml, totalSubtasks);
 }
 
 
@@ -481,10 +463,9 @@ function toggleContactsVisibility() {
  * @param {Object} contactColors - Object containing contact colors.
  */
 function renderContacts(taskContacts, contactsContainer, selectedContactsContainer, contactColors) {
-  contactsContainer.innerHTML = ''; // Clear existing contacts
+  contactsContainer.innerHTML = '';
   for (let i = 0; i < taskContacts.length; i++) {
       const contact = taskContacts[i];
-      // createContactDiv is assumed to return an HTML element for each contact.
       const contactElement = createContactDiv(contact.name, contact.color, contactColors);
       contactsContainer.appendChild(contactElement);
   }
