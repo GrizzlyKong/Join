@@ -1,8 +1,14 @@
+/**
+ * Initializes the page by including HTML files.
+ */
 async function init() {
     await includeHTML();
-    
   }
   
+
+  /**
+ * Includes HTML content into designated elements with 'w3-include-html' attribute.
+ */
   async function includeHTML() {
       let includeElements = document.querySelectorAll("[w3-include-html]");
       for (let i = 0; i < includeElements.length; i++) {

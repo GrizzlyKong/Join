@@ -1,9 +1,15 @@
+/**
+ * Initializes the page by including HTML files and setting up user-related elements.
+ */
 async function init() {
   await includeHTML();
   userNamerIcon();
 }
 
 
+/**
+ * Includes HTML content into designated elements with 'w3-include-html' attribute.
+ */
 async function includeHTML() {
   let includeElements = document.querySelectorAll("[w3-include-html]");
   for (let i = 0; i < includeElements.length; i++) {
@@ -19,6 +25,9 @@ async function includeHTML() {
 }
 
 
+/**
+ * Sets up the user name icon by retrieving the user's name from local storage.
+ */
 function userNamerIcon() {
   const loggedInUserName = localStorage.getItem('loggedInUserName');
 
@@ -30,10 +39,17 @@ function userNamerIcon() {
 }
 
 
+/**
+ * Toggles the visibility of the profile dropdown menu.
+ */
 function ProfileDropdown() {
   document.getElementById("myDropdown").classList.toggle("show");
 }
 
+
+/**
+ * Closes the profile dropdown menu when a click event occurs outside of it.
+ */
 window.onclick = function(event) {
   if (!event.target.matches('.dropbtn')) {
     let dropdowns = document.getElementsByClassName("dropdown-content");

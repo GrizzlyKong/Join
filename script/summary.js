@@ -244,15 +244,6 @@ function locationReplaceToBoard() {
 
 
 /**
- * Redirects the browser to the 'board.html' page, replacing the current page in the browser's history.
- * @function locationReplaceToBoard
- */
-function locationReplaceToBoard() {
-  location.replace("../html/board.html");
-}
-
-
-/**
  * Creates a welcome message element personalized with the user's name.
  * @param {string} userName
  */
@@ -264,7 +255,7 @@ function createWelcomeMessage(userName) {
   userNameSpan.style.color = 'rgb(41,171,226)';
   welcomeMessage.appendChild(messageText);
   welcomeMessage.appendChild(userNameSpan);
-  welcomeMessageStyle(welcomeMessage); // Adjust this line
+  welcomeMessageStyle(welcomeMessage);
   return welcomeMessage;
 }
 
@@ -307,14 +298,21 @@ function removeWelcomeMessage(welcomeMessage) {
 
 
 /**
- * Decides whether to display the welcome message and then content based on device type and if the user is logged in.
- * Shows content directly if the conditions are not met.
+ * Displays a welcome message based on device type and user login status.
+ * For mobile devices, it shows a personalized welcome message for logged-in users
+ * and a generic welcome message for guests.
+ * @function displayWelcomeMessageAndContent
  */
 function displayWelcomeMessageAndContent() {
   const isMobileDevice = localStorage.getItem('isMobileDevice') === 'true';
   const userName = localStorage.getItem('loggedInUserName');
-  if (isMobileDevice && userName) {
-    const welcomeMessage = createWelcomeMessage(userName);
+  let welcomeMessage;
+  if (isMobileDevice) {
+    if (userName) {
+      welcomeMessage = createWelcomeMessage(userName);
+    } else {
+      welcomeMessage = createWelcomeMessage();
+    }
     showWelcomeMessage(welcomeMessage);
     setTimeout(() => {
       removeWelcomeMessage(welcomeMessage);
