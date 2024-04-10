@@ -105,8 +105,8 @@ body {
 
 .log-in-privacy:hover,
 .log-in-legal:hover {
-  font-weight: bold;
-  color: rgb(41, 171, 226);
+  text-shadow: 1px 0 rgb(41, 171, 226), -1px 0 rgb(41, 171, 226), 0 1px rgb(41, 171, 226), 0 -1px rgb(41, 171, 226);
+  color: transparent;
 }
 
 .zIndex2 {
