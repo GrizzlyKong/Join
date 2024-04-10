@@ -224,12 +224,19 @@ function guestLogin() {
  * Updates the visibility of the password input field and related icons.
  */
 function updatePasswordVisibility() {
-  const { passwordInput, lockIcon, eyeIcon, eyeIconHidden } = getPasswordElements();
-  if (!passwordInput || !lockIcon || !eyeIcon || !eyeIconHidden) {
-    return;
-  }
+  const passwordInput = document.getElementById('loginPassword');
+  const lockIcon = document.getElementById('lockIcon');
+  const eyeIcon = document.getElementById('eyeIcon');
+  const eyeIconHidden = document.getElementById('eyeIconHidden');
   const passwordValue = passwordInput.value.trim();
-  updateVisibility(passwordValue, lockIcon, eyeIcon, eyeIconHidden);
+  lockIcon.style.display = passwordValue === '' ? 'inline-block' : 'none';
+  if(passwordInput.type === 'text') {
+    eyeIcon.style.display = 'none';
+    eyeIconHidden.style.display = passwordValue !== '' ? 'inline-block' : 'none';
+  } else {
+    eyeIcon.style.display = passwordValue !== '' ? 'inline-block' : 'none';
+    eyeIconHidden.style.display = 'none';
+  }
 }
 
 
@@ -241,10 +248,20 @@ function updatePasswordVisibility() {
  * @param {HTMLElement} eyeIconHidden - The hidden eye icon element.
  */
 function updateVisibility(passwordValue, lockIcon, eyeIcon, eyeIconHidden) {
-  lockIcon.style.display = passwordValue === '' ? 'inline-block' : 'none';
-  eyeIcon.style.display = passwordValue === '' ? 'none' : 'inline-block';
-  eyeIconHidden.style.display = passwordValue === '' ? 'none' : 'inline-block';
+  if (passwordValue) {
+    lockIcon.style.display = 'none';
+    eyeIcon.style.display = 'inline-block';
+    eyeIconHidden.style.display = 'none';
+  } else {
+    lockIcon.style.display = 'inline-block';
+    eyeIcon.style.display = 'none';
+    eyeIconHidden.style.display = 'none';
+  }
 }
+document.addEventListener('DOMContentLoaded', function() {
+  updatePasswordVisibility();
+  document.getElementById('loginPassword').addEventListener('input', updatePasswordVisibility);
+});
 
 
 /**
@@ -252,10 +269,33 @@ function updateVisibility(passwordValue, lockIcon, eyeIcon, eyeIconHidden) {
  */
 function togglePasswordVisibility() {
   const passwordInput = document.getElementById('loginPassword');
+  const eyeIcon = document.getElementById('eyeIcon');
+  const eyeIconHidden = document.getElementById('eyeIconHidden');
   if (passwordInput.type === 'password') {
     passwordInput.type = 'text';
+    eyeIcon.style.display = 'none';
+    eyeIconHidden.style.display = 'inline-block';
   } else {
     passwordInput.type = 'password';
+    eyeIcon.style.display = 'inline-block';
+    eyeIconHidden.style.display = 'none';
   }
-  updatePasswordVisibility();
+}
+
+
+/**
+ * Updates the password input field based on the email input field.
+ * If the email matches a user's email in the provided user data, the corresponding password is displayed in the password input field.
+ * If no user is found with the given email, the password input field is cleared.
+ * Additionally, updates the visibility of the password input field based on certain conditions.
+ */
+function updatePasswordBasedOnEmail(emailInput, passwordInput, users) {
+  const selectedEmail = emailInput.value;
+  const user = findUserByEmail(users, selectedEmail);
+  if (user) {
+    passwordInput.value = user.password;
+  } else {
+    passwordInput.value = '';
+  }
+    updatePasswordVisibility();
 }
