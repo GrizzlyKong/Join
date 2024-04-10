@@ -178,16 +178,6 @@ async function deleteContact() {
   }
 
 
-  /**
- * Retrieves the name of the contact from the contact information panel.
- * 
- * @returns {string} The name of the contact.
- */
-function getContactName() {
-    return document.getElementById("contact-info").innerText;
-  }
-
-
 /**
  * Deletes a guest contact from local storage.
  * 

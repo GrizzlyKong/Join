@@ -129,7 +129,6 @@ function updateContactInfo(contactInfoName, contactInfoIcon, contactInfoLink, co
     contactInfoName.innerText = name;
     contactInfoIcon.innerText = initialLetter;
     contactInfoIcon.style.backgroundColor = color;
-    contactInfoLink.innerText = email;
     contactInfoDetails.innerHTML = `
       <p>Email</p>
       <a class="contact-link">${email}</a>
