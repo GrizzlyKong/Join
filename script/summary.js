@@ -43,11 +43,11 @@ async function loadTasks() {
       if (tasks) {
           return JSON.parse(tasks);
       } else {
-          console.log('Keine Tasks gefunden.');
+        console.log('No tasks found in storage.');
           return [];
       }
   } catch (error) {
-      console.error('Fehler beim Laden der Tasks:', error);
+    console.error('Error loading tasks from storage:', error);
       return [];
   }
 }
@@ -249,7 +249,7 @@ function locationReplaceToBoard() {
  */
 function createWelcomeMessage(userName) {
   const welcomeMessage = document.createElement('div');
-  const messageText = document.createTextNode('Willkommen ');
+  const messageText = document.createTextNode('Welcome ');
   const userNameSpan = document.createElement('span');
   userNameSpan.textContent = userName;
   userNameSpan.style.color = 'rgb(41,171,226)';
@@ -298,21 +298,32 @@ function removeWelcomeMessage(welcomeMessage) {
 
 
 /**
- * Displays a welcome message based on device type and user login status.
- * For mobile devices, it shows a personalized welcome message for logged-in users
- * and a generic welcome message for guests.
- * @function displayWelcomeMessageAndContent
+ * If the user is logged in, it creates a personalized welcome message.
+ * If not, it generates a generic welcome message for guests.
+ * @param {string|null} userName The name of the logged-in user or null if no user is logged in.
+ * @returns {HTMLElement} The welcome message HTML element.
+ */
+function prepareWelcomeMessage(userName) {
+  if (userName) {
+    return createWelcomeMessage(userName);
+  } else {
+    return createWelcomeMessage('Guest');
+  }
+}
+
+
+/**
+ * Displays a welcome message on mobile devices and controls the visibility of the main content.
+ * If the device is mobile, it displays a welcome message. After a set timeout, it fades in the main content.
+ * On non-mobile devices, it immediately displays the main content without showing any welcome message.
  */
 function displayWelcomeMessageAndContent() {
   const isMobileDevice = localStorage.getItem('isMobileDevice') === 'true';
   const userName = localStorage.getItem('loggedInUserName');
-  let welcomeMessage;
+  const mainContent = document.getElementById('whole-summary');
+  mainContent.style.opacity = '0';
   if (isMobileDevice) {
-    if (userName) {
-      welcomeMessage = createWelcomeMessage(userName);
-    } else {
-      welcomeMessage = createWelcomeMessage();
-    }
+    let welcomeMessage = prepareWelcomeMessage(userName);
     showWelcomeMessage(welcomeMessage);
     setTimeout(() => {
       removeWelcomeMessage(welcomeMessage);
