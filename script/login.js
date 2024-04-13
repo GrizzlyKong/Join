@@ -258,10 +258,6 @@ function updateVisibility(passwordValue, lockIcon, eyeIcon, eyeIconHidden) {
     eyeIconHidden.style.display = 'none';
   }
 }
-document.addEventListener('DOMContentLoaded', function() {
-  updatePasswordVisibility();
-  document.getElementById('loginPassword').addEventListener('input', updatePasswordVisibility);
-});
 
 
 /**
